@@ -256,8 +256,7 @@ func GetHtmlData(url string) (string, bool) {
 // Input: resultsDir - where to save the data
 //		lab - information about the current lab
 //		comparisons - information about the matches found
-// Output: The data as a string.
-//		Whether or not the function was successful.
+// Output: None
 //***************************************************************************
 func MakeResultsMainPage(resultsDir string, lab LabInfo, comparisons []matches) {
 	var buf bytes.Buffer
