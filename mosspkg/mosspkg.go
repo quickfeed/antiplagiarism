@@ -116,11 +116,10 @@ func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabIn
 	return commands, true
 }
 
-// SaveMossResults saves the data from the specified MOSS URL
-// Input: url - the main url for the MOSS results
-//		baseDir - where to save the data
-//		lab - information about the current lab
-// Output: Whether or not the function was successful.
+// SaveMossResults saves the data from the specified MOSS URL. It returns
+// whether or not the function was successful. SaveMossResults takes as input
+// url, the main url for the MOSS results, baseDir, where to save the data,
+// and lab, information about the current lab.
 func SaveMossResults(url string, baseDir string, lab LabInfo) bool {
 	resultsDir := filepath.Join(baseDir, lab.Name)
 
@@ -209,10 +208,9 @@ func SaveMossResults(url string, baseDir string, lab LabInfo) bool {
 	return true
 }
 
-// GetHTMLData returns html data as a string
-// Input: url - the location of the html
-// Output: The data as a string.
-//		Whether or not the function was successful.
+// GetHTMLData returns html data as a string. It returns the html
+// and whether or not the function was successful. GetHTMLData takes
+// as input url, the location of the html.
 func GetHTMLData(url string) (string, bool) {
 	var body string
 	resp, err := http.Get(url)
@@ -237,11 +235,10 @@ func GetHTMLData(url string) (string, bool) {
 	return body, true
 }
 
-// MakeResultsMainPage creates the main html file for the results
-// Input: resultsDir - where to save the data
-//		lab - information about the current lab
-//		comparisons - information about the matches found
-// Output: None
+// MakeResultsMainPage creates the main html file for the results.
+// It takes as input resultsDir, where to save the data,
+// lab, information about the current lab, and comparisons,
+// information about the matches found.
 func MakeResultsMainPage(resultsDir string, lab LabInfo, comparisons []matches) {
 	var buf bytes.Buffer
 	buf.WriteString("<HTML>\n<HEAD>\n<TITLE>")
