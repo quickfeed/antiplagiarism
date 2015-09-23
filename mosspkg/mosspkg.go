@@ -19,18 +19,6 @@ type matches struct {
 	match2text string
 }
 
-//***************************************************************************
-// This function will create a two-dimensional slice containing the
-// directories (full path) to send to MOSS for evaluation. The first index addresses
-// the specific lab, and the second index addresses the specific student.
-// If a student does not have the lab directory, the 2d slice will save the
-// directory as an empty string.
-// Input: baseDir - the location of the student directories
-//		labs - a slice of the labs
-// Output: The 2d slice of directories
-//		Whether or not the function was successful.
-//***************************************************************************
-
 // DirectoryContents returns a two-dimensional slice with full-path directories
 // to send to MOSS for evaluation. The first index addresses the specific lab,
 // and the second index addresses the specific student. If a student does not
@@ -61,8 +49,6 @@ func DirectoryContents(baseDir string, labs []LabInfo) ([][]string, bool) {
 
 		// For each student
 		for j := range studentsLabDirs[i] {
-			// tempDir := studentDirs[j] + "/" + labs[i].Name + "/"
-			//TODO: Not sure if the last "/" is important above; the filepath.Join() probably won't be able to add a "/" at the end.
 			tempDir := filepath.Join(studentDirs[j], labs[i].Name)
 			_, err := ioutil.ReadDir(tempDir)
 			if err != nil {
@@ -76,25 +62,22 @@ func DirectoryContents(baseDir string, labs []LabInfo) ([][]string, bool) {
 	return studentsLabDirs, true
 }
 
-//***************************************************************************
-// This function will create MOSS commands to upload the lab files.
-// Input: mossDir - the location of the MOSS script
-//		studentsLabDirs - a 2d slice of directories
-//		labs - a slice of the labs
-// 		threshold - ignore matches appearing in at least this many files
-// Output: The slice of MOSS commands
-//		Whether or not the function was successful.
-//***************************************************************************
+// CreateMossCommands will create MOSS commands to upload the lab files.
+// It returns a slice of MOSS commands.  The second return argument indicates
+// whether or not the function was successful. CreateMossCommands takes as input
+// mossDir, the location of the MOSS script, studentsLabDirs, a 2D slice of
+// directories, labs, a slice of the labs, and threshold, an integer telling MOSS
+// to ignore matches that appear in at least that many files.
 func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabInfo, threshold int) ([]string, bool) {
 	var commands []string
-	var mOption string = "-m " + strconv.Itoa(threshold)
+	mOption := "-m " + strconv.Itoa(threshold)
 
 	// For each lab
 	for i := range studentsLabDirs {
 		var lOption string
 		var fileExt []string
 
-		// Set language option and file extenstions
+		// Set language option and file extensions
 		if labs[i].Language == Golang {
 			lOption = "-l java"
 			fileExt = append(fileExt, "*.go")
@@ -109,7 +92,7 @@ func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabIn
 
 		// Start creating the moss command
 		var buf bytes.Buffer
-		buf.WriteString(mossDir + "/moss " + lOption + " " + mOption + " -d")
+		buf.WriteString(filepath.Join(mossDir, "moss") + " " + lOption + " " + mOption + " -d")
 
 		// For each student
 		for j := range studentsLabDirs[i] {
@@ -119,7 +102,7 @@ func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabIn
 
 				// Add all the files with the appropriate extensions
 				for k := range fileExt {
-					buf.WriteString(" " + studentsLabDirs[i][j] + fileExt[k])
+					buf.WriteString(" " + filepath.Join(studentsLabDirs[i][j], fileExt[k]))
 				}
 			}
 		}
@@ -133,18 +116,16 @@ func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabIn
 	return commands, true
 }
 
-//***************************************************************************
-// This function saves the data from the specified MOSS URL
+// SaveMossResults saves the data from the specified MOSS URL
 // Input: url - the main url for the MOSS results
 //		baseDir - where to save the data
 //		lab - information about the current lab
 // Output: Whether or not the function was successful.
-//***************************************************************************
 func SaveMossResults(url string, baseDir string, lab LabInfo) bool {
-	resultsDir := baseDir + "/" + lab.Name + "/"
+	resultsDir := filepath.Join(baseDir, lab.Name)
 
 	os.MkdirAll(resultsDir, 0764)
-	os.Remove(resultsDir + "*.*")
+	os.Remove(filepath.Join(resultsDir, "*.*"))
 
 	var comparisons []matches
 
@@ -195,32 +176,32 @@ func SaveMossResults(url string, baseDir string, lab LabInfo) bool {
 		rightFrame := strings.Replace(match.url, ".html", "-1.html", 1)
 
 		// Get and save web page data
-		linkBody, success := GetHtmlData(match.url)
+		linkBody, success := GetHTMLData(match.url)
 		if !success {
 			return false
 		}
-		ioutil.WriteFile(resultsDir+base+".html", []byte(linkBody), 0644)
+		ioutil.WriteFile(filepath.Join(resultsDir, base+".html"), []byte(linkBody), 0644)
 
 		// Get and save top frame
-		topBody, success := GetHtmlData(topFrame)
+		topBody, success := GetHTMLData(topFrame)
 		if !success {
 			return false
 		}
-		ioutil.WriteFile(resultsDir+base+"-top.html", []byte(topBody), 0644)
+		ioutil.WriteFile(filepath.Join(resultsDir, base+"-top.html"), []byte(topBody), 0644)
 
 		// Get and save left frame
-		leftBody, success := GetHtmlData(leftFrame)
+		leftBody, success := GetHTMLData(leftFrame)
 		if !success {
 			return false
 		}
-		ioutil.WriteFile(resultsDir+base+"-0.html", []byte(leftBody), 0644)
+		ioutil.WriteFile(filepath.Join(resultsDir, base+"-0.html"), []byte(leftBody), 0644)
 
 		// Get and save right frame
-		rightBody, success := GetHtmlData(rightFrame)
+		rightBody, success := GetHTMLData(rightFrame)
 		if !success {
 			return false
 		}
-		ioutil.WriteFile(resultsDir+base+"-1.html", []byte(rightBody), 0644)
+		ioutil.WriteFile(filepath.Join(resultsDir, base+"-1.html"), []byte(rightBody), 0644)
 	}
 
 	MakeResultsMainPage(resultsDir, lab, comparisons)
@@ -228,14 +209,12 @@ func SaveMossResults(url string, baseDir string, lab LabInfo) bool {
 	return true
 }
 
-//***************************************************************************
-// This function returns html data as a string
+// GetHTMLData returns html data as a string
 // Input: url - the location of the html
 // Output: The data as a string.
 //		Whether or not the function was successful.
-//***************************************************************************
-func GetHtmlData(url string) (string, bool) {
-	var body string = ""
+func GetHTMLData(url string) (string, bool) {
+	var body string
 	resp, err := http.Get(url)
 	defer resp.Body.Close()
 
@@ -258,13 +237,11 @@ func GetHtmlData(url string) (string, bool) {
 	return body, true
 }
 
-//***************************************************************************
-// This function creates the main html file for the results
+// MakeResultsMainPage creates the main html file for the results
 // Input: resultsDir - where to save the data
 //		lab - information about the current lab
 //		comparisons - information about the matches found
 // Output: None
-//***************************************************************************
 func MakeResultsMainPage(resultsDir string, lab LabInfo, comparisons []matches) {
 	var buf bytes.Buffer
 	buf.WriteString("<HTML>\n<HEAD>\n<TITLE>")
@@ -283,5 +260,5 @@ func MakeResultsMainPage(resultsDir string, lab LabInfo, comparisons []matches) 
 	}
 	buf.WriteString("\n</BODY>\n</HTML>\n")
 
-	ioutil.WriteFile(resultsDir+"results.html", []byte(buf.String()), 0644)
+	ioutil.WriteFile(filepath.Join(resultsDir, "results.html"), []byte(buf.String()), 0644)
 }
