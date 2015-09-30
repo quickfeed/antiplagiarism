@@ -30,7 +30,6 @@ func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, t
 	return commands, true
 }
 
-
 // DirectoryContents returns a two-dimensional slice with full-path directories
 // to send to dupl for evaluation. The first index addresses the specific lab,
 // and the second index addresses the specific student. If a student does not
@@ -86,16 +85,16 @@ func CreateDuplCommands(studentsLabDirs [][]string, labs []common.LabInfo, thres
 
 	// For each lab
 	for i := range studentsLabDirs {
-	
+
 		// Make sure the lab uses go
 		if labs[i].Language == common.Golang {
 			// Okay
 		} else if labs[i].Language == common.Cpp {
-			// Can't use dupl on this lab, so empty string 
+			// Can't use dupl on this lab, so empty string
 			commands = append(commands, "")
 			continue
 		} else {
-			// Can't use dupl on this lab, so empty string 
+			// Can't use dupl on this lab, so empty string
 			commands = append(commands, "")
 			continue
 		}
@@ -121,4 +120,3 @@ func CreateDuplCommands(studentsLabDirs [][]string, labs []common.LabInfo, thres
 
 	return commands, true
 }
-
