@@ -1,4 +1,4 @@
-package mosspkg
+package common
 
 // The language the lab was written in
 const (

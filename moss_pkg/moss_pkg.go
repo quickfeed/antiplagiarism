@@ -1,4 +1,4 @@
-package mosspkg
+package moss_pkg
 
 import (
 	"bytes"
@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"../common"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -26,7 +27,7 @@ type matches struct {
 // string. The second return argument indicates whether or not the function was
 // successful. DirectoryContents takes as input baseDir, the location of the
 // student directories, and labs, a slice of the labs.
-func DirectoryContents(baseDir string, labs []LabInfo) ([][]string, bool) {
+func DirectoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool) {
 	// Try to read the base directory
 	contents, err := ioutil.ReadDir(baseDir)
 	if err != nil {
@@ -68,7 +69,7 @@ func DirectoryContents(baseDir string, labs []LabInfo) ([][]string, bool) {
 // mossDir, the location of the MOSS script, studentsLabDirs, a 2D slice of
 // directories, labs, a slice of the labs, and threshold, an integer telling MOSS
 // to ignore matches that appear in at least that many files.
-func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabInfo, threshold int) ([]string, bool) {
+func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	mOption := "-m " + strconv.Itoa(threshold)
 
@@ -78,10 +79,10 @@ func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabIn
 		var fileExt []string
 
 		// Set language option and file extensions
-		if labs[i].Language == Golang {
+		if labs[i].Language == common.Golang {
 			lOption = "-l java"
 			fileExt = append(fileExt, "*.go")
-		} else if labs[i].Language == Cpp {
+		} else if labs[i].Language == common.Cpp {
 			lOption = "-l cc"
 			fileExt = append(fileExt, "*.cpp")
 			fileExt = append(fileExt, "*.h")
@@ -120,7 +121,7 @@ func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []LabIn
 // whether or not the function was successful. SaveMossResults takes as input
 // url, the main url for the MOSS results, baseDir, where to save the data,
 // and lab, information about the current lab.
-func SaveMossResults(url string, baseDir string, lab LabInfo) bool {
+func SaveMossResults(url string, baseDir string, lab common.LabInfo) bool {
 	resultsDir := filepath.Join(baseDir, lab.Name)
 
 	os.MkdirAll(resultsDir, 0764)
@@ -239,7 +240,7 @@ func GetHTMLData(url string) (string, bool) {
 // It takes as input resultsDir, where to save the data,
 // lab, information about the current lab, and comparisons,
 // information about the matches found.
-func MakeResultsMainPage(resultsDir string, lab LabInfo, comparisons []matches) {
+func MakeResultsMainPage(resultsDir string, lab common.LabInfo, comparisons []matches) {
 	var buf bytes.Buffer
 	buf.WriteString("<HTML>\n<HEAD>\n<TITLE>")
 	buf.WriteString(lab.Name + " Results")
