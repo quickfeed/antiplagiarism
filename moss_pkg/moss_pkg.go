@@ -20,8 +20,24 @@ type matches struct {
 	match2text string
 }
 
+func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
+	studentsLabDirs, success := DirectoryContents(labsBaseDir, labs)
+	if !success {
+		fmt.Printf("Error getting the student directories.\n")
+		return nil, false
+	}
+
+	commands, success := CreateMossCommands(toolDir, studentsLabDirs, labs, threshold)
+	if !success {
+		fmt.Printf("Error creating the Moss commands.\n")
+		return nil, false
+	}
+
+	return commands, true
+}
+
 // DirectoryContents returns a two-dimensional slice with full-path directories
-// to send to MOSS for evaluation. The first index addresses the specific lab,
+// to send to Moss for evaluation. The first index addresses the specific lab,
 // and the second index addresses the specific student. If a student does not
 // have the lab directory, the 2D slice will save the directory as an empty
 // string. The second return argument indicates whether or not the function was
@@ -63,11 +79,11 @@ func DirectoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool)
 	return studentsLabDirs, true
 }
 
-// CreateMossCommands will create MOSS commands to upload the lab files.
-// It returns a slice of MOSS commands.  The second return argument indicates
+// CreateMossCommands will create Moss commands to upload the lab files.
+// It returns a slice of Moss commands.  The second return argument indicates
 // whether or not the function was successful. CreateMossCommands takes as input
-// mossDir, the location of the MOSS script, studentsLabDirs, a 2D slice of
-// directories, labs, a slice of the labs, and threshold, an integer telling MOSS
+// mossDir, the location of the Moss script, studentsLabDirs, a 2D slice of
+// directories, labs, a slice of the labs, and threshold, an integer telling Moss
 // to ignore matches that appear in at least that many files.
 func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
@@ -110,16 +126,16 @@ func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []commo
 
 		buf.WriteString(" > " + labs[i].Name + ".txt &")
 
-		// Add the MOSS command for this lab
+		// Add the Moss command for this lab
 		commands = append(commands, buf.String())
 	}
 
 	return commands, true
 }
 
-// SaveMossResults saves the data from the specified MOSS URL. It returns
+// SaveMossResults saves the data from the specified Moss URL. It returns
 // whether or not the function was successful. SaveMossResults takes as input
-// url, the main url for the MOSS results, baseDir, where to save the data,
+// url, the main url for the Moss results, baseDir, where to save the data,
 // and lab, information about the current lab.
 func SaveMossResults(url string, baseDir string, lab common.LabInfo) bool {
 	resultsDir := filepath.Join(baseDir, lab.Name)
