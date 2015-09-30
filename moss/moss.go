@@ -1,4 +1,4 @@
-package moss_pkg
+package moss
 
 import (
 	"bytes"
@@ -20,6 +20,13 @@ type matches struct {
 	match2text string
 }
 
+// CreateCommands will create Moss commands to upload the lab files.
+// It returns a slice of Moss commands.  The second return argument indicates
+// whether or not the function was successful. CreateCommands takes as input
+// labsBaseDir, the location of the student directories,
+// toolDir, the location of the Moss script, studentsLabDirs, a 2D slice of
+// directories, labs, a slice of the labs, and threshold, an integer telling Moss
+// to ignore matches that appear in at least that many files.
 func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	studentsLabDirs, success := DirectoryContents(labsBaseDir, labs)
 	if !success {
@@ -36,14 +43,14 @@ func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, t
 	return commands, true
 }
 
-// DirectoryContents returns a two-dimensional slice with full-path directories
+// directoryContents returns a two-dimensional slice with full-path directories
 // to send to Moss for evaluation. The first index addresses the specific lab,
 // and the second index addresses the specific student. If a student does not
 // have the lab directory, the 2D slice will save the directory as an empty
 // string. The second return argument indicates whether or not the function was
-// successful. DirectoryContents takes as input baseDir, the location of the
+// successful. directoryContents takes as input baseDir, the location of the
 // student directories, and labs, a slice of the labs.
-func DirectoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool) {
+func directoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool) {
 	// Try to read the base directory
 	contents, err := ioutil.ReadDir(baseDir)
 	if err != nil {
@@ -79,13 +86,13 @@ func DirectoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool)
 	return studentsLabDirs, true
 }
 
-// CreateMossCommands will create Moss commands to upload the lab files.
+// createMossCommands will create Moss commands to upload the lab files.
 // It returns a slice of Moss commands.  The second return argument indicates
-// whether or not the function was successful. CreateMossCommands takes as input
+// whether or not the function was successful. createMossCommands takes as input
 // mossDir, the location of the Moss script, studentsLabDirs, a 2D slice of
 // directories, labs, a slice of the labs, and threshold, an integer telling Moss
 // to ignore matches that appear in at least that many files.
-func CreateMossCommands(mossDir string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func createMossCommands(mossDir string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	mOption := "-m " + strconv.Itoa(threshold)
 

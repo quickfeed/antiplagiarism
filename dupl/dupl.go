@@ -1,4 +1,4 @@
-package dupl_pkg
+package dupl
 
 import (
 	"bytes"
@@ -14,6 +14,13 @@ import (
 	//"github.com/PuerkitoBio/goquery"
 )
 
+// CreateCommands will create dupl commands to upload the lab files.
+// It returns a slice of dupl commands.  The second return argument indicates
+// whether or not the function was successful. CreateCommands takes as input
+// labsBaseDir, the location of the student directories,
+// toolDir, just an empty string for dupl, studentsLabDirs, a 2D slice of
+// directories, labs, a slice of the labs, and threshold, an integer telling dupl
+// to ignore tokens less than the threshold.
 func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	studentsLabDirs, success := DirectoryContents(labsBaseDir, labs)
 	if !success {
@@ -37,7 +44,7 @@ func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, t
 // string. The second return argument indicates whether or not the function was
 // successful. DirectoryContents takes as input baseDir, the location of the
 // student directories, and labs, a slice of the labs.
-func DirectoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool) {
+func directoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool) {
 	// Try to read the base directory
 	contents, err := ioutil.ReadDir(baseDir)
 	if err != nil {
@@ -79,7 +86,7 @@ func DirectoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool)
 // studentsLabDirs, a 2D slice of
 // directories, labs, a slice of the labs, and threshold, an integer telling dupl
 // to ignore matches that appear in at least that many files.
-func CreateDuplCommands(studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func createDuplCommands(studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	tOption := "-t " + strconv.Itoa(threshold)
 
