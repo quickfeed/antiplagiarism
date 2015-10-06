@@ -22,13 +22,13 @@ import (
 // directories, labs, a slice of the labs, and threshold, an integer telling dupl
 // to ignore tokens less than the threshold.
 func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
-	studentsLabDirs, success := DirectoryContents(labsBaseDir, labs)
+	studentsLabDirs, success := directoryContents(labsBaseDir, labs)
 	if !success {
 		fmt.Printf("Error getting the student directories.\n")
 		return nil, false
 	}
 
-	commands, success := CreateDuplCommands(studentsLabDirs, labs, threshold)
+	commands, success := createDuplCommands(studentsLabDirs, labs, threshold)
 	if !success {
 		fmt.Printf("Error creating the MOSS commands.\n")
 		return nil, false
@@ -37,12 +37,12 @@ func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, t
 	return commands, true
 }
 
-// DirectoryContents returns a two-dimensional slice with full-path directories
+// directoryContents returns a two-dimensional slice with full-path directories
 // to send to dupl for evaluation. The first index addresses the specific lab,
 // and the second index addresses the specific student. If a student does not
 // have the lab directory, the 2D slice will save the directory as an empty
 // string. The second return argument indicates whether or not the function was
-// successful. DirectoryContents takes as input baseDir, the location of the
+// successful. directoryContents takes as input baseDir, the location of the
 // student directories, and labs, a slice of the labs.
 func directoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool) {
 	// Try to read the base directory
@@ -80,9 +80,9 @@ func directoryContents(baseDir string, labs []common.LabInfo) ([][]string, bool)
 	return studentsLabDirs, true
 }
 
-// CreateDuplCommands will create dupl commands to upload the lab files.
+// createDuplCommands will create dupl commands to upload the lab files.
 // It returns a slice of dupl commands.  The second return argument indicates
-// whether or not the function was successful. CreateDuplCommands takes as input
+// whether or not the function was successful. createDuplCommands takes as input
 // studentsLabDirs, a 2D slice of
 // directories, labs, a slice of the labs, and threshold, an integer telling dupl
 // to ignore matches that appear in at least that many files.

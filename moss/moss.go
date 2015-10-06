@@ -28,13 +28,13 @@ type matches struct {
 // directories, labs, a slice of the labs, and threshold, an integer telling Moss
 // to ignore matches that appear in at least that many files.
 func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
-	studentsLabDirs, success := DirectoryContents(labsBaseDir, labs)
+	studentsLabDirs, success := directoryContents(labsBaseDir, labs)
 	if !success {
 		fmt.Printf("Error getting the student directories.\n")
 		return nil, false
 	}
 
-	commands, success := CreateMossCommands(toolDir, studentsLabDirs, labs, threshold)
+	commands, success := createMossCommands(toolDir, studentsLabDirs, labs, threshold)
 	if !success {
 		fmt.Printf("Error creating the Moss commands.\n")
 		return nil, false
