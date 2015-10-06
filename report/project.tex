@@ -8,7 +8,7 @@
 \usepackage{url}
 
 \title{Project}
-\date{2015-09-18}
+\date{2015-10-06}
 \author{Eric Scott Freeman}
 
 \begin{document}
@@ -91,6 +91,7 @@
 			\begin{lstlisting}[language=bash]
 	go get -u github.com/mibk/dupl
 			\end{lstlisting}
+			\noindent dupl requires Go version 1.4 or higher.
 			
 			To download and install JPlag, ???.
 			
@@ -106,16 +107,16 @@
 			A separate Go package will be written for each anti-plagiarism tool. The packages will implement a common interface which will create the commands to send to the tools and will format the results.
 			
 			Here is an example of a Moss command:
-			\begin{lstlisting}[language=bash]
-./moss -l java -m 4 -d ./code/class01/student01/assignment01/*.java ./code/class01/student02/assignment01/*.java ./code/class01/student03/assignment01/*.java > assignment01.txt &
+			\begin{lstlisting}[language=bash, breaklines=true]
+./moss -l java -m 2 -d ./code/class01/student01/assignment01/*.java ./code/class01/student02/assignment01/*.java ./code/class01/student03/assignment01/*.java > assignment01.txt &
 			\end{lstlisting}
-			\noindent $TODO$ Wrap and explain command.
+			\noindent The first argument is the Moss upload script. The $-l$ flag signifies that the next argument will be the language the assignments were written in, which in this case is Java. The $-m$ flag signifies that the following argument will be the threshold for Moss, which tells Moss to ignore matches that appear in more than this number of files. In this example, if a piece of code appears in more than 2 files, it is ignored. This is useful if instructors provide some functions or classes for their students to use. The $-d$ option signifies that directories will be compared instead of specific files. In this example, all the java files from three students' assignment 1 will be compared. Moss will search inside subdirectories. Finally the output from Moss is sent to a text file. The text file will contain a URL that has the results from Moss.
 			
 			Here is an example of a dupl command:
-			\begin{lstlisting}[language=bash]
+			\begin{lstlisting}[language=bash, breaklines=true]
 dupl -t 15 -html ./code/class01/student01/assignment02/ ./code/class01/student02/assignment02/ ./code/class01/student03/assignment02/ > assignment02.html &
 			\end{lstlisting}
-			\noindent $TODO$ Wrap and explain command.
+			\noindent The first argument is a call to dupl. The next argument, $-t$ is dupl's threshold. This is minimum nodes that pieces of code must be before dupl declares them as a duplicates. In this example, it is 15 nodes. $-html$ specifies html output. Next is a list of the directories. dupl will search inside subdirectories. Finally the output from dupl will be sent to an html file.
 			
 	\section{Results}
 	\section{Analysis}
