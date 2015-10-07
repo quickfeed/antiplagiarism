@@ -1,6 +1,7 @@
 package moss
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io/ioutil"
@@ -19,20 +20,36 @@ type matches struct {
 	match2text string
 }
 
-// SaveMossResults saves the data from the specified Moss URL. It returns
-// whether or not the function was successful. SaveMossResults takes as input
-// url, the main url for the Moss results, baseDir, where to save the data,
+// SaveResults saves the data from the specified Moss URL. It returns
+// whether or not the function was successful. SaveResults takes as input
+// fileNameAndPath, the file output by Moss, baseDir, where to save the data,
 // and lab, information about the current lab.
-func SaveMossResults(url string, baseDir string, lab common.LabInfo) bool {
+func SaveResults(fileNameAndPath string, baseDir string, lab common.LabInfo) bool {
 	resultsDir := filepath.Join(baseDir, lab.Name)
 
-	os.MkdirAll(resultsDir, 0764)
-	os.Remove(filepath.Join(resultsDir, "*.*"))
+	// Remove old results.
+	err := os.RemoveAll(resultsDir)
+	if err != nil {
+		fmt.Printf("Error removing the old results directory. %s\n", err)
+		return false
+	}
+
+	// Make the directory.
+	err = os.MkdirAll(resultsDir, 0764)
+	if err != nil {
+		fmt.Printf("Error creating the results directory. %s\n", err)
+		return false
+	}
+
+	resultsURL, success := getURLFromOutput(fileNameAndPath)
+	if !success {
+		return false
+	}
 
 	var comparisons []matches
 
 	// Get web page data
-	doc, err := goquery.NewDocument(url)
+	doc, err := goquery.NewDocument(resultsUrl)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return false
@@ -109,6 +126,32 @@ func SaveMossResults(url string, baseDir string, lab common.LabInfo) bool {
 	makeResultsMainPage(resultsDir, lab, comparisons)
 
 	return true
+}
+
+// getURLFromOutput returns the url from the Moss output. It returns the url
+// and whether or not the function was successful. getURLFromOutput takes
+// as input fileNameAndPath, the location of the output.
+func getURLFromOutput(fileNameAndPath string) (string, bool) {
+	foundURL := false
+	url := ""
+
+	file, err := os.Open(fileNameAndPath)
+	if err != nil {
+		fmt.Printf("Error reading output from Moss. %s\n", err)
+		return url, foundURL
+	}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "http://moss.stanford.edu/results/") {
+			url = line
+			foundURL = true
+			break
+		}
+	}
+
+	return url, foundURL
 }
 
 // getHTMLData returns html data as a string. It returns the html
