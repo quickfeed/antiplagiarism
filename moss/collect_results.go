@@ -49,7 +49,7 @@ func SaveResults(fileNameAndPath string, baseDir string, lab common.LabInfo) boo
 	var comparisons []matches
 
 	// Get web page data
-	doc, err := goquery.NewDocument(resultsUrl)
+	doc, err := goquery.NewDocument(resultsURL)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return false
@@ -140,6 +140,7 @@ func getURLFromOutput(fileNameAndPath string) (string, bool) {
 		fmt.Printf("Error reading output from Moss. %s\n", err)
 		return url, foundURL
 	}
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
