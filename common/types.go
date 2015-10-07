@@ -10,5 +10,6 @@ const (
 // LabInfo is information about the lab: name and programming language
 type LabInfo struct {
 	Name     string
+	Class    string
 	Language int
 }

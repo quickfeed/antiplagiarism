@@ -12,9 +12,8 @@ import (
 // It returns a slice of dupl commands.  The second return argument indicates
 // whether or not the function was successful. CreateCommands takes as input
 // labsBaseDir, the location of the student directories,
-// toolDir, just an empty string for dupl, studentsLabDirs, a 2D slice of
-// directories, labs, a slice of the labs, and threshold, an integer telling dupl
-// to ignore tokens less than the threshold.
+// toolDir, just an empty string for dupl, labs, a slice of the labs,
+// and threshold, an integer telling dupl to ignore tokens less than the threshold.
 func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	studentsLabDirs, success := common.DirectoryContents(labsBaseDir, labs)
 	if !success {
@@ -24,7 +23,7 @@ func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, t
 
 	commands, success := createDuplCommands(studentsLabDirs, labs, threshold)
 	if !success {
-		fmt.Printf("Error creating the MOSS commands.\n")
+		fmt.Printf("Error creating the dupl commands.\n")
 		return nil, false
 	}
 
