@@ -93,7 +93,11 @@
 			\end{lstlisting}
 			\noindent dupl requires Go version 1.4 or higher.
 			
-			To download and install JPlag, ???.
+			To download and install JPlag, get the code from \\\verb|https://github.com/jplag/jplag|. Maven is also required. Download and install it if necessary. Go to the \verb|jplag/jplag/jplag| directory inside the download and run the following command:
+			\begin{lstlisting}[language=bash]
+	mvn clean generate-sources assembly:assembly
+			\end{lstlisting}
+			This should create a jar file inside the \verb|./target/| directory called \\\verb|jplag-x.y.z-SNAPSHOT-jar-with-dependencies.jar| where \verb|x.y.z| is the specific version number of JPlag. Rename this file to \verb|jplag.jar| for use with this project.
 			
 		\subsection{Process}
 			Since Autograder was written in Go, this project is also written in Go. The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code.
@@ -119,6 +123,12 @@
 dupl -t 15 -html ./code/class01/student01/assignment02/ ./code/class01/student02/assignment02/ ./code/class01/student03/assignment02/ > assignment02.html &
 			\end{lstlisting}
 			\noindent The first argument is a call to dupl. The next argument, $-t$ is dupl's threshold. This is minimum nodes that pieces of code must be before dupl declares them as a duplicates. In this example, it is 15 nodes. $-html$ specifies html output. Next is a list of the directories. dupl will search inside subdirectories. Finally the output from dupl will be sent to an html file.
+
+			Here is an example of a JPlag command:
+			\begin{lstlisting}[language=bash, breaklines=true]		
+java -jar ./jplag/jplag.jar -r ./results/lab1 -l java17 -s lab1 ./students
+			\end{lstlisting}
+			\noindent The first three arguments say to run a java jar file in that location called jplag.jar. The next argument, $-r$ specifies where to save the results. $-l$ says which language to use, which in this case is Java 1.7. $-s$ says to check all the files in subdirectories with that label. So here any files in subdirectories labeled lab1 will be checked. The last argument is the base directory where the code resides.
 			
 	\section{Results}
 	\section{Analysis}
