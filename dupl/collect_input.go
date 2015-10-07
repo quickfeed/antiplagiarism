@@ -4,14 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	//"net/http"
-	//"os"
 	"path/filepath"
 	"strconv"
-	//"strings"
 
 	"../common"
-	//"github.com/PuerkitoBio/goquery"
 )
 
 // CreateCommands will create dupl commands to upload the lab files.
