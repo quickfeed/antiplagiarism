@@ -39,7 +39,7 @@ func createJPlagCommands(labsBaseDir string, jplagDir string, labs []common.LabI
 	for i := range labs {
 		var lOption string
 
-		// Set language option and file extensions
+		// Set language option
 		if labs[i].Language == common.Java {
 			lOption = " -l java17"
 		} else if labs[i].Language == common.Cpp {
@@ -48,9 +48,11 @@ func createJPlagCommands(labsBaseDir string, jplagDir string, labs []common.LabI
 			continue
 		}
 
+		// Set the results (output) directory
 		resultDir := filepath.Join(labsBaseDir, "result", labs[i].Class, labs[i].Name)
 		rOption := " -r " + resultDir
 
+		// Select the subdirectories to compare. In this case, the name of the lab
 		sOption := " -s " + labs[i].Name
 
 		// Start creating the JPlag command
