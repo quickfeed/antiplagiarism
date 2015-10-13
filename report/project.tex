@@ -8,7 +8,7 @@
 \usepackage{url}
 
 \title{Project}
-\date{2015-10-11}
+\date{2015-10-13}
 \author{Eric Scott Freeman}
 
 \begin{document}
@@ -123,6 +123,9 @@ dupl -t 15 -html ./code/class01/student01/assignment02/ ./code/class01/student02
 java -jar ./jplag/jplag.jar -l java17 -t 15 -r ./results/lab1 -s lab1 ./students
 			\end{lstlisting}
 			\noindent The first three arguments say to run a Java jar file in that location called jplag.jar. $-l$ says which language to use, which in this case is Java 1.7. $-t$ is the minimum number of tokens to match (threshold) argument. The next argument, $-r$ specifies where to save the results. $-s$ says to check all the files in subdirectories with that label. So here any Java files in subdirectories labeled lab1 will be checked. The last argument is the base directory where the code resides.		
+			
+		\subsection{Understanding Autograder}
+			To be able to add functionality to Autograder, it was necessary to understand how it works. This meant looking through the code to see what happens when certain events occurred. For example, when the Rebuild button on the teacherresultpage.html is pressed, this calls the \verb|$("#rebuild").click()| function in the teacher.result.page.js file. The click function then posts to the /event/manualbuild URL. webserver.go handles the post by calling ManualCITriggerHandler() function in ci.go. ManualCITriggerHandler() then starts the daemon, which creates a Docker container and a set of commands to run on the docker container. The docker container pulls the students code and the test code from GitHub and proceeds to run the tests on it.	
 			
 		\subsection{Process}
 			Since Autograder was written in Go, this project is also written in Go. The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code.
