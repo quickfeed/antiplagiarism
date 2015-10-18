@@ -12,9 +12,9 @@ import (
 // It returns a slice of dupl commands.  The second return argument indicates
 // whether or not the function was successful. CreateCommands takes as input
 // labsBaseDir, the location of the student directories,
-// toolDir, just an empty string for dupl, labs, a slice of the labs,
+// toolFqn, just an empty string for dupl, labs, a slice of the labs,
 // and threshold, an integer telling dupl to ignore tokens less than the threshold.
-func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	studentsLabDirs, success := common.DirectoryContents(labsBaseDir, labs)
 	if !success {
 		fmt.Printf("Error getting the student directories.\n")

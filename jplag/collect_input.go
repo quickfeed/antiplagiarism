@@ -13,10 +13,10 @@ import (
 // It returns a slice of JPlag commands.  The second return argument indicates
 // whether or not the function was successful. CreateCommands takes as input
 // labsBaseDir, the location of the student directories,
-// toolDir, the location of the JPlag jar, labs, a slice of the labs,
+// toolFqn, the name and path of the JPlag jar, labs, a slice of the labs,
 // and threshold, an integer telling JPlag to ignore tokens less than the threshold.
-func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
-	commands, success := createJPlagCommands(labsBaseDir, toolDir, labs, threshold)
+func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
+	commands, success := createJPlagCommands(labsBaseDir, toolFqn, labs, threshold)
 	if !success {
 		fmt.Printf("Error creating the JPlag commands.\n")
 		return nil, false
@@ -29,9 +29,9 @@ func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, t
 // It returns a slice of JPlag commands.  The second return argument indicates
 // whether or not the function was successful. createJPlagCommands takes as input
 // labsBaseDir, the location of the student directories,
-// jplagDir, the location of the JPlag jar, labs, a slice of the labs,
+// jplagFqn, the name and path of the JPlag jar, labs, a slice of the labs,
 // and threshold, an integer telling JPlag to ignore tokens less than the threshold.
-func createJPlagCommands(labsBaseDir string, jplagDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func createJPlagCommands(labsBaseDir string, jplagFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	tOption := " -t " + strconv.Itoa(threshold)
 
@@ -56,7 +56,7 @@ func createJPlagCommands(labsBaseDir string, jplagDir string, labs []common.LabI
 		// Start creating the JPlag command
 		var buf bytes.Buffer
 		buf.WriteString("java -jar ")
-		buf.WriteString(filepath.Join(jplagDir, "jplag.jar"))
+		buf.WriteString(jplagFqn)
 		buf.WriteString(tOption)
 		buf.WriteString(lOption)
 		buf.WriteString(rOption)

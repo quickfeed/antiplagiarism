@@ -13,17 +13,17 @@ import (
 // It returns a slice of Moss commands.  The second return argument indicates
 // whether or not the function was successful. CreateCommands takes as input
 // labsBaseDir, the location of the student directories,
-// toolDir, the location of the Moss script,
+// toolFqn, the name and path of the Moss script,
 // labs, a slice of the labs, and threshold, an integer telling Moss
 // to ignore matches that appear in at least that many files.
-func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	studentsLabDirs, success := common.DirectoryContents(labsBaseDir, labs)
 	if !success {
 		fmt.Printf("Error getting the student directories.\n")
 		return nil, false
 	}
 
-	commands, success := createMossCommands(toolDir, studentsLabDirs, labs, threshold)
+	commands, success := createMossCommands(toolFqn, studentsLabDirs, labs, threshold)
 	if !success {
 		fmt.Printf("Error creating the Moss commands.\n")
 		return nil, false
@@ -35,10 +35,10 @@ func CreateCommands(labsBaseDir string, toolDir string, labs []common.LabInfo, t
 // createMossCommands will create Moss commands to upload the lab files.
 // It returns a slice of Moss commands.  The second return argument indicates
 // whether or not the function was successful. createMossCommands takes as input
-// mossDir, the location of the Moss script, studentsLabDirs, a 2D slice of
+// mossFqn, the name and path of the Moss script, studentsLabDirs, a 2D slice of
 // directories, labs, a slice of the labs, and threshold, an integer telling Moss
 // to ignore matches that appear in at least that many files.
-func createMossCommands(mossDir string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func createMossCommands(mossFqn string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	mOption := "-m " + strconv.Itoa(threshold)
 
@@ -62,7 +62,7 @@ func createMossCommands(mossDir string, studentsLabDirs [][]string, labs []commo
 
 		// Start creating the Moss command
 		var buf bytes.Buffer
-		buf.WriteString(filepath.Join(mossDir, "moss") + " " + lOption + " " + mOption + " -d")
+		buf.WriteString(mossFqn + " " + lOption + " " + mOption + " -d")
 
 		// For each student
 		for j := range studentsLabDirs[i] {
