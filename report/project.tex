@@ -8,7 +8,7 @@
 \usepackage{url}
 
 \title{Project}
-\date{2015-10-06}
+\date{2015-10-13}
 \author{Eric Scott Freeman}
 
 \begin{document}
@@ -77,9 +77,10 @@
 			\end{table}
 		
 	\section{Design}
-		\subsection{Tools}
+		\subsection{Getting the tools}
 			Three anti-plagiarism tools were chosen for this project. Moss was the first choice because of the number of languages it supports and its maturity. JPlag and dupl were chosen to give a variety in the algorithms used.
 			
+			\subsubsection{Moss}
 			Moss is a web service, while JPlag and dupl can be run locally. To access Moss, one must send an email to \verb|moss@moss.stanford.edu| containing the following, with \verb|<email address>| replaced with one's actual email address:
 			\begin{verbatim}
 				registeruser
@@ -87,17 +88,44 @@
 			\end{verbatim}
 			\noindent Moss will then send a Moss upload script with a unique user ID, which should be placed in directory \verb|<x>|.
 			
+			\subsubsection{dupl}
 			To download and install dupl, run the following command:
 			\begin{lstlisting}[language=bash]
 	go get -u github.com/mibk/dupl
 			\end{lstlisting}
 			\noindent dupl requires Go version 1.4 or higher.
 			
+			\subsubsection{JPlag}
 			To download and install JPlag, get the code from \\\verb|https://github.com/jplag/jplag|. Maven is also required. Download and install it if necessary. Go to the \verb|jplag/jplag/jplag| directory inside the download and run the following command:
 			\begin{lstlisting}[language=bash]
 	mvn clean generate-sources assembly:assembly
 			\end{lstlisting}
 			This should create a jar file inside the \verb|./target/| directory called \\\verb|jplag-x.y.z-SNAPSHOT-jar-with-dependencies.jar| where \verb|x.y.z| is the specific version number of JPlag. Rename this file to \verb|jplag.jar| for use with this project.
+			
+		\subsection{Tool commands}
+			\subsubsection{Moss}
+			Here is an example of a Moss command:
+			\begin{lstlisting}[language=bash, breaklines=true]
+./moss -l java -m 2 -d ./code/class01/student01/assignment01/*.java ./code/class01/student02/assignment01/*.java ./code/class01/student03/assignment01/*.java > assignment01.txt &
+			\end{lstlisting}
+			\noindent The first argument is the Moss upload script. The $-l$ flag signifies that the next argument will be the language the assignments were written in, which in this case is Java. The $-m$ flag signifies that the following argument will be the threshold for Moss, which tells Moss to ignore matches that appear in more than this number of files. In this example, if a piece of code appears in more than 2 files, it is ignored. This is useful if instructors provide some functions or classes for their students to use. The $-d$ option signifies that directories will be compared instead of specific files. In this example, all the java files from three students' assignment 1 will be compared. Moss will search inside subdirectories. Finally the output from Moss is sent to a text file. The text file will contain a URL that has the results from Moss.
+			
+			\subsubsection{dupl}
+			Here is an example of a dupl command:
+			\begin{lstlisting}[language=bash, breaklines=true]
+dupl -t 15 -html ./code/class01/student01/assignment02/ ./code/class01/student02/assignment02/ ./code/class01/student03/assignment02/ > assignment02.html &
+			\end{lstlisting}
+			\noindent The first argument is a call to dupl. The next argument, $-t$ is dupl's threshold. This is minimum nodes that pieces of code must be before dupl declares them as a duplicates. In this example, it is 15 nodes. $-html$ specifies html output. Next is a list of the directories. dupl will search inside subdirectories. Finally the output from dupl will be sent to an html file.
+			
+			\subsubsection{JPlag}
+			Here is an example of a JPlag command:
+			\begin{lstlisting}[language=bash, breaklines=true]		
+java -jar ./jplag/jplag.jar -l java17 -t 15 -r ./results/lab1 -s lab1 ./students
+			\end{lstlisting}
+			\noindent The first three arguments say to run a Java jar file in that location called jplag.jar. $-l$ says which language to use, which in this case is Java 1.7. $-t$ is the minimum number of tokens to match (threshold) argument. The next argument, $-r$ specifies where to save the results. $-s$ says to check all the files in subdirectories with that label. So here any Java files in subdirectories labeled lab1 will be checked. The last argument is the base directory where the code resides.		
+			
+		\subsection{Understanding Autograder}
+			To be able to add functionality to Autograder, it was necessary to understand how it works. This meant looking through the code to see what happens when certain events occurred. For example, when the Rebuild button on the teacherresultpage.html is pressed, this calls the \verb|$("#rebuild").click()| function in the teacher.result.page.js file. The click function then posts to the /event/manualbuild URL. webserver.go handles the post by calling ManualCITriggerHandler() function in ci.go. ManualCITriggerHandler() then starts the daemon, which creates a Docker container and a set of commands to run on the docker container. The docker container pulls the students code and the test code from GitHub and proceeds to run the tests on it.	
 			
 		\subsection{Process}
 			Since Autograder was written in Go, this project is also written in Go. The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code.
@@ -112,25 +140,13 @@
 			
 			A separate Go package will be written for each anti-plagiarism tool. The packages will implement a common interface which will create the commands to send to the tools and will format the results.
 			
-			Here is an example of a Moss command:
-			\begin{lstlisting}[language=bash, breaklines=true]
-./moss -l java -m 2 -d ./code/class01/student01/assignment01/*.java ./code/class01/student02/assignment01/*.java ./code/class01/student03/assignment01/*.java > assignment01.txt &
-			\end{lstlisting}
-			\noindent The first argument is the Moss upload script. The $-l$ flag signifies that the next argument will be the language the assignments were written in, which in this case is Java. The $-m$ flag signifies that the following argument will be the threshold for Moss, which tells Moss to ignore matches that appear in more than this number of files. In this example, if a piece of code appears in more than 2 files, it is ignored. This is useful if instructors provide some functions or classes for their students to use. The $-d$ option signifies that directories will be compared instead of specific files. In this example, all the java files from three students' assignment 1 will be compared. Moss will search inside subdirectories. Finally the output from Moss is sent to a text file. The text file will contain a URL that has the results from Moss.
-			
-			Here is an example of a dupl command:
-			\begin{lstlisting}[language=bash, breaklines=true]
-dupl -t 15 -html ./code/class01/student01/assignment02/ ./code/class01/student02/assignment02/ ./code/class01/student03/assignment02/ > assignment02.html &
-			\end{lstlisting}
-			\noindent The first argument is a call to dupl. The next argument, $-t$ is dupl's threshold. This is minimum nodes that pieces of code must be before dupl declares them as a duplicates. In this example, it is 15 nodes. $-html$ specifies html output. Next is a list of the directories. dupl will search inside subdirectories. Finally the output from dupl will be sent to an html file.
-
-			Here is an example of a JPlag command:
-			\begin{lstlisting}[language=bash, breaklines=true]		
-java -jar ./jplag/jplag.jar -r ./results/lab1 -l java17 -s lab1 ./students
-			\end{lstlisting}
-			\noindent The first three arguments say to run a java jar file in that location called jplag.jar. The next argument, $-r$ specifies where to save the results. $-l$ says which language to use, which in this case is Java 1.7. $-s$ says to check all the files in subdirectories with that label. So here any files in subdirectories labeled lab1 will be checked. The last argument is the base directory where the code resides.
-			
 	\section{Results}
+	\section{Issues}
+		A few issues were encountered during the project.
+		\begin{itemize}
+			\item JPlag will only work with the languages it supports. Therefore JPlag will not accept Go files. 
+			\item dupl will not compare files it cannot parse. So files that are submitted with syntax errors could have plagiarized code, but they will remain unnoticed.
+		\end{itemize}
 	\section{Analysis}
 	\section{Conclusion}
 	\bibliography{sources}
