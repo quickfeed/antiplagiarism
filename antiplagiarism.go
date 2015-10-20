@@ -58,7 +58,7 @@ func main() {
 	if !parseArgs() {
 		os.Exit(0)
 	}
-	
+
 	fmt.Printf("Here.\n")
 
 	// TODO: Download files from github using oath token from Autograder
@@ -106,7 +106,7 @@ func parseArgs() bool {
 		flag.Usage()
 		return false
 	}
-	
+
 	if *token == "" {
 		fmt.Printf("No token provided.\n")
 		return false
@@ -116,18 +116,18 @@ func parseArgs() bool {
 		fmt.Printf("No main repository provided.\n")
 		return false
 	}
-	
+
 	if *repos == "" {
 		fmt.Printf("No student repositories provided.\n")
 		return false
 	}
 	studentRepos = strings.Split(*repos, ",")
-	
+
 	if *labs == "" {
 		fmt.Printf("No lab names provided.\n")
 		return false
 	}
 	labNames = strings.Split(*labs, ",")
-	
+
 	return true
 }
