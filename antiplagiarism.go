@@ -5,15 +5,61 @@ import (
 	"./dupl"
 	"./jplag"
 	"./moss"
+	"flag"
 	"fmt"
+	"os"
+	"strings"
 )
+
+var (
+	help = flag.Bool(
+		"help",
+		false,
+		"Show usage help",
+	)
+	token = flag.String(
+		"token",
+		"",
+		"The oauth admin token which authorizes this application to connect to github",
+	)
+	mainrepo = flag.String(
+		"mainrepo",
+		"",
+		"The main github repository",
+	)
+	repos = flag.String(
+		"repos",
+		"",
+		"The list of student repositories, delimited by commas",
+	)
+	labs = flag.String(
+		"labs",
+		"",
+		"The list of labs to check, delimited by commas",
+	)
+)
+
+var studentRepos []string
+var labNames []string
+
+func usage() {
+	//fmt.Fprintf(os.Stderr, "Usage: %s [OPTIONS]\n", os.Args[0])
+	//fmt.Fprintf(os.Stderr, "\nOptions:\n")
+	flag.PrintDefaults()
+	fmt.Printf("Example: ./antiplagiarism -token=0123456789ABCDEF -mainrepo=DAT320 -repos=Student1,Student2,Student3 -labs=LabA,LabB,LabC\n")
+}
 
 func main() {
 	if !ReadConfig() {
 		fmt.Printf("Could not start the anti-plagiarism application.\n")
 	}
 
-	// TODO: Parse command line args
+	// Parse command line args
+	if !parseArgs() {
+		os.Exit(0)
+	}
+	
+	fmt.Printf("Here.\n")
 
 	// TODO: Download files from github using oath token from Autograder
 
@@ -50,4 +96,38 @@ func main() {
 	// TODO: Run commands
 
 	// TODO: Store results
+}
+
+// parseArgs parses the command line arguments
+func parseArgs() bool {
+	flag.Usage = usage
+	flag.Parse()
+	if *help {
+		flag.Usage()
+		return false
+	}
+	
+	if *token == "" {
+		fmt.Printf("No token provided.\n")
+		return false
+	}
+
+	if *mainrepo == "" {
+		fmt.Printf("No main repository provided.\n")
+		return false
+	}
+	
+	if *repos == "" {
+		fmt.Printf("No student repositories provided.\n")
+		return false
+	}
+	studentRepos = strings.Split(*repos, ",")
+	
+	if *labs == "" {
+		fmt.Printf("No lab names provided.\n")
+		return false
+	}
+	labNames = strings.Split(*labs, ",")
+	
+	return true
 }
