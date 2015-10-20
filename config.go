@@ -69,13 +69,13 @@ func ReadConfig() bool {
 	}
 
 	/*
-	fmt.Printf("%s\n", LabFilesBaseDirectory)
-	fmt.Printf("%s\n", MossFqn)
-	fmt.Printf("%s\n", JplagFqn)
-	fmt.Printf("%s\n", ResultsDirectory)
-	fmt.Printf("%d\n", MossThreshold)
-	fmt.Printf("%d\n", DuplThreshold)
-	fmt.Printf("%d\n", JplagThreshold)
+		fmt.Printf("%s\n", LabFilesBaseDirectory)
+		fmt.Printf("%s\n", MossFqn)
+		fmt.Printf("%s\n", JplagFqn)
+		fmt.Printf("%s\n", ResultsDirectory)
+		fmt.Printf("%d\n", MossThreshold)
+		fmt.Printf("%d\n", DuplThreshold)
+		fmt.Printf("%d\n", JplagThreshold)
 	*/
 
 	err = scanner.Err()
