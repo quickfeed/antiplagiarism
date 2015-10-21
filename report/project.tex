@@ -33,7 +33,7 @@
 				Moss uses a technique called winnowing to select which hashes to save \cite{schleimer+wilkerson+aiken}. In the winnowing algorithm, a window, selection of contiguous hashes, is used to help select which hashes to save. The smallest hash from a window is saved, and then the window moves one hash over. The smallest hash from the next window is often the smallest hash from the previous window. If so it is not saved again. Figure \ref{fig:winnowing1} shows an example of how winnowing works. The orange box represents the shifting window. The green box shows whenever a new hash is saved.
 				
 				\begin{figure}[h!]
-					\includegraphics[scale=0.75]{Winnowing.png}
+					\includegraphics[width=0.6\textwidth]{Winnowing.png}
 					\caption{Winnowing.}
 					\label{fig:winnowing1}
 				\end{figure}
@@ -51,7 +51,7 @@
 			
 				\begin{figure}
 					\begin{floatrow}
-						\ffigbox{\includegraphics[scale=0.1]{AST.png}}{\caption{Abstract syntax tree.}\label{fig:ast}}	\ffigbox{\includegraphics[scale=0.5]{ASTcode.png}}{\caption{Example code.}\label{fig:astcode}}
+						\ffigbox{\includegraphics[width=0.5\textwidth]{AST.png}}{\caption{Abstract syntax tree.}\label{fig:ast}}	\ffigbox{\includegraphics[width=0.3\textwidth]{ASTcode.png}}{\caption{Example code.}\label{fig:astcode}}
 					\end{floatrow}
 				\end{figure}
 		
@@ -89,14 +89,26 @@
 			Before calling the anti-plagiarism tools, first the students' code will be pulled from Github to the Autograder server. The directory structure will consist of a base directory containing subdirectories for each class. Inside each class, there will be directories for each student, which will have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in Github, so pulling the code for the anti-plagiarism project will be simplified. Each student's work for an assignment to be compared against the other students' work for that assignment in that class. This will keep the number of files being compared from growing too large. 
 			
 			\begin{figure}[h!]
-				\includegraphics[scale=0.75]{Directories.png}
+				\includegraphics[width=0.2\textwidth]{Directories.png}
 				\caption{Directory structure.}
 				\label{fig:directories}
+			\end{figure}
+			
+			\begin{figure}[h!]
+				\includegraphics[width=0.7\textwidth]{step1.png}
+				\caption{Step 1}
+				\label{fig:step1}
 			\end{figure}
 			
 			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters.
 			
 			\subsubsection{Checking for and storing the results}
+			
+			\begin{figure}[h!]
+				\includegraphics[width=0.7\textwidth]{step2.png}
+				\caption{Step 2}
+				\label{fig:step2}
+			\end{figure}
 			
 	\section{Results}
 	\section{Issues}
