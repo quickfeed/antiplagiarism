@@ -7,8 +7,8 @@
 \usepackage{listings}
 \usepackage{url}
 
-\title{Project}
-\date{2015-10-13}
+\title{Anti-plagiarism Project}
+\date{2015-10-21}
 \author{Eric Scott Freeman}
 
 \begin{document}
@@ -128,9 +128,12 @@ java -jar ./jplag/jplag.jar -l java17 -t 15 -r ./results/lab1 -s lab1 ./students
 			To be able to add functionality to Autograder, it was necessary to understand how it works. This meant looking through the code to see what happens when certain events occurred. For example, when the Rebuild button on the teacherresultpage.html is pressed, this calls the \verb|$("#rebuild").click()| function in the teacher.result.page.js file. The click function then posts to the /event/manualbuild URL. webserver.go handles the post by calling ManualCITriggerHandler() function in ci.go. ManualCITriggerHandler() then starts the daemon, which creates a Docker container and a set of commands to run on the docker container. The docker container pulls the students code and the test code from GitHub and proceeds to run the tests on it.	
 			
 		\subsection{Process}
-			Since Autograder was written in Go, this project is also written in Go. The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code.
+			Since Autograder was written in Go, this project is also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program will call each of the anti-plagiarism tools and store the results. The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code. A separate Go package will be written for each anti-plagiarism tool. The packages will implement a common interface which will create the commands to send to the tools and will format the results.
 			
-			First the students' code will be pulled from Github to the Autograder server. The directory structure will consist of a base directory containing subdirectories for each class. Inside each class, there will be directories for each student, which will have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in Github, so pulling the code for the anti-plagiarism project will be simplified. Each student's work for an assignment to be compared against the other students' work for that assignment in that class. This will keep the number of files being compared from growing too large. 
+			The anti-plagiarism application will have two main functions. The first is to call the various anti-plagiarism detection tools, and the second is to check and store the results. It can take an indefinite amount of time for the tools to complete their analysis of the students' code, so it is best for the application to run the commands for the tools as a background process by using the $\&$ symbol at the end of each command..
+			
+			\subsubsection{Calling the anti-plagiarism tools}
+			Before calling the anti-plagiarism tools, first the students' code will be pulled from Github to the Autograder server. The directory structure will consist of a base directory containing subdirectories for each class. Inside each class, there will be directories for each student, which will have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in Github, so pulling the code for the anti-plagiarism project will be simplified. Each student's work for an assignment to be compared against the other students' work for that assignment in that class. This will keep the number of files being compared from growing too large. 
 			
 			\begin{figure}[h!]
 				\includegraphics[scale=0.75]{Directories.png}
@@ -138,7 +141,9 @@ java -jar ./jplag/jplag.jar -l java17 -t 15 -r ./results/lab1 -s lab1 ./students
 				\label{fig:directories}
 			\end{figure}
 			
-			A separate Go package will be written for each anti-plagiarism tool. The packages will implement a common interface which will create the commands to send to the tools and will format the results.
+			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters.
+			
+			\subsubsection{Checking for and storing the results}
 			
 	\section{Results}
 	\section{Issues}
