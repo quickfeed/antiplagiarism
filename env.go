@@ -10,7 +10,7 @@ import (
 // indicates whether or not the function was successful.
 func GetEnvVar(env *envVariables) bool {
 
-	if !getEnvString("LAB_FILES_BASE_DIRECTORY", &env.labFilesBaseDirectory) {
+	if !getEnvString("LAB_FILES_BASE_DIRECTORY", &env.labDir) {
 		return false
 	}
 	if !getEnvString("MOSS_FULLY_QUALIFIED_NAME", &env.mossFqn) {
@@ -19,7 +19,7 @@ func GetEnvVar(env *envVariables) bool {
 	if !getEnvString("JPLAG_FULLY_QUALIFIED_NAME", &env.jplagFqn) {
 		return false
 	}
-	if !getEnvString("RESULTS_DIRECTORY", &env.resultsDirectory) {
+	if !getEnvString("RESULTS_DIRECTORY", &env.resultsDir) {
 		return false
 	}
 	if !getEnvInt("MOSS_THRESHOLD", &env.mossThreshold) {

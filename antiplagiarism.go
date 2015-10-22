@@ -20,7 +20,7 @@ type commandLineArgs struct {
 
 type envVariables struct {
 	// Where to download the student files
-	labFilesBaseDirectory string
+	labDir string
 
 	// The location of the Moss script
 	mossFqn string
@@ -29,7 +29,7 @@ type envVariables struct {
 	jplagFqn string
 
 	// Where to store the results
-	resultsDirectory string
+	resultsDir string
 
 	// The number of files the code can appear in before it is ignored by Moss
 	mossThreshold int
@@ -75,16 +75,16 @@ func buildLabInfo(args *commandLineArgs) []common.LabInfo {
 // indicates whether or not the function was successful.
 func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 	// Download files from github using oath token from Autograder
-	if !pullFiles(env.labFilesBaseDirectory, args.githubToken, args.githubOrg, args.studentRepos) {
+	if !pullFiles(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
 		return false
 	}
 
 	labInfo := buildLabInfo(args)
 	var tools []common.Tool
 
-	tools = append(tools, moss.Moss{LabsBaseDir: env.labFilesBaseDirectory, ToolFqn: env.mossFqn, Threshold: env.mossThreshold})
-	tools = append(tools, dupl.Dupl{LabsBaseDir: env.labFilesBaseDirectory, ToolFqn: "", Threshold: env.duplThreshold})
-	tools = append(tools, jplag.Jplag{LabsBaseDir: env.labFilesBaseDirectory, ToolFqn: env.jplagFqn, Threshold: env.jplagThreshold})
+	tools = append(tools, moss.Moss{LabsBaseDir: env.labDir, ToolFqn: env.mossFqn, Threshold: env.mossThreshold})
+	tools = append(tools, dupl.Dupl{LabsBaseDir: env.labDir, ToolFqn: "", Threshold: env.duplThreshold})
+	tools = append(tools, jplag.Jplag{LabsBaseDir: env.labDir, ToolFqn: env.jplagFqn, Threshold: env.jplagThreshold})
 
 	for i := range tools {
 		createCommands(args, tools[i], labInfo)
