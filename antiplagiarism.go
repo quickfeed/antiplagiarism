@@ -17,12 +17,9 @@ var gitHubOrg string
 var githubToken string
 
 func main() {
-	if !ReadConfig() {
+	// Get the environment variables and parse the command line arguments
+	if !GetEnvVar() || !parseArgs() {
 		fmt.Printf("Could not start the anti-plagiarism application.\n")
-	}
-
-	// Parse command line args
-	if !parseArgs() {
 		os.Exit(0)
 	}
 

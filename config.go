@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
 // Where to download the student files
@@ -29,76 +27,65 @@ var DuplThreshold int
 // An integer telling JPlag to ignore tokens less than the threshold
 var JplagThreshold int
 
-var defaultMossThreshold = 10
-var defaultDuplThreshold = 15
-var defaultJplagThreshold = 15
+// GetEnvVar gets the environment variables. The return argument
+// indicates whether or not the function was successful.
+func GetEnvVar() bool {
 
-// ReadConfig reads the config.txt file and populates the
-// global config variables. The return argument indicates
-// whether or not the function was successful.
-func ReadConfig() bool {
-	file, err := os.Open("config.txt")
-	if err != nil {
-		fmt.Printf("Could not open the config file. %s\n", err)
+	if !getEnvString("LAB_FILES_BASE_DIRECTORY", &LabFilesBaseDirectory) {
 		return false
 	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		if strings.HasPrefix(line, "LAB_FILES_BASE_DIRECTORY") {
-			LabFilesBaseDirectory = getLineValueString(line)
-		} else if strings.HasPrefix(line, "MOSS_FULLY_QUALIFIED_NAME") {
-			MossFqn = getLineValueString(line)
-		} else if strings.HasPrefix(line, "JPLAG_FULLY_QUALIFIED_NAME") {
-			JplagFqn = getLineValueString(line)
-		} else if strings.HasPrefix(line, "RESULTS_DIRECTORY") {
-			ResultsDirectory = getLineValueString(line)
-		} else if strings.HasPrefix(line, "MOSS_THRESHOLD") {
-			MossThreshold = getLineValueInt(line, defaultMossThreshold)
-		} else if strings.HasPrefix(line, "DUPL_THRESHOLD") {
-			DuplThreshold = getLineValueInt(line, defaultDuplThreshold)
-		} else if strings.HasPrefix(line, "JPLAG_THRESHOLD") {
-			JplagThreshold = getLineValueInt(line, defaultJplagThreshold)
-		} else {
-			fmt.Printf("Not expecting %s in the config file.\n", line)
-		}
+	if !getEnvString("MOSS_FULLY_QUALIFIED_NAME", &MossFqn) {
+		return false
 	}
-
-	/*
-		fmt.Printf("%s\n", LabFilesBaseDirectory)
-		fmt.Printf("%s\n", MossFqn)
-		fmt.Printf("%s\n", JplagFqn)
-		fmt.Printf("%s\n", ResultsDirectory)
-		fmt.Printf("%d\n", MossThreshold)
-		fmt.Printf("%d\n", DuplThreshold)
-		fmt.Printf("%d\n", JplagThreshold)
-	*/
-
-	err = scanner.Err()
-	if err != nil {
-		fmt.Printf("Error reading the config file. %s\n", err)
+	if !getEnvString("JPLAG_FULLY_QUALIFIED_NAME", &JplagFqn) {
+		return false
+	}
+	if !getEnvString("RESULTS_DIRECTORY", &ResultsDirectory) {
+		return false
+	}
+	if !getEnvInt("MOSS_THRESHOLD", &MossThreshold) {
+		return false
+	}
+	if !getEnvInt("DUPL_THRESHOLD", &DuplThreshold) {
+		return false
+	}
+	if !getEnvInt("JPLAG_THRESHOLD", &JplagThreshold) {
 		return false
 	}
 
 	return true
 }
 
-func getLineValueString(line string) string {
-	pos := strings.Index(line, "=")
-	return line[pos+1:]
+// getEnvString gets an environment variable.
+// The return argument indicates whether or not the function was successful.
+// It takes as input the name of the environment variable,
+// and a pointer where to store the result.
+func getEnvString(name string, variable *string) bool {
+	*variable = os.Getenv(name)
+	if *variable == "" {
+		fmt.Printf("%s environment variable not set.\n", name)
+		return false
+	}
+	return true
 }
 
-func getLineValueInt(line string, defaultValue int) int {
-	pos := strings.Index(line, "=")
-	tempValue, err := strconv.Atoi(line[pos+1:])
-	if err != nil {
-		fmt.Printf("Error converting config line %s to an integer.\n", line)
-		fmt.Printf("Using default value %d.\n", defaultValue)
-		return defaultValue
+// getEnvInt gets an environment variable and converts it to an integer.
+// The return argument indicates whether or not the function was successful.
+// It takes as input the name of the environment variable,
+// and a pointer where to store the result.
+func getEnvInt(name string, variable *int) bool {
+	temp := os.Getenv(name)
+	if temp == "" {
+		fmt.Printf("%s environment variable not set.\n", name)
+		return false
 	}
-	return tempValue
+
+	var err error
+	*variable, err = strconv.Atoi(temp)
+	if err != nil {
+		fmt.Printf("Could not convert %s environment variable %v to an integer.\n", name, temp)
+		return false
+	}
+
+	return true
 }
