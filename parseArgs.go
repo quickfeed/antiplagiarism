@@ -23,10 +23,10 @@ var (
 		"",
 		"The oauth admin token which authorizes this application to connect to github",
 	)
-	mainrepo = flag.String(
-		"mainrepo",
+	org = flag.String(
+		"org",
 		"",
-		"The main github repository",
+		"The name of the GitHub organization",
 	)
 	repos = flag.String(
 		"repos",
@@ -68,11 +68,11 @@ func parseArgs() bool {
 		getResults = false
 	}
 
-	if *mainrepo == "" {
-		fmt.Printf("No main repository provided.\n")
+	if *org == "" {
+		fmt.Printf("No GitHub organization provided.\n")
 		return false
 	}
-	mainRepository = *mainrepo
+	gitHubOrg = *org
 
 	if *labs == "" {
 		fmt.Printf("No lab names provided.\n")

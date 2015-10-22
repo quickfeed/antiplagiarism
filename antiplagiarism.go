@@ -7,13 +7,14 @@ import (
 	"./moss"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 var studentRepos []string
 var labNames []string
 var labLanguages []int
 var getResults bool
-var mainRepository string
+var gitHubOrg string
 var githubToken string
 
 func main() {
@@ -40,7 +41,7 @@ func buildLabInfo() []common.LabInfo {
 	var labInfo []common.LabInfo
 
 	for i := range labNames {
-		labInfo = append(labInfo, common.LabInfo{labNames[i], mainRepository, labLanguages[i]})
+		labInfo = append(labInfo, common.LabInfo{labNames[i], gitHubOrg, labLanguages[i]})
 	}
 
 	return labInfo
@@ -51,7 +52,7 @@ func buildAndRunCommands() bool {
 
 	labInfo := buildLabInfo()
 
-	mossCommands, success := moss.CreateCommands(LabFilesBaseDirectory, MossFqn, labInfo, MossThreshold)
+	mossCommands, success := moss.CreateCommands(filepath.Join(LabFilesBaseDirectory, gitHubOrg), MossFqn, labInfo, MossThreshold)
 	if !success {
 		fmt.Printf("Error creating the Moss commands.\n")
 	} else {
@@ -60,7 +61,7 @@ func buildAndRunCommands() bool {
 		}
 	}
 
-	duplCommands, success := dupl.CreateCommands(LabFilesBaseDirectory, "", labInfo, DuplThreshold)
+	duplCommands, success := dupl.CreateCommands(filepath.Join(LabFilesBaseDirectory, gitHubOrg), "", labInfo, DuplThreshold)
 	if !success {
 		fmt.Printf("Error creating the dupl commands.\n")
 	} else {
@@ -69,7 +70,7 @@ func buildAndRunCommands() bool {
 		}
 	}
 
-	jplagCommands, success := jplag.CreateCommands(LabFilesBaseDirectory, JplagFqn, labInfo, JplagThreshold)
+	jplagCommands, success := jplag.CreateCommands(filepath.Join(LabFilesBaseDirectory, gitHubOrg), JplagFqn, labInfo, JplagThreshold)
 	if !success {
 		fmt.Printf("Error creating the JPlag commands.\n")
 	} else {
