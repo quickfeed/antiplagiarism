@@ -54,7 +54,7 @@ func usage() {
 
 // parseArgs() parses the command line arguments.
 // The return argument indicates whether or not the function was successful.
-func parseArgs() bool {
+func parseArgs(args *commandLineArgs) bool {
 	flag.Usage = usage
 	flag.Parse()
 	if *help {
@@ -63,35 +63,35 @@ func parseArgs() bool {
 	}
 
 	if *results {
-		getResults = true
+		args.getResults = true
 	} else {
-		getResults = false
+		args.getResults = false
 	}
 
 	if *org == "" {
 		fmt.Printf("No GitHub organization provided.\n")
 		return false
 	}
-	gitHubOrg = *org
+	args.githubOrg = *org
 
 	if *labs == "" {
 		fmt.Printf("No lab names provided.\n")
 		return false
 	}
-	labNames = strings.Split(*labs, ",")
+	args.labNames = strings.Split(*labs, ",")
 
-	if !getResults {
+	if !args.getResults {
 		if *token == "" {
 			fmt.Printf("No token provided.\n")
 			return false
 		}
-		githubToken = *token
+		args.githubToken = *token
 
 		if *repos == "" {
 			fmt.Printf("No student repositories provided.\n")
 			return false
 		}
-		studentRepos = strings.Split(*repos, ",")
+		args.studentRepos = strings.Split(*repos, ",")
 
 		if *languages == "" {
 			fmt.Printf("No languages provided.\n")
@@ -99,7 +99,7 @@ func parseArgs() bool {
 		}
 		langStr := strings.Split(*languages, ",")
 
-		if len(labNames) != len(langStr) {
+		if len(args.labNames) != len(langStr) {
 			fmt.Printf("The number of labs does not equal the number of languages provided.\n")
 			return false
 		}
@@ -110,7 +110,7 @@ func parseArgs() bool {
 				fmt.Printf("Error parsing languages: %v.\n", err)
 				return false
 			}
-			labLanguages = append(labLanguages, langNum)
+			args.labLanguages = append(args.labLanguages, langNum)
 		}
 	}
 

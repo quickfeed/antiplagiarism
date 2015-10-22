@@ -6,50 +6,29 @@ import (
 	"strconv"
 )
 
-// Where to download the student files
-var LabFilesBaseDirectory string
-
-// The location of the Moss script
-var MossFqn string
-
-// The location of the JPlag jar file
-var JplagFqn string
-
-// Where to store the results
-var ResultsDirectory string
-
-// The number of files the code can appear in before it is ignored by Moss
-var MossThreshold int
-
-// An integer telling dupl to ignore tokens less than the threshold
-var DuplThreshold int
-
-// An integer telling JPlag to ignore tokens less than the threshold
-var JplagThreshold int
-
 // GetEnvVar gets the environment variables. The return argument
 // indicates whether or not the function was successful.
-func GetEnvVar() bool {
+func GetEnvVar(env *envVariables) bool {
 
-	if !getEnvString("LAB_FILES_BASE_DIRECTORY", &LabFilesBaseDirectory) {
+	if !getEnvString("LAB_FILES_BASE_DIRECTORY", &env.labFilesBaseDirectory) {
 		return false
 	}
-	if !getEnvString("MOSS_FULLY_QUALIFIED_NAME", &MossFqn) {
+	if !getEnvString("MOSS_FULLY_QUALIFIED_NAME", &env.mossFqn) {
 		return false
 	}
-	if !getEnvString("JPLAG_FULLY_QUALIFIED_NAME", &JplagFqn) {
+	if !getEnvString("JPLAG_FULLY_QUALIFIED_NAME", &env.jplagFqn) {
 		return false
 	}
-	if !getEnvString("RESULTS_DIRECTORY", &ResultsDirectory) {
+	if !getEnvString("RESULTS_DIRECTORY", &env.resultsDirectory) {
 		return false
 	}
-	if !getEnvInt("MOSS_THRESHOLD", &MossThreshold) {
+	if !getEnvInt("MOSS_THRESHOLD", &env.mossThreshold) {
 		return false
 	}
-	if !getEnvInt("DUPL_THRESHOLD", &DuplThreshold) {
+	if !getEnvInt("DUPL_THRESHOLD", &env.duplThreshold) {
 		return false
 	}
-	if !getEnvInt("JPLAG_THRESHOLD", &JplagThreshold) {
+	if !getEnvInt("JPLAG_THRESHOLD", &env.jplagThreshold) {
 		return false
 	}
 
