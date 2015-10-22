@@ -43,6 +43,8 @@ func buildLabInfo() []common.LabInfo {
 	return labInfo
 }
 
+// buildAndRunCommands builds and runs the commands. The return argument
+// indicates whether or not the function was successful.
 func buildAndRunCommands() bool {
 	// TODO: Download files from github using oath token from Autograder
 
@@ -62,6 +64,10 @@ func buildAndRunCommands() bool {
 	return true
 }
 
+// createCommands creates the commands to call/run the anti-plagiarism tool
+// for the requested labs. It returns a slice of commands. It takes as input
+// t, an object implementing the common.Tool interface, and labs, a slice
+// of common.LabInfo objects.
 func createCommands(t common.Tool, labs []common.LabInfo) []string {
 	commands, success := t.CreateCommands(gitHubOrg, labs)
 	if !success {
