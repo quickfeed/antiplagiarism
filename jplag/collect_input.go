@@ -12,11 +12,10 @@ import (
 // CreateCommands will create JPlag commands to upload the lab files.
 // It returns a slice of JPlag commands.  The second return argument indicates
 // whether or not the function was successful. CreateCommands takes as input
-// labsBaseDir, the location of the student directories,
-// toolFqn, the name and path of the JPlag jar, labs, a slice of the labs,
-// and threshold, an integer telling JPlag to ignore tokens less than the threshold.
-func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
-	commands, success := createJPlagCommands(labsBaseDir, toolFqn, labs, threshold)
+// org, the GitHub organization name, and labs, a slice of the labs.
+func (j Jplag) CreateCommands(org string, labs []common.LabInfo) ([]string, bool) {
+	dir := filepath.Join(j.LabsBaseDir, org)
+	commands, success := createJPlagCommands(org, dir, j.ToolFqn, labs, j.Threshold)
 	if !success {
 		fmt.Printf("Error creating the JPlag commands.\n")
 		return nil, false
@@ -28,10 +27,10 @@ func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, t
 // createJPlagCommands will create JPlag commands to upload the lab files.
 // It returns a slice of JPlag commands.  The second return argument indicates
 // whether or not the function was successful. createJPlagCommands takes as input
-// labsBaseDir, the location of the student directories,
+// org, the GitHub organization name, labsBaseDir, the location of the student directories,
 // jplagFqn, the name and path of the JPlag jar, labs, a slice of the labs,
 // and threshold, an integer telling JPlag to ignore tokens less than the threshold.
-func createJPlagCommands(labsBaseDir string, jplagFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func createJPlagCommands(org string, labsBaseDir string, jplagFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	tOption := " -t " + strconv.Itoa(threshold)
 
@@ -49,7 +48,7 @@ func createJPlagCommands(labsBaseDir string, jplagFqn string, labs []common.LabI
 		}
 
 		// Set the results (output) directory
-		resultDir := filepath.Join(labsBaseDir, "result", labs[i].Class, labs[i].Name)
+		resultDir := filepath.Join(labsBaseDir, "JPLAG."+org+"."+labs[i].Name)
 		rOption := " -r " + resultDir
 
 		// Select the subdirectories to compare. In this case, the name of the lab

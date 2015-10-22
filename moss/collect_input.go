@@ -12,18 +12,16 @@ import (
 // CreateCommands will create Moss commands to upload the lab files.
 // It returns a slice of Moss commands.  The second return argument indicates
 // whether or not the function was successful. CreateCommands takes as input
-// labsBaseDir, the location of the student directories,
-// toolFqn, the name and path of the Moss script,
-// labs, a slice of the labs, and threshold, an integer telling Moss
-// to ignore matches that appear in at least that many files.
-func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
-	studentsLabDirs, success := common.DirectoryContents(labsBaseDir, labs)
+// org, the GitHub organization name, and labs, a slice of the labs.
+func (m Moss) CreateCommands(org string, labs []common.LabInfo) ([]string, bool) {
+	dir := filepath.Join(m.LabsBaseDir, org)
+	studentsLabDirs, success := common.DirectoryContents(dir, labs)
 	if !success {
 		fmt.Printf("Error getting the student directories.\n")
 		return nil, false
 	}
 
-	commands, success := createMossCommands(toolFqn, studentsLabDirs, labs, threshold)
+	commands, success := createMossCommands(org, m.ToolFqn, studentsLabDirs, labs, m.Threshold)
 	if !success {
 		fmt.Printf("Error creating the Moss commands.\n")
 		return nil, false
@@ -35,10 +33,11 @@ func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, t
 // createMossCommands will create Moss commands to upload the lab files.
 // It returns a slice of Moss commands.  The second return argument indicates
 // whether or not the function was successful. createMossCommands takes as input
+// org, the GitHub organization name,
 // mossFqn, the name and path of the Moss script, studentsLabDirs, a 2D slice of
 // directories, labs, a slice of the labs, and threshold, an integer telling Moss
 // to ignore matches that appear in at least that many files.
-func createMossCommands(mossFqn string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	mOption := "-m " + strconv.Itoa(threshold)
 
@@ -77,7 +76,7 @@ func createMossCommands(mossFqn string, studentsLabDirs [][]string, labs []commo
 			}
 		}
 
-		buf.WriteString(" > " + labs[i].Name + ".txt &")
+		buf.WriteString(" > MOSS." + org + "." + labs[i].Name + ".txt &")
 
 		// Add the Moss command for this lab
 		commands = append(commands, buf.String())
