@@ -56,7 +56,7 @@ func createDuplCommands(org string, studentsLabDirs [][]string, labs []common.La
 			continue
 		}
 
-		// Start creating the moss command
+		// Start creating the dupl command
 		var buf bytes.Buffer
 		buf.WriteString("dupl" + " " + tOption + " -html")
 

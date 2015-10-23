@@ -3,6 +3,7 @@ package jplag
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strconv"
 
@@ -15,6 +16,14 @@ import (
 // org, the GitHub organization name, and labs, a slice of the labs.
 func (j Jplag) CreateCommands(org string, labs []common.LabInfo) ([]string, bool) {
 	dir := filepath.Join(j.LabsBaseDir, org)
+
+	// Make sure directory exists
+	_, err := ioutil.ReadDir(dir)
+	if err != nil {
+		fmt.Printf("Error getting the student directories.\n")
+		return nil, false
+	}
+
 	commands, success := createJPlagCommands(org, dir, j.ToolFqn, labs, j.Threshold)
 	if !success {
 		fmt.Printf("Error creating the JPlag commands.\n")
@@ -44,11 +53,12 @@ func createJPlagCommands(org string, labsBaseDir string, jplagFqn string, labs [
 		} else if labs[i].Language == common.Cpp {
 			lOption = " -l c/c++"
 		} else {
+			commands = append(commands, "")
 			continue
 		}
 
 		// Set the results (output) directory
-		resultDir := filepath.Join(labsBaseDir, "JPLAG."+org+"."+labs[i].Name)
+		resultDir := "JPLAG." + org + "." + labs[i].Name
 		rOption := " -r " + resultDir
 
 		// Select the subdirectories to compare. In this case, the name of the lab

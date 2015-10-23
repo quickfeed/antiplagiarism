@@ -2,9 +2,9 @@ package main
 
 import (
 	"./common"
-	//"./dupl"
-	//"./jplag"
-	//"./moss"
+	"./dupl"
+	"./jplag"
+	"./moss"
 	"fmt"
 	"os"
 )
@@ -78,18 +78,18 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 	if !pullFiles(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
 		fmt.Printf("Failed to download all the requested repositories.\n")
 	}
-	/*
-		labInfo := buildLabInfo(args)
-		var tools []common.Tool
 
-		tools = append(tools, moss.Moss{LabsBaseDir: env.labDir, ToolFqn: env.mossFqn, Threshold: env.mossThreshold})
-		tools = append(tools, dupl.Dupl{LabsBaseDir: env.labDir, ToolFqn: "", Threshold: env.duplThreshold})
-		tools = append(tools, jplag.Jplag{LabsBaseDir: env.labDir, ToolFqn: env.jplagFqn, Threshold: env.jplagThreshold})
+	labInfo := buildLabInfo(args)
+	var tools []common.Tool
 
-		for i := range tools {
-			createCommands(args, tools[i], labInfo)
-		}
-	*/
+	tools = append(tools, moss.Moss{LabsBaseDir: env.labDir, ToolFqn: env.mossFqn, Threshold: env.mossThreshold})
+	tools = append(tools, dupl.Dupl{LabsBaseDir: env.labDir, ToolFqn: "", Threshold: env.duplThreshold})
+	tools = append(tools, jplag.Jplag{LabsBaseDir: env.labDir, ToolFqn: env.jplagFqn, Threshold: env.jplagThreshold})
+
+	for i := range tools {
+		createCommands(args, tools[i], labInfo)
+	}
+
 	// TODO: Run commands
 
 	return true
