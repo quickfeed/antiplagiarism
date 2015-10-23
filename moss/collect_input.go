@@ -1,13 +1,19 @@
 package moss
 
 import (
+	"../common"
 	"bytes"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
-
-	"../common"
+	"strings"
 )
+
+// TODO: Cleanup this
+var currentDirs1 map[string]bool
+var currentDirs2 map[string]bool
+var currentLang int
 
 // CreateCommands will create Moss commands to upload the lab files.
 // It returns a slice of Moss commands.  The second return argument indicates
@@ -45,7 +51,7 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 	for i := range studentsLabDirs {
 		var lOption string
 		var fileExt []string
-
+		currentLang = labs[i].Language
 		// Set language option and file extensions
 		if labs[i].Language == common.Golang {
 			lOption = "-l java"
@@ -53,6 +59,10 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 		} else if labs[i].Language == common.Cpp {
 			lOption = "-l cc"
 			fileExt = append(fileExt, "*.cpp")
+			fileExt = append(fileExt, "*.h")
+		} else if labs[i].Language == common.C {
+			lOption = "-l c"
+			fileExt = append(fileExt, "*.c")
 			fileExt = append(fileExt, "*.h")
 		} else {
 			lOption = "-l java"
@@ -68,11 +78,24 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 
 			// If student has the lab
 			if studentsLabDirs[i][j] != "" {
+				// TODO: Cleanup this
+				currentDirs1 = make(map[string]bool)
+				currentDirs2 = make(map[string]bool)
+				filepath.Walk(studentsLabDirs[i][j], walkFunction)
 
-				// Add all the files with the appropriate extensions
-				for k := range fileExt {
-					buf.WriteString(" " + filepath.Join(studentsLabDirs[i][j], fileExt[k]))
+				for k := range currentDirs1 {
+					buf.WriteString(" " + filepath.Join(k, fileExt[0]))
 				}
+				for k := range currentDirs2 {
+					buf.WriteString(" " + filepath.Join(k, fileExt[1]))
+				}
+
+				/*
+					// Add all the files with the appropriate extensions
+					for k := range fileExt {
+						buf.WriteString(" " + filepath.Join(studentsLabDirs[i][j], fileExt[k]))
+					}
+				*/
 			}
 		}
 
@@ -83,4 +106,38 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 	}
 
 	return commands, true
+}
+
+// TODO: Cleanup this
+func walkFunction(path string, info os.FileInfo, err error) error {
+	if !info.IsDir() {
+		ind1 := strings.LastIndex(path, ".")
+		ind2 := strings.LastIndex(path, "/")
+		ext := path[ind1:]
+		dir := path[:ind2]
+
+		if currentLang == common.Golang {
+			if ext == ".go" {
+				currentDirs1[dir] = true
+			}
+		} else if currentLang == common.Cpp {
+			if ext == ".cpp" {
+				currentDirs1[dir] = true
+			} else if ext == ".h" {
+				currentDirs2[dir] = true
+			}
+		} else if currentLang == common.C {
+			if ext == ".c" {
+				currentDirs1[dir] = true
+			} else if ext == ".h" {
+				currentDirs2[dir] = true
+			}
+		} else {
+			if ext == ".java" {
+				currentDirs1[dir] = true
+			}
+		}
+	}
+
+	return nil
 }

@@ -11,6 +11,7 @@ const (
 	Java = iota
 	Golang
 	Cpp
+	C
 )
 
 // LabInfo is information about the lab: name and programming language

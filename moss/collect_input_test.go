@@ -35,26 +35,50 @@ func TestMossInput(t *testing.T) {
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab1", 0}},
-			[]string{toolLoc + " -l java -m " + threshStr + " -d " + dir + "/testOrg/student1/lab1/*.java " + dir + "/testOrg/student2/lab1/*.java " + dir + "/testOrg/student3/lab1/*.java " + dir + "/testOrg/student4/lab1/*.java " + dir + "/testOrg/student5/lab1/*.java " + "> MOSS.testOrg.lab1.txt &"},
+			[]string{toolLoc + " -l java -m " + threshStr + " -d " +
+				dir + "/testOrg/student1/lab1/*.java " + dir + "/testOrg/student1/lab1/part2/*.java " +
+				dir + "/testOrg/student2/lab1/*.java " + dir + "/testOrg/student2/lab1/part2/*.java " +
+				dir + "/testOrg/student3/lab1/*.java " + dir + "/testOrg/student3/lab1/part2/*.java " +
+				dir + "/testOrg/student4/lab1/*.java " + dir + "/testOrg/student4/lab1/part2/*.java " +
+				dir + "/testOrg/student5/lab1/*.java " + dir + "/testOrg/student5/lab1/part2/*.java " +
+				"> MOSS.testOrg.lab1.txt &"},
 			true},
 		// One lab, has go code, setting the language to Java is correct
 		{"testOrg",
 			[]common.LabInfo{
-				common.LabInfo{"lab1", 1}},
-			[]string{toolLoc + " -l java -m " + threshStr + " -d " + dir + "/testOrg/student1/lab1/*.go " + dir + "/testOrg/student2/lab1/*.go " + dir + "/testOrg/student3/lab1/*.go " + dir + "/testOrg/student4/lab1/*.go " + dir + "/testOrg/student5/lab1/*.go " + "> MOSS.testOrg.lab1.txt &"},
+				common.LabInfo{"lab2", 1}},
+			[]string{toolLoc + " -l java -m " + threshStr + " -d " +
+				dir + "/testOrg/student1/lab2/*.go " + dir + "/testOrg/student1/lab2/part2/*.go " + 
+				dir + "/testOrg/student2/lab2/*.go " + dir + "/testOrg/student2/lab2/part2/*.go " + 
+				dir + "/testOrg/student3/lab2/*.go " + dir + "/testOrg/student3/lab2/part2/*.go " + 
+				dir + "/testOrg/student4/lab2/*.go " + dir + "/testOrg/student4/lab2/part2/*.go " + 
+				dir + "/testOrg/student5/lab2/*.go " + dir + "/testOrg/student5/lab2/part2/*.go " + 
+				"> MOSS.testOrg.lab2.txt &"},
 			true},
 		// One lab, has c++ code
 		{"testOrg",
 			[]common.LabInfo{
-				common.LabInfo{"lab1", 2}},
-			[]string{toolLoc + " -l cc -m " + threshStr + " -d " + dir + "/testOrg/student1/lab1/*.cpp " + dir + "/testOrg/student1/lab1/*.h " + dir + "/testOrg/student2/lab1/*.cpp " + dir + "/testOrg/student2/lab1/*.h " + dir + "/testOrg/student3/lab1/*.cpp " + dir + "/testOrg/student3/lab1/*.h " + dir + "/testOrg/student4/lab1/*.cpp " + dir + "/testOrg/student4/lab1/*.h " + dir + "/testOrg/student5/lab1/*.cpp " + dir + "/testOrg/student5/lab1/*.h " + "> MOSS.testOrg.lab1.txt &"},
+				common.LabInfo{"lab3", 2}},
+			[]string{toolLoc + " -l cc -m " + threshStr + " -d " + 
+			dir + "/testOrg/student1/lab3/*.cpp " + 
+			dir + "/testOrg/student1/lab3/*.h " + 
+			dir + "/testOrg/student2/lab3/*.cpp " + 
+			dir + "/testOrg/student2/lab3/*.h " + 
+			dir + "/testOrg/student3/lab3/*.cpp " + 
+			dir + "/testOrg/student3/lab3/*.h " + 
+			dir + "/testOrg/student4/lab3/*.cpp " + 
+			dir + "/testOrg/student4/lab3/*.h " + 
+			dir + "/testOrg/student5/lab3/*.cpp " + 
+			dir + "/testOrg/student5/lab3/*.h " + 
+			"> MOSS.testOrg.lab3.txt &"},
 			true},
-		// Three labs, java, go, c++ code
+		// Three labs, java, go, c++, c code
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab1", 0},
 				common.LabInfo{"lab2", 1},
-				common.LabInfo{"lab3", 2}},
+				common.LabInfo{"lab3", 2},
+				common.LabInfo{"lab4", 3}},
 			[]string{
 				toolLoc + " -l java -m " + threshStr + " -d " + dir + "/testOrg/student1/lab1/*.java " + dir + "/testOrg/student2/lab1/*.java " + dir + "/testOrg/student3/lab1/*.java " + dir + "/testOrg/student4/lab1/*.java " + dir + "/testOrg/student5/lab1/*.java " + "> MOSS.testOrg.lab1.txt &",
 				toolLoc + " -l java -m " + threshStr + " -d " + dir + "/testOrg/student1/lab2/*.go " + dir + "/testOrg/student2/lab2/*.go " + dir + "/testOrg/student3/lab2/*.go " + dir + "/testOrg/student4/lab2/*.go " + dir + "/testOrg/student5/lab2/*.go " + "> MOSS.testOrg.lab2.txt &",
@@ -64,8 +88,9 @@ func TestMossInput(t *testing.T) {
 		{"DAT500",
 			[]common.LabInfo{
 				common.LabInfo{"lab1", 0},
-				common.LabInfo{"lab1", 1},
-				common.LabInfo{"lab1", 2}},
+				common.LabInfo{"lab2", 1},
+				common.LabInfo{"lab3", 2},
+				common.LabInfo{"lab4", 3}},
 			nil,
 			false},
 	}

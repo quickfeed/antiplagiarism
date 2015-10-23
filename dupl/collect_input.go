@@ -69,7 +69,7 @@ func createDuplCommands(org string, studentsLabDirs [][]string, labs []common.La
 			}
 		}
 
-		buf.WriteString(" > DUPL." + org + "." + labs[i].Name + ".html &")
+		buf.WriteString(" > DUPL." + org + "." + labs[i].Name + ".html")
 
 		// Add the dupl command for this lab
 		commands = append(commands, buf.String())

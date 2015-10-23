@@ -5,8 +5,11 @@ import (
 	"./dupl"
 	"./jplag"
 	"./moss"
+	//"bytes"
 	"fmt"
 	"os"
+	//"os/exec"
+	//"strings"
 )
 
 type commandLineArgs struct {
@@ -74,10 +77,11 @@ func buildLabInfo(args *commandLineArgs) []common.LabInfo {
 // buildAndRunCommands builds and runs the commands. The return argument
 // indicates whether or not the function was successful.
 func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
-	// Download files from github using oath token from Autograder
-	if !pullFiles(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
-		fmt.Printf("Failed to download all the requested repositories.\n")
-	}
+
+	// Pull repositories from github using oath token
+	//if !pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
+	//	fmt.Printf("Failed to download all the requested repositories.\n")
+	//}
 
 	labInfo := buildLabInfo(args)
 	var tools []common.Tool
@@ -85,12 +89,50 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 	tools = append(tools, moss.Moss{LabsBaseDir: env.labDir, ToolFqn: env.mossFqn, Threshold: env.mossThreshold})
 	tools = append(tools, dupl.Dupl{LabsBaseDir: env.labDir, ToolFqn: "", Threshold: env.duplThreshold})
 	tools = append(tools, jplag.Jplag{LabsBaseDir: env.labDir, ToolFqn: env.jplagFqn, Threshold: env.jplagThreshold})
+	commands := make([][]string, len(tools))
 
+	// Create the commands for each tool
 	for i := range tools {
-		createCommands(args, tools[i], labInfo)
+		commands[i] = createCommands(args, tools[i], labInfo)
 	}
 
-	// TODO: Run commands
+	// Execute all the commands
+	for _, subsetCmds := range commands {
+		for _, command := range subsetCmds {
+			if command != "" {
+				/*
+					wd,_ := os.Getwd()
+					fmt.Printf("%s\n", wd)
+					parts := strings.Split(command, " > ")
+					cmdArgs := []string{parts[0]}
+					cmd := exec.Command(cmdArgs[0])
+					//if cmdArgs[0] == "java" {
+					//	cmd.Path = "/usr/bin/java/"
+					//} else if cmdArgs[0] == "dupl" {
+					//	cmd.Path = "/home/stud/ericfree/go/bin/dupl/"
+					//}
+					cmd.Args = cmdArgs
+					cmd.Dir = wd
+					var sout, serr bytes.Buffer
+					cmd.Stdout, cmd.Stderr = &sout, &serr
+					err := cmd.Start()
+					if err != nil {
+						fmt.Printf("Error during command %s: %s: %s: %s\n", parts[0], err, cmd.Stdout, cmd.Stderr)
+						continue
+					}
+					fmt.Printf("Started command %s\n", parts[0])
+
+					err = cmd.Wait()
+					if err != nil {
+						fmt.Printf("Error during command %s: %s: %s: %s\n", parts[0], err, cmd.Stdout, cmd.Stderr)
+						continue
+					}
+					fmt.Printf("Finished command %s\n", parts[0])
+				*/
+				fmt.Printf("%s\n", command)
+			}
+		}
+	}
 
 	return true
 }
@@ -103,10 +145,7 @@ func createCommands(args *commandLineArgs, t common.Tool, labs []common.LabInfo)
 	commands, success := t.CreateCommands(args.githubOrg, labs)
 	if !success {
 		fmt.Printf("Error creating the commands.\n")
-	} else {
-		for _, command := range commands {
-			fmt.Printf("%s\n", command)
-		}
+		return nil
 	}
 
 	return commands

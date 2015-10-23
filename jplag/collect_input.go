@@ -52,6 +52,8 @@ func createJPlagCommands(org string, labsBaseDir string, jplagFqn string, labs [
 			lOption = " -l java17"
 		} else if labs[i].Language == common.Cpp {
 			lOption = " -l c/c++"
+		} else if labs[i].Language == common.C {
+			lOption = " -l c/c++"
 		} else {
 			commands = append(commands, "")
 			continue
@@ -73,7 +75,6 @@ func createJPlagCommands(org string, labsBaseDir string, jplagFqn string, labs [
 		buf.WriteString(rOption)
 		buf.WriteString(sOption)
 		buf.WriteString(" " + labsBaseDir)
-		buf.WriteString(" &")
 
 		// Add the JPlag command for this lab
 		commands = append(commands, buf.String())
