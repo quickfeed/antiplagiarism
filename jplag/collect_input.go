@@ -73,6 +73,7 @@ func createJPlagCommands(org string, labsBaseDir string, jplagFqn string, labs [
 		buf.WriteString(rOption)
 		buf.WriteString(sOption)
 		buf.WriteString(" " + labsBaseDir)
+		buf.WriteString(" &")
 
 		// Add the JPlag command for this lab
 		commands = append(commands, buf.String())

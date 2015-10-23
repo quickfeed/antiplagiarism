@@ -35,7 +35,7 @@ func TestJplagInput(t *testing.T) {
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab1", 0}},
-			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg")},
+			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg") + " &"},
 			true},
 		// One lab, has go code
 		{"testOrg",
@@ -47,7 +47,7 @@ func TestJplagInput(t *testing.T) {
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab1", 2}},
-			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg")},
+			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg") + " &"},
 			true},
 		// Three labs, java, go, c++ code
 		{"testOrg",
@@ -56,9 +56,9 @@ func TestJplagInput(t *testing.T) {
 				common.LabInfo{"lab1", 1},
 				common.LabInfo{"lab1", 2}},
 			[]string{
-				"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg"),
+				"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg") + " &",
 				"",
-				"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg")},
+				"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg") + " &"},
 			true},
 		// Directory doesn't exist
 		{"DAT500",
@@ -77,7 +77,7 @@ func TestJplagInput(t *testing.T) {
 		sort.Strings(commands)
 		sort.Strings(tst.commands)
 		if !common.CompareStringSlices(commands, tst.commands) || success != tst.success {
-			t.Errorf("dupl input test %d: \n\tinput %s, %v\n\tgot: %v, %v\n\twnt: %v, %v", i, tst.org, tst.labs, success, commands, tst.success, tst.commands)
+			t.Errorf("Jplag Input Test %d: \n\tinput %s, %v\n\tgot: %v, %v\n\twnt: %v, %v", i, tst.org, tst.labs, success, commands, tst.success, tst.commands)
 		}
 	}
 }

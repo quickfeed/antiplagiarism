@@ -85,7 +85,7 @@ func TestDuplInput(t *testing.T) {
 		sort.Strings(commands)
 		sort.Strings(tst.commands)
 		if !common.CompareStringSlices(commands, tst.commands) || success != tst.success {
-			t.Errorf("dupl input test %d: \n\tinput %s, %v\n\tgot: %v, %v\n\twnt: %v, %v", i, tst.org, tst.labs, success, commands, tst.success, tst.commands)
+			t.Errorf("Dupl Input Test %d: \n\tinput %s, %v\n\tgot: %v, %v\n\twnt: %v, %v", i, tst.org, tst.labs, success, commands, tst.success, tst.commands)
 		}
 	}
 }
