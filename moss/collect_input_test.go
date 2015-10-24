@@ -41,7 +41,7 @@ func TestMossInput(t *testing.T) {
 				dir + "/testOrg/student3/lab1/*.java ", dir + "/testOrg/student3/lab1/part2/*.java ",
 				dir + "/testOrg/student4/lab1/*.java ", dir + "/testOrg/student4/lab1/part2/*.java ",
 				dir + "/testOrg/student5/lab1/*.java ", dir + "/testOrg/student5/lab1/part2/*.java ",
-				"> MOSS.testOrg.lab1.txt &"}},
+				"> MOSS.testOrg.lab1.txt"}},
 			true},
 		// One lab, has go code, setting the language to Java is correct
 		{"testOrg",
@@ -53,7 +53,7 @@ func TestMossInput(t *testing.T) {
 				dir + "/testOrg/student3/lab2/*.go ", dir + "/testOrg/student3/lab2/part2/*.go ",
 				dir + "/testOrg/student4/lab2/*.go ", dir + "/testOrg/student4/lab2/part2/*.go ",
 				dir + "/testOrg/student5/lab2/*.go ", dir + "/testOrg/student5/lab2/part2/*.go ",
-				"> MOSS.testOrg.lab2.txt &"}},
+				"> MOSS.testOrg.lab2.txt"}},
 			true},
 		// One lab, has c++ code
 		{"testOrg",
@@ -70,7 +70,7 @@ func TestMossInput(t *testing.T) {
 				dir + "/testOrg/student4/lab3/part2/*.cpp ", dir + "/testOrg/student4/lab3/part2/*.h ",
 				dir + "/testOrg/student5/lab3/*.cpp ", dir + "/testOrg/student5/lab3/*.h ",
 				dir + "/testOrg/student5/lab3/part2/*.cpp ", // Student 5 does not have .h files in lab3/part2
-				"> MOSS.testOrg.lab3.txt &"}},
+				"> MOSS.testOrg.lab3.txt"}},
 			true},
 		// One lab, has c code
 		{"testOrg",
@@ -87,7 +87,7 @@ func TestMossInput(t *testing.T) {
 				dir + "/testOrg/student4/lab4/part2/*.c ", dir + "/testOrg/student4/lab4/part2/*.h ",
 				dir + "/testOrg/student5/lab4/*.c ", dir + "/testOrg/student5/lab4/*.h ",
 				dir + "/testOrg/student5/lab4/part2/*.h ", // Student 5 does not have .c files in lab4/part2
-				"> MOSS.testOrg.lab4.txt &"}},
+				"> MOSS.testOrg.lab4.txt"}},
 			true},
 		// Four labs, java, go, c++, c code
 		{"testOrg",
@@ -103,14 +103,14 @@ func TestMossInput(t *testing.T) {
 					dir + "/testOrg/student3/lab1/*.java ", dir + "/testOrg/student3/lab1/part2/*.java ",
 					dir + "/testOrg/student4/lab1/*.java ", dir + "/testOrg/student4/lab1/part2/*.java ",
 					dir + "/testOrg/student5/lab1/*.java ", dir + "/testOrg/student5/lab1/part2/*.java ",
-					"> MOSS.testOrg.lab1.txt &"},
+					"> MOSS.testOrg.lab1.txt"},
 				[]string{toolLoc + " -l java -m " + threshStr + " -d ",
 					dir + "/testOrg/student1/lab2/*.go ", dir + "/testOrg/student1/lab2/part2/*.go ",
 					dir + "/testOrg/student2/lab2/*.go ", dir + "/testOrg/student2/lab2/part2/*.go ",
 					dir + "/testOrg/student3/lab2/*.go ", dir + "/testOrg/student3/lab2/part2/*.go ",
 					dir + "/testOrg/student4/lab2/*.go ", dir + "/testOrg/student4/lab2/part2/*.go ",
 					dir + "/testOrg/student5/lab2/*.go ", dir + "/testOrg/student5/lab2/part2/*.go ",
-					"> MOSS.testOrg.lab2.txt &"},
+					"> MOSS.testOrg.lab2.txt"},
 				[]string{toolLoc + " -l cc -m " + threshStr + " -d ",
 					dir + "/testOrg/student1/lab3/*.cpp ", dir + "/testOrg/student1/lab3/*.h ",
 					dir + "/testOrg/student1/lab3/part2/*.cpp ", dir + "/testOrg/student1/lab3/part2/*.h ",
@@ -122,7 +122,7 @@ func TestMossInput(t *testing.T) {
 					dir + "/testOrg/student4/lab3/part2/*.cpp ", dir + "/testOrg/student4/lab3/part2/*.h ",
 					dir + "/testOrg/student5/lab3/*.cpp ", dir + "/testOrg/student5/lab3/*.h ",
 					dir + "/testOrg/student5/lab3/part2/*.cpp ", // Student 5 does not have .h files in lab3/part2
-					"> MOSS.testOrg.lab3.txt &"},
+					"> MOSS.testOrg.lab3.txt"},
 				[]string{toolLoc + " -l c -m " + threshStr + " -d ",
 					dir + "/testOrg/student1/lab4/*.c ", dir + "/testOrg/student1/lab4/*.h ",
 					dir + "/testOrg/student1/lab4/part2/*.c ", dir + "/testOrg/student1/lab4/part2/*.h ",
@@ -134,7 +134,7 @@ func TestMossInput(t *testing.T) {
 					dir + "/testOrg/student4/lab4/part2/*.c ", dir + "/testOrg/student4/lab4/part2/*.h ",
 					dir + "/testOrg/student5/lab4/*.c ", dir + "/testOrg/student5/lab4/*.h ",
 					dir + "/testOrg/student5/lab4/part2/*.h ", // Student 5 does not have .c files in lab4/part2
-					"> MOSS.testOrg.lab4.txt &"}},
+					"> MOSS.testOrg.lab4.txt"}},
 			true},
 		// Directory doesn't exist
 		{"DAT500",

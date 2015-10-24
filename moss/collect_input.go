@@ -10,10 +10,12 @@ import (
 	"strings"
 )
 
-// TODO: Cleanup this
-var currentDirs1 map[string]bool
-var currentDirs2 map[string]bool
-var currentLang int
+// Can't pass these variables to the walk function, so place them here
+// Need a separate map for each extension. The maps contain the
+// directories which contain files with that extension.
+var numberOfExts = 2
+var extensionDirs = make([]map[string]bool, numberOfExts)
+var fileExts = []string{"", ""}
 
 // CreateCommands will create Moss commands to upload the lab files.
 // It returns a slice of Moss commands.  The second return argument indicates
@@ -50,23 +52,30 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 	// For each lab
 	for i := range studentsLabDirs {
 		var lOption string
-		var fileExt []string
-		currentLang = labs[i].Language
+
+		// Clean the variables
+		for j := 0; j < numberOfExts; j++ {
+			extensionDirs[j] = make(map[string]bool)
+			fileExts[j] = ""
+		}
+
 		// Set language option and file extensions
-		if labs[i].Language == common.Golang {
+		currentLang := labs[i].Language
+		switch currentLang {
+		case common.Java:
 			lOption = "-l java"
-			fileExt = append(fileExt, "*.go")
-		} else if labs[i].Language == common.Cpp {
+			fileExts[0] = ".java"
+		case common.Golang:
+			lOption = "-l java"
+			fileExts[0] = ".go"
+		case common.Cpp:
 			lOption = "-l cc"
-			fileExt = append(fileExt, "*.cpp")
-			fileExt = append(fileExt, "*.h")
-		} else if labs[i].Language == common.C {
+			fileExts[0] = ".cpp"
+			fileExts[1] = ".h"
+		case common.C:
 			lOption = "-l c"
-			fileExt = append(fileExt, "*.c")
-			fileExt = append(fileExt, "*.h")
-		} else {
-			lOption = "-l java"
-			fileExt = append(fileExt, "*.java")
+			fileExts[0] = ".c"
+			fileExts[1] = ".h"
 		}
 
 		// Start creating the Moss command
@@ -78,28 +87,22 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 
 			// If student has the lab
 			if studentsLabDirs[i][j] != "" {
-				// TODO: Cleanup this
-				currentDirs1 = make(map[string]bool)
-				currentDirs2 = make(map[string]bool)
+				// Walk through the directories to find which ones
+				// contain files with the necessary extensions.
 				filepath.Walk(studentsLabDirs[i][j], walkFunction)
-
-				for k := range currentDirs1 {
-					buf.WriteString(" " + filepath.Join(k, fileExt[0]))
-				}
-				for k := range currentDirs2 {
-					buf.WriteString(" " + filepath.Join(k, fileExt[1]))
-				}
-
-				/*
-					// Add all the files with the appropriate extensions
-					for k := range fileExt {
-						buf.WriteString(" " + filepath.Join(studentsLabDirs[i][j], fileExt[k]))
-					}
-				*/
 			}
 		}
 
-		buf.WriteString(" > MOSS." + org + "." + labs[i].Name + ".txt &")
+		// For all the extensions
+		for j := 0; j < numberOfExts; j++ {
+			// Add all the directories that contain files with that extension
+			for dir := range extensionDirs[j] {
+				buf.WriteString(" " + filepath.Join(dir, "*"+fileExts[j]))
+			}
+		}
+
+		// Finish the command
+		buf.WriteString(" > MOSS." + org + "." + labs[i].Name + ".txt")
 
 		// Add the Moss command for this lab
 		commands = append(commands, buf.String())
@@ -108,33 +111,22 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 	return commands, true
 }
 
-// TODO: Cleanup this
+// walkFunction checks if the current file's extension matches
+// any of the lab's language's extensions. If so, it adds the
+// directory to the appropriate map.
 func walkFunction(path string, info os.FileInfo, err error) error {
 	if !info.IsDir() {
-		ind1 := strings.LastIndex(path, ".")
-		ind2 := strings.LastIndex(path, "/")
-		ext := path[ind1:]
-		dir := path[:ind2]
+		extIndex := strings.LastIndex(path, ".")
+		dirIndex := strings.LastIndex(path, "/")
+		ext := path[extIndex:]
+		dir := path[:dirIndex]
 
-		if currentLang == common.Golang {
-			if ext == ".go" {
-				currentDirs1[dir] = true
-			}
-		} else if currentLang == common.Cpp {
-			if ext == ".cpp" {
-				currentDirs1[dir] = true
-			} else if ext == ".h" {
-				currentDirs2[dir] = true
-			}
-		} else if currentLang == common.C {
-			if ext == ".c" {
-				currentDirs1[dir] = true
-			} else if ext == ".h" {
-				currentDirs2[dir] = true
-			}
-		} else {
-			if ext == ".java" {
-				currentDirs1[dir] = true
+		// For all the extensions
+		for i := 0; i < numberOfExts; i++ {
+			// See if that extension matches this file's extension
+			if ext == fileExts[i] {
+				// It's a match, add the directory to the map
+				extensionDirs[i][dir] = true
 			}
 		}
 	}
