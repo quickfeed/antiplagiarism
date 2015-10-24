@@ -69,7 +69,7 @@ func TestMossInput(t *testing.T) {
 				dir + "/testOrg/student4/lab3/*.cpp ", dir + "/testOrg/student4/lab3/*.h ",
 				dir + "/testOrg/student4/lab3/part2/*.cpp ", dir + "/testOrg/student4/lab3/part2/*.h ",
 				dir + "/testOrg/student5/lab3/*.cpp ", dir + "/testOrg/student5/lab3/*.h ",
-				dir + "/testOrg/student5/lab3/part2/*.cpp ", dir + "/testOrg/student5/lab3/part2/*.h ",
+				dir + "/testOrg/student5/lab3/part2/*.cpp ", // Student 5 does not have .h files in lab3/part2
 				"> MOSS.testOrg.lab3.txt &"}},
 			true},
 		// One lab, has c code
@@ -86,10 +86,10 @@ func TestMossInput(t *testing.T) {
 				dir + "/testOrg/student4/lab4/*.c ", dir + "/testOrg/student4/lab4/*.h ",
 				dir + "/testOrg/student4/lab4/part2/*.c ", dir + "/testOrg/student4/lab4/part2/*.h ",
 				dir + "/testOrg/student5/lab4/*.c ", dir + "/testOrg/student5/lab4/*.h ",
-				dir + "/testOrg/student5/lab4/part2/*.c ", dir + "/testOrg/student5/lab4/part2/*.h ",
+				dir + "/testOrg/student5/lab4/part2/*.h ", // Student 5 does not have .c files in lab4/part2
 				"> MOSS.testOrg.lab4.txt &"}},
 			true},
-		// Three labs, java, go, c++, c code
+		// Four labs, java, go, c++, c code
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab1", 0},
@@ -121,7 +121,7 @@ func TestMossInput(t *testing.T) {
 					dir + "/testOrg/student4/lab3/*.cpp ", dir + "/testOrg/student4/lab3/*.h ",
 					dir + "/testOrg/student4/lab3/part2/*.cpp ", dir + "/testOrg/student4/lab3/part2/*.h ",
 					dir + "/testOrg/student5/lab3/*.cpp ", dir + "/testOrg/student5/lab3/*.h ",
-					dir + "/testOrg/student5/lab3/part2/*.cpp ", dir + "/testOrg/student5/lab3/part2/*.h ",
+					dir + "/testOrg/student5/lab3/part2/*.cpp ", // Student 5 does not have .h files in lab3/part2
 					"> MOSS.testOrg.lab3.txt &"},
 				[]string{toolLoc + " -l c -m " + threshStr + " -d ",
 					dir + "/testOrg/student1/lab4/*.c ", dir + "/testOrg/student1/lab4/*.h ",
@@ -133,7 +133,7 @@ func TestMossInput(t *testing.T) {
 					dir + "/testOrg/student4/lab4/*.c ", dir + "/testOrg/student4/lab4/*.h ",
 					dir + "/testOrg/student4/lab4/part2/*.c ", dir + "/testOrg/student4/lab4/part2/*.h ",
 					dir + "/testOrg/student5/lab4/*.c ", dir + "/testOrg/student5/lab4/*.h ",
-					dir + "/testOrg/student5/lab4/part2/*.c ", dir + "/testOrg/student5/lab4/part2/*.h ",
+					dir + "/testOrg/student5/lab4/part2/*.h ", // Student 5 does not have .c files in lab4/part2
 					"> MOSS.testOrg.lab4.txt &"}},
 			true},
 		// Directory doesn't exist

@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -40,7 +39,6 @@ func CompareStringSlicesRandom(a []string, b [][]string) bool {
 
 	// Make sure that the number of strings is the same
 	if lenA != lenB {
-		fmt.Printf("%d %d\n", lenA, lenB)
 		return false
 	}
 
@@ -52,7 +50,6 @@ func CompareStringSlicesRandom(a []string, b [][]string) bool {
 		for j := range b[i] {
 			// Make sure the piece is in the string
 			if !strings.Contains(a[i], b[i][j]) {
-				fmt.Printf("%s %s\n", a[i], b[i][j])
 				return false
 			}
 
@@ -62,7 +59,6 @@ func CompareStringSlicesRandom(a []string, b [][]string) bool {
 		// Make sure the length of the string is the same
 		// as the length of the pieces
 		if len(a[i]) != currentBLen {
-			fmt.Printf("%d %d\n", len(a[i]), currentBLen)
 			return false
 		}
 	}
