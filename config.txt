@@ -1,7 +1,0 @@
-LAB_FILES_BASE_DIRECTORY=/home/stud/ericfree/moss/DAT500
-MOSS_FULLY_QUALIFIED_NAME=/home/stud/ericfree/moss/moss
-JPLAG_FULLY_QUALIFIED_NAME=/home/stud/ericfree/go/src/github.com/jplag/jplag/jplag/target/jplag.jar
-RESULTS_DIRECTORY=/home/stud/ericfree/moss/results
-MOSS_THRESHOLD=4
-DUPL_THRESHOLD=15
-JPLAG_THRESHOLD=15

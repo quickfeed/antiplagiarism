@@ -24,7 +24,7 @@ type matches struct {
 // whether or not the function was successful. SaveResults takes as input
 // fileNameAndPath, the file output by Moss, baseDir, where to save the data,
 // and lab, information about the current lab.
-func SaveResults(fileNameAndPath string, baseDir string, lab common.LabInfo) bool {
+func (m Moss) SaveResults(fileNameAndPath string, baseDir string, lab common.LabInfo) bool {
 	resultsDir := filepath.Join(baseDir, lab.Name)
 
 	// Remove old results.

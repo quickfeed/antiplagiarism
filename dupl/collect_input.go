@@ -3,6 +3,7 @@ package dupl
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"strconv"
 
 	"../common"
@@ -11,17 +12,16 @@ import (
 // CreateCommands will create dupl commands to upload the lab files.
 // It returns a slice of dupl commands.  The second return argument indicates
 // whether or not the function was successful. CreateCommands takes as input
-// labsBaseDir, the location of the student directories,
-// toolFqn, just an empty string for dupl, labs, a slice of the labs,
-// and threshold, an integer telling dupl to ignore tokens less than the threshold.
-func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, threshold int) ([]string, bool) {
-	studentsLabDirs, success := common.DirectoryContents(labsBaseDir, labs)
+// org, the GitHub organization name, and labs, a slice of the labs.
+func (d Dupl) CreateCommands(org string, labs []common.LabInfo) ([]string, bool) {
+	dir := filepath.Join(d.LabsBaseDir, org)
+	studentsLabDirs, success := common.DirectoryContents(dir, labs)
 	if !success {
 		fmt.Printf("Error getting the student directories.\n")
 		return nil, false
 	}
 
-	commands, success := createDuplCommands(studentsLabDirs, labs, threshold)
+	commands, success := createDuplCommands(org, studentsLabDirs, labs, d.Threshold)
 	if !success {
 		fmt.Printf("Error creating the dupl commands.\n")
 		return nil, false
@@ -33,10 +33,10 @@ func CreateCommands(labsBaseDir string, toolFqn string, labs []common.LabInfo, t
 // createDuplCommands will create dupl commands to upload the lab files.
 // It returns a slice of dupl commands.  The second return argument indicates
 // whether or not the function was successful. createDuplCommands takes as input
-// studentsLabDirs, a 2D slice of
+// org, the GitHub organization name, studentsLabDirs, a 2D slice of
 // directories, labs, a slice of the labs, and threshold, an integer telling dupl
 // to ignore matches that appear in at least that many files.
-func createDuplCommands(studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
+func createDuplCommands(org string, studentsLabDirs [][]string, labs []common.LabInfo, threshold int) ([]string, bool) {
 	var commands []string
 	tOption := "-t " + strconv.Itoa(threshold)
 
@@ -56,7 +56,7 @@ func createDuplCommands(studentsLabDirs [][]string, labs []common.LabInfo, thres
 			continue
 		}
 
-		// Start creating the moss command
+		// Start creating the dupl command
 		var buf bytes.Buffer
 		buf.WriteString("dupl" + " " + tOption + " -html")
 
@@ -69,7 +69,7 @@ func createDuplCommands(studentsLabDirs [][]string, labs []common.LabInfo, thres
 			}
 		}
 
-		buf.WriteString(" > " + labs[i].Name + ".html &")
+		buf.WriteString(" > DUPL." + org + "." + labs[i].Name + ".html")
 
 		// Add the dupl command for this lab
 		commands = append(commands, buf.String())

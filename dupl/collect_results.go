@@ -13,7 +13,7 @@ import (
 // whether or not the function was successful. SaveResults takes as input
 // fileNameAndPath, the file output by dupl, baseDir, where to save the data,
 // and lab, information about the current lab.
-func SaveResults(fileNameAndPath string, baseDir string, lab common.LabInfo) bool {
+func (d Dupl) SaveResults(fileNameAndPath string, baseDir string, lab common.LabInfo) bool {
 	pos := strings.LastIndex(fileNameAndPath, "/")
 	fileName := fileNameAndPath[pos+1:]
 	resultsDir := filepath.Join(baseDir, lab.Name)
