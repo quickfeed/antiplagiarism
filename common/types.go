@@ -3,7 +3,7 @@ package common
 // Tool interface implemented by the various anti-plagiarism tool packages
 type Tool interface {
 	CreateCommands(org string, labs []LabInfo) ([]string, bool)
-	SaveResults(fileNameAndPath string, baseDir string, lab LabInfo) bool
+	SaveResults(path string, baseDir string) bool
 }
 
 // The language the lab was written in

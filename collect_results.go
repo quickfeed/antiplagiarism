@@ -27,13 +27,11 @@ func collectResults(env *envVariables) bool {
 
 	// While the user has not pressed Ctrl-c
 	for exitSignalReceived == false {
-		//for i := range tools {
-		fmt.Print("Panda\n")
 		time.Sleep(time.Second)
-		// TODO: Check if results are there
 
-		// TODO: Store results
-		//}
+		for i := range tools {
+			tools[i].SaveResults(".", env.resultsDir)
+		}
 	}
 
 	fmt.Printf("Exiting the anitplagiarism application.\n")
@@ -52,6 +50,6 @@ func listenForInterrupt(exitSignalReceived *bool) {
 	// Wait for interrupt
 	<-ch
 
-	fmt.Printf("Recieved command to exit.\n")
+	fmt.Printf("Recieved command to exit. It might take a few minutes.\n")
 	*exitSignalReceived = true
 }

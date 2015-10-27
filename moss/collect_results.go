@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
-	"../common"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -20,12 +20,56 @@ type matches struct {
 	match2text string
 }
 
-// SaveResults saves the data from the specified Moss URL. It returns
+// SaveResults looks for Moss results and saves them. It returns
 // whether or not the function was successful. SaveResults takes as input
-// fileNameAndPath, the file output by Moss, baseDir, where to save the data,
-// and lab, information about the current lab.
-func (m Moss) SaveResults(fileNameAndPath string, baseDir string, lab common.LabInfo) bool {
-	resultsDir := filepath.Join(baseDir, lab.Name)
+// path, where Moss puts the results, and baseDir, where to save the data.
+func (m Moss) SaveResults(path string, baseDir string) bool {
+	//saveLabResults("/home/stud/ericfree/go/src/github.com/autograde/antiplagiarism/MOSS.ag2-test.lab1.txt", baseDir, "ag2-test", "lab1")
+	//saveLabResults("/home/stud/ericfree/go/src/github.com/autograde/antiplagiarism/MOSS.ag2-test.lab2.txt", baseDir, "ag2-test", "lab2")
+	fileInfos, err := ioutil.ReadDir(path)
+	if err != nil {
+		fmt.Printf("Error reading directory %s: %s\n", path, err)
+		return false
+	}
+
+	// Regular expression looking for all files starting
+	// with MOSS. and ending with .txt
+	regexStr := "^MOSS.*.txt$"
+	regex := regexp.MustCompile(regexStr)
+
+	// For each file
+	for _, info := range fileInfos {
+		fileNameBytes := regex.Find([]byte(info.Name()))
+
+		// If the file name contains the regular expression
+		if fileNameBytes != nil {
+			fileName := string(fileNameBytes)
+			parts := strings.Split(fileName, ".")
+
+			if len(parts) != 4 {
+				fmt.Printf("File name %s not in the correct format.\n", fileName)
+				continue
+			}
+
+			fileNameAndPath := filepath.Join(path, fileName)
+			success := saveLabResults(fileNameAndPath, baseDir, parts[1], parts[2])
+
+			if success {
+				os.Remove(fileNameAndPath)
+			}
+		}
+	}
+
+	return true
+}
+
+// saveLabResults saves the data from the specified Moss URL. It returns
+// whether or not the function was successful. SaveResults takes as input
+// fileNameAndPath, where Moss saved the results of this lab,
+// baseDir, where to save the data, orgName, the name of the organization (class)
+// and labName, the name of this lab.
+func saveLabResults(fileNameAndPath string, baseDir string, orgName string, labName string) bool {
+	resultsDir := filepath.Join(baseDir, orgName, labName, "moss")
 
 	// Remove old results.
 	err := os.RemoveAll(resultsDir)
@@ -123,7 +167,7 @@ func (m Moss) SaveResults(fileNameAndPath string, baseDir string, lab common.Lab
 		ioutil.WriteFile(filepath.Join(resultsDir, base+"-1.html"), []byte(rightBody), 0644)
 	}
 
-	makeResultsMainPage(resultsDir, lab, comparisons)
+	makeResultsMainPage(resultsDir, labName, comparisons)
 
 	return true
 }
@@ -184,14 +228,14 @@ func getHTMLData(url string) (string, bool) {
 
 // makeResultsMainPage creates the main html file for the results.
 // It takes as input resultsDir, where to save the data,
-// lab, information about the current lab, and comparisons,
+// labName, the name of the current lab, and comparisons,
 // information about the matches found.
-func makeResultsMainPage(resultsDir string, lab common.LabInfo, comparisons []matches) {
+func makeResultsMainPage(resultsDir string, labName string, comparisons []matches) {
 	var buf bytes.Buffer
 	buf.WriteString("<HTML>\n<HEAD>\n<TITLE>")
-	buf.WriteString(lab.Name + " Results")
+	buf.WriteString(labName + " Results")
 	buf.WriteString("</TITLE>\n</HEAD>\n<BODY>\n")
-	buf.WriteString(lab.Name + " Results<br>")
+	buf.WriteString(labName + " Results<br>")
 	for _, match := range comparisons {
 		pos := strings.LastIndex(match.url, "/")
 		base := match.url[pos+1:]
