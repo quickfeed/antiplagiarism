@@ -31,6 +31,7 @@ func buildLabInfo(args *commandLineArgs) []common.LabInfo {
 func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 
 	// Pull repositories from github using oath token
+	// TODO: UNCOMMENT
 	//if !pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
 	//	fmt.Printf("Failed to download all the requested repositories.\n")
 	//}
@@ -55,6 +56,7 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 		}
 	}
 
+	// TODO: PROBABLY NOT NEEDED
 	//createScript("test2.sh", commands)
 	//runScript("./test2.sh")
 
@@ -63,6 +65,7 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 
 // createScript is a backup function in case I can't get the commands
 // to run from go
+// TODO: PROBABLY NOT NEEDED
 func createScript(name string, data [][]string) bool {
 	file, err := os.Create(name)
 	if err != nil {
@@ -94,6 +97,7 @@ func createScript(name string, data [][]string) bool {
 
 // runScript is a backup function in case I can't get the commands
 // to run from go
+// TODO: PROBABLY NOT NEEDED
 func runScript(name string) bool {
 	var sout, serr bytes.Buffer
 	wd, _ := os.Getwd()

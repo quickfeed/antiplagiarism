@@ -5,15 +5,28 @@ import (
 	"os"
 )
 
+// commandLineArgs is a struct containing the command line arguments
 type commandLineArgs struct {
+	// A slice of student repositories
 	studentRepos []string
-	labNames     []string
+
+	// A slice of the lab names to evaluate
+	labNames []string
+
+	// A slice of the languages. One for each lab
 	labLanguages []int
-	getResults   bool
-	githubOrg    string
-	githubToken  string
+
+	// A boolean flag specifying which mode to be in
+	getResults bool
+
+	// The GitHub organization (class name)
+	githubOrg string
+
+	// The admin token for GitHub authorization
+	githubToken string
 }
 
+// envVariables is a struct containing the environment variables
 type envVariables struct {
 	// Where to download the student files
 	labDir string
@@ -47,6 +60,7 @@ func main() {
 		os.Exit(0)
 	}
 
+	// Perform the appropriate mode operation
 	if !args.getResults {
 		buildAndRunCommands(&args, &env)
 	} else {

@@ -24,8 +24,6 @@ type matches struct {
 // whether or not the function was successful. SaveResults takes as input
 // path, where Moss puts the results, and baseDir, where to save the data.
 func (m Moss) SaveResults(path string, baseDir string) bool {
-	//saveLabResults("/home/stud/ericfree/go/src/github.com/autograde/antiplagiarism/MOSS.ag2-test.lab1.txt", baseDir, "ag2-test", "lab1")
-	//saveLabResults("/home/stud/ericfree/go/src/github.com/autograde/antiplagiarism/MOSS.ag2-test.lab2.txt", baseDir, "ag2-test", "lab2")
 	fileInfos, err := ioutil.ReadDir(path)
 	if err != nil {
 		fmt.Printf("Error reading directory %s: %s\n", path, err)

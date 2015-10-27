@@ -81,7 +81,6 @@ func parseArgs(args *commandLineArgs) bool {
 	}
 	args.labNames = strings.Split(*labs, ",")
 
-	//if !args.getResults {
 	if *token == "" {
 		fmt.Printf("No token provided.\n")
 		return false
@@ -113,7 +112,6 @@ func parseArgs(args *commandLineArgs) bool {
 		}
 		args.labLanguages = append(args.labLanguages, langNum)
 	}
-	//}
 
 	return true
 }
