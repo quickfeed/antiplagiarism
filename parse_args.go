@@ -64,9 +64,10 @@ func parseArgs(args *commandLineArgs) bool {
 
 	if *results {
 		args.getResults = true
-	} else {
-		args.getResults = false
+		return true
 	}
+
+	args.getResults = false
 
 	if *org == "" {
 		fmt.Printf("No GitHub organization provided.\n")
@@ -80,39 +81,39 @@ func parseArgs(args *commandLineArgs) bool {
 	}
 	args.labNames = strings.Split(*labs, ",")
 
-	if !args.getResults {
-		if *token == "" {
-			fmt.Printf("No token provided.\n")
-			return false
-		}
-		args.githubToken = *token
-
-		if *repos == "" {
-			fmt.Printf("No student repositories provided.\n")
-			return false
-		}
-		args.studentRepos = strings.Split(*repos, ",")
-
-		if *languages == "" {
-			fmt.Printf("No languages provided.\n")
-			return false
-		}
-		langStr := strings.Split(*languages, ",")
-
-		if len(args.labNames) != len(langStr) {
-			fmt.Printf("The number of labs does not equal the number of languages provided.\n")
-			return false
-		}
-
-		for _, lang := range langStr {
-			langNum, err := strconv.Atoi(lang)
-			if err != nil {
-				fmt.Printf("Error parsing languages: %v.\n", err)
-				return false
-			}
-			args.labLanguages = append(args.labLanguages, langNum)
-		}
+	//if !args.getResults {
+	if *token == "" {
+		fmt.Printf("No token provided.\n")
+		return false
 	}
+	args.githubToken = *token
+
+	if *repos == "" {
+		fmt.Printf("No student repositories provided.\n")
+		return false
+	}
+	args.studentRepos = strings.Split(*repos, ",")
+
+	if *languages == "" {
+		fmt.Printf("No languages provided.\n")
+		return false
+	}
+	langStr := strings.Split(*languages, ",")
+
+	if len(args.labNames) != len(langStr) {
+		fmt.Printf("The number of labs does not equal the number of languages provided.\n")
+		return false
+	}
+
+	for _, lang := range langStr {
+		langNum, err := strconv.Atoi(lang)
+		if err != nil {
+			fmt.Printf("Error parsing languages: %v.\n", err)
+			return false
+		}
+		args.labLanguages = append(args.labLanguages, langNum)
+	}
+	//}
 
 	return true
 }
