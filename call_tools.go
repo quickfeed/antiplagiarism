@@ -10,20 +10,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 )
-
-// buildLabInfo() creates the LabInfo structures from the command
-// line arguments to give to the various antiplagiarism packages.
-// The return argument is the slice of LabInfo structs.
-func buildLabInfo(args *commandLineArgs) []common.LabInfo {
-	var labInfo []common.LabInfo
-
-	for i := range args.labNames {
-		labInfo = append(labInfo, common.LabInfo{args.labNames[i], args.labLanguages[i]})
-	}
-
-	return labInfo
-}
 
 // buildAndRunCommands builds and runs the commands. The return argument
 // indicates whether or not the function was successful. It takes as input
@@ -31,11 +19,12 @@ func buildLabInfo(args *commandLineArgs) []common.LabInfo {
 func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 
 	// Pull repositories from github using oath token
-	//if !pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
-	//	fmt.Printf("Failed to download all the requested repositories.\n")
-	//}
+	if !pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
+		fmt.Printf("Failed to download all the requested repositories.\n")
+	}
 
 	labInfo := buildLabInfo(args)
+
 	var tools []common.Tool
 
 	tools = append(tools, moss.Moss{LabsBaseDir: env.labDir, ToolFqn: env.mossFqn, Threshold: env.mossThreshold})
@@ -48,73 +37,30 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 		commands[i] = createCommands(args, tools[i], labInfo)
 	}
 
-	// Execute all the commands
-	for _, subsetCmds := range commands {
-		for _, command := range subsetCmds {
-			executeCommand(&command)
-		}
-	}
+	var wg sync.WaitGroup
 
-	//createScript("test2.sh", commands)
-	//runScript("./test2.sh")
+	// For each tool
+	for _, toolCmds := range commands {
+		wg.Add(1)
 
-	return true
-}
+		// Run each command for the tool
+		go func(commands []string) {
+			defer wg.Done()
 
-// createScript is a backup function in case I can't get the commands
-// to run from go
-func createScript(name string, data [][]string) bool {
-	file, err := os.Create(name)
-	if err != nil {
-		fmt.Printf("Error creating file %s: %s\n", name, err)
-		return false
-	}
-	defer file.Close()
-
-	file.Chmod(0744)
-	file.Write([]byte("#!/bin/sh\n"))
-
-	for _, commands := range data {
-		for _, command := range commands {
-			if command == "" {
-				continue
+			for _, command := range commands {
+				//fmt.Printf("%s\n", command)
+				executeCommand(&command)
 			}
-
-			file.Write([]byte(command))
-			if err != nil {
-				fmt.Printf("Error writing data to file %s: %s\n", name, err)
-				return false
-			}
-			file.Write([]byte("\n"))
-		}
+		}(toolCmds)
 	}
 
-	return true
-}
+	// Wait for the tools to finish
+	wg.Wait()
 
-// runScript is a backup function in case I can't get the commands
-// to run from go
-func runScript(name string) bool {
-	var sout, serr bytes.Buffer
-	wd, _ := os.Getwd()
-	cmd := exec.Command(name)
-	cmd.Args = []string{name}
-	cmd.Dir = wd
-	cmd.Stdout, cmd.Stderr = &sout, &serr
-
-	err := cmd.Start()
-	if err != nil {
-		fmt.Printf("Error during command %s: %s: %s: %s\n", name, err, sout, serr)
-		return false
+	// Collect results
+	for i := range tools {
+		tools[i].SaveResults(args.githubOrg, labInfo, ".", env.resultsDir)
 	}
-	fmt.Printf("Started %s command.\n", name)
-
-	err = cmd.Wait()
-	if err != nil {
-		fmt.Printf("Error during command %s: %s: %s: %s\n", name, err, sout, serr)
-		return false
-	}
-	fmt.Printf("Finished %s command.\n", name)
 
 	return true
 }
@@ -195,4 +141,17 @@ func createCommands(args *commandLineArgs, t common.Tool, labs []common.LabInfo)
 	}
 
 	return commands
+}
+
+// buildLabInfo() creates the LabInfo structures from the command
+// line arguments to give to the various antiplagiarism packages.
+// The return argument is the slice of LabInfo structs.
+func buildLabInfo(args *commandLineArgs) []common.LabInfo {
+	var labInfo []common.LabInfo
+
+	for i := range args.labNames {
+		labInfo = append(labInfo, common.LabInfo{args.labNames[i], args.labLanguages[i]})
+	}
+
+	return labInfo
 }
