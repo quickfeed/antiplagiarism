@@ -10,6 +10,7 @@ import (
 
 // SaveResults saves the data from the specified file. It returns
 // whether or not the function was successful. SaveResults takes as input
+// org, the GitHub organization name, and labs, a slice of the labs,
 // path, where dupl puts the results, and baseDir, where to save the data.
 func (j Jplag) SaveResults(org string, labs []common.LabInfo, path string, baseDir string) bool {
 	_, err := ioutil.ReadDir(path)
@@ -52,7 +53,6 @@ func saveLabResults(fullPathDir string, baseDir string, orgName string, labName 
 
 	fileInfos, err := ioutil.ReadDir(fullPathDir)
 	if err != nil {
-		fmt.Printf("Error reading directory %s: %s\n", fullPathDir, err)
 		return false
 	}
 
@@ -60,9 +60,6 @@ func saveLabResults(fullPathDir string, baseDir string, orgName string, labName 
 	for _, info := range fileInfos {
 		oldFileNameAndPath := filepath.Join(fullPathDir, info.Name())
 		newFileNameAndPath := filepath.Join(resultsDir, info.Name())
-		fmt.Printf("Moving file %s\n", info.Name())
-		fmt.Printf("	from %s\n", oldFileNameAndPath)
-		fmt.Printf("	to %s\n", newFileNameAndPath)
 
 		// Move the file to the results directory.
 		os.Rename(oldFileNameAndPath, newFileNameAndPath)

@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 // buildAndRunCommands builds and runs the commands. The return argument
@@ -18,10 +19,9 @@ import (
 func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 
 	// Pull repositories from github using oath token
-	// TODO: UNCOMMENT
-	//if !pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
-	//	fmt.Printf("Failed to download all the requested repositories.\n")
-	//}
+	if !pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
+		fmt.Printf("Failed to download all the requested repositories.\n")
+	}
 
 	labInfo := buildLabInfo(args)
 
@@ -37,13 +37,25 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 		commands[i] = createCommands(args, tools[i], labInfo)
 	}
 
-	// Execute all the commands
-	for _, subsetCmds := range commands {
-		for _, command := range subsetCmds {
-			//fmt.Printf("%s\n", command)
-			executeCommand(&command)
-		}
+	var wg sync.WaitGroup
+
+	// For each tool
+	for _, toolCmds := range commands {
+		wg.Add(1)
+
+		// Run each command for the tool
+		go func(commands []string) {
+			defer wg.Done()
+
+			for _, command := range commands {
+				//fmt.Printf("%s\n", command)
+				executeCommand(&command)
+			}
+		}(toolCmds)
 	}
+
+	// Wait for the tools to finish
+	wg.Wait()
 
 	// Collect results
 	for i := range tools {

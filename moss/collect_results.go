@@ -22,6 +22,7 @@ type matches struct {
 
 // SaveResults looks for Moss results and saves them. It returns
 // whether or not the function was successful. SaveResults takes as input
+// org, the GitHub organization name, and labs, a slice of the labs,
 // path, where Moss puts the results, and baseDir, where to save the data.
 func (m Moss) SaveResults(org string, labs []common.LabInfo, path string, baseDir string) bool {
 	_, err := ioutil.ReadDir(path)
