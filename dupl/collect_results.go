@@ -1,46 +1,28 @@
 package dupl
 
 import (
+	"../common"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
-	"strings"
 )
 
 // SaveResults looks for dupl results and saves them. It returns
 // whether or not the function was successful. SaveResults takes as input
 // path, where dupl puts the results, and baseDir, where to save the data.
-func (m Dupl) SaveResults(path string, baseDir string) bool {
-	fileInfos, err := ioutil.ReadDir(path)
+func (m Dupl) SaveResults(org string, labs []common.LabInfo, path string, baseDir string) bool {
+	_, err := ioutil.ReadDir(path)
 	if err != nil {
 		fmt.Printf("Error reading directory %s: %s\n", path, err)
 		return false
 	}
 
-	// Regular expression looking for all files starting
-	// with DUPL. and ending with .html
-	regexStr := "^DUPL.*.html$"
-	regex := regexp.MustCompile(regexStr)
-
-	// For each file
-	for _, info := range fileInfos {
-		fileNameBytes := regex.Find([]byte(info.Name()))
-
-		// If the file name contains the regular expression
-		if fileNameBytes != nil {
-			fileName := string(fileNameBytes)
-			parts := strings.Split(fileName, ".")
-
-			if len(parts) != 4 {
-				fmt.Printf("File name %s not in the correct format.\n", fileName)
-				continue
-			}
-
-			fileNameAndPath := filepath.Join(path, fileName)
-			saveLabResults(fileNameAndPath, baseDir, parts[1], parts[2])
-		}
+	// For each lab
+	for _, lab := range labs {
+		fileName := "DUPL." + org + "." + lab.Name + ".html"
+		fileNameAndPath := filepath.Join(path, fileName)
+		saveLabResults(fileNameAndPath, baseDir, org, lab.Name)
 	}
 
 	return true
@@ -49,10 +31,10 @@ func (m Dupl) SaveResults(path string, baseDir string) bool {
 // saveLabResults moves the dupl results to the output directory. It returns
 // whether or not the function was successful. SaveResults takes as input
 // fileNameAndPath, where dupl saved the results of this lab,
-// baseDir, where to save the data, orgName, the name of the organization (class)
+// baseDir, where to save the data, org, the name of the organization (class)
 // and labName, the name of this lab.
-func saveLabResults(fileNameAndPath string, baseDir string, orgName string, labName string) bool {
-	resultsDir := filepath.Join(baseDir, orgName, labName, "dupl")
+func saveLabResults(fileNameAndPath string, baseDir string, org string, labName string) bool {
+	resultsDir := filepath.Join(baseDir, org, labName, "dupl")
 	newFileNameAndPath := filepath.Join(resultsDir, "results.html")
 
 	// Remove old results.

@@ -1,6 +1,7 @@
 package moss
 
 import (
+	"../common"
 	"bufio"
 	"bytes"
 	"fmt"
@@ -8,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -23,38 +23,21 @@ type matches struct {
 // SaveResults looks for Moss results and saves them. It returns
 // whether or not the function was successful. SaveResults takes as input
 // path, where Moss puts the results, and baseDir, where to save the data.
-func (m Moss) SaveResults(path string, baseDir string) bool {
-	fileInfos, err := ioutil.ReadDir(path)
+func (m Moss) SaveResults(org string, labs []common.LabInfo, path string, baseDir string) bool {
+	_, err := ioutil.ReadDir(path)
 	if err != nil {
 		fmt.Printf("Error reading directory %s: %s\n", path, err)
 		return false
 	}
 
-	// Regular expression looking for all files starting
-	// with MOSS. and ending with .txt
-	regexStr := "^MOSS.*.txt$"
-	regex := regexp.MustCompile(regexStr)
+	// For each lab
+	for _, lab := range labs {
+		fileName := "MOSS." + org + "." + lab.Name + ".txt"
+		fileNameAndPath := filepath.Join(path, fileName)
+		success := saveLabResults(fileNameAndPath, baseDir, org, lab.Name)
 
-	// For each file
-	for _, info := range fileInfos {
-		fileNameBytes := regex.Find([]byte(info.Name()))
-
-		// If the file name contains the regular expression
-		if fileNameBytes != nil {
-			fileName := string(fileNameBytes)
-			parts := strings.Split(fileName, ".")
-
-			if len(parts) != 4 {
-				fmt.Printf("File name %s not in the correct format.\n", fileName)
-				continue
-			}
-
-			fileNameAndPath := filepath.Join(path, fileName)
-			success := saveLabResults(fileNameAndPath, baseDir, parts[1], parts[2])
-
-			if success {
-				os.Remove(fileNameAndPath)
-			}
+		if success {
+			os.Remove(fileNameAndPath)
 		}
 	}
 

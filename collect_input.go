@@ -12,19 +12,6 @@ import (
 	"strings"
 )
 
-// buildLabInfo() creates the LabInfo structures from the command
-// line arguments to give to the various antiplagiarism packages.
-// The return argument is the slice of LabInfo structs.
-func buildLabInfo(args *commandLineArgs) []common.LabInfo {
-	var labInfo []common.LabInfo
-
-	for i := range args.labNames {
-		labInfo = append(labInfo, common.LabInfo{args.labNames[i], args.labLanguages[i]})
-	}
-
-	return labInfo
-}
-
 // buildAndRunCommands builds and runs the commands. The return argument
 // indicates whether or not the function was successful. It takes as input
 // args, the set of command line arguments, and env, the set of environment variables.
@@ -37,6 +24,7 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 	//}
 
 	labInfo := buildLabInfo(args)
+
 	var tools []common.Tool
 
 	tools = append(tools, moss.Moss{LabsBaseDir: env.labDir, ToolFqn: env.mossFqn, Threshold: env.mossThreshold})
@@ -52,8 +40,14 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 	// Execute all the commands
 	for _, subsetCmds := range commands {
 		for _, command := range subsetCmds {
+			//fmt.Printf("%s\n", command)
 			executeCommand(&command)
 		}
+	}
+
+	// Collect results
+	for i := range tools {
+		tools[i].SaveResults(args.githubOrg, labInfo, ".", env.resultsDir)
 	}
 
 	return true
@@ -135,4 +129,17 @@ func createCommands(args *commandLineArgs, t common.Tool, labs []common.LabInfo)
 	}
 
 	return commands
+}
+
+// buildLabInfo() creates the LabInfo structures from the command
+// line arguments to give to the various antiplagiarism packages.
+// The return argument is the slice of LabInfo structs.
+func buildLabInfo(args *commandLineArgs) []common.LabInfo {
+	var labInfo []common.LabInfo
+
+	for i := range args.labNames {
+		labInfo = append(labInfo, common.LabInfo{args.labNames[i], args.labLanguages[i]})
+	}
+
+	return labInfo
 }

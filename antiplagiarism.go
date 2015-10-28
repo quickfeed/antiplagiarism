@@ -58,5 +58,4 @@ func main() {
 	}
 
 	buildAndRunCommands(&args, &env)
-	//collectResults(&env)
 }
