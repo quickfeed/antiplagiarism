@@ -13,11 +13,6 @@ var (
 		false,
 		"Show usage help",
 	)
-	results = flag.Bool(
-		"results",
-		false,
-		"Check and retrieve the results from the various anti-plagiarism applications",
-	)
 	token = flag.String(
 		"token",
 		"",
@@ -49,7 +44,6 @@ func usage() {
 	flag.PrintDefaults()
 	fmt.Printf("Example: ./antiplagiarism -token=0123456789ABCDEF -mainrepo=DAT320 ")
 	fmt.Printf("-repos=Student1,Student2,Student3 -labs=LabA,LabB,LabC -languages=0,1,0\n")
-	fmt.Printf("Example: ./antiplagiarism -results -mainrepo=DAT320 -labs=LabA,LabB,LabC\n")
 }
 
 // parseArgs() parses the command line arguments.
@@ -61,13 +55,6 @@ func parseArgs(args *commandLineArgs) bool {
 		flag.Usage()
 		return false
 	}
-
-	if *results {
-		args.getResults = true
-		return true
-	}
-
-	args.getResults = false
 
 	if *org == "" {
 		fmt.Printf("No GitHub organization provided.\n")

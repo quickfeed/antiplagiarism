@@ -16,9 +16,6 @@ type commandLineArgs struct {
 	// A slice of the languages. One for each lab
 	labLanguages []int
 
-	// A boolean flag specifying which mode to be in
-	getResults bool
-
 	// The GitHub organization (class name)
 	githubOrg string
 
@@ -60,10 +57,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	// Perform the appropriate mode operation
-	if !args.getResults {
-		buildAndRunCommands(&args, &env)
-	} else {
-		collectResults(&env)
-	}
+	buildAndRunCommands(&args, &env)
+	//collectResults(&env)
 }
