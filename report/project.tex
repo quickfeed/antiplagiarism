@@ -51,7 +51,7 @@
 			
 				\begin{figure}
 					\begin{floatrow}
-						\ffigbox{\includegraphics[width=0.5\textwidth]{AST.png}}{\caption{Abstract syntax tree.}\label{fig:ast}}	\ffigbox{\includegraphics[width=0.3\textwidth]{ASTcode.png}}{\caption{Example code.}\label{fig:astcode}}
+						\ffigbox{\includegraphics[width=0.5\textwidth]{AST.pdf}}{\caption{Abstract syntax tree.}\label{fig:ast}}	\ffigbox{\includegraphics[width=0.3\textwidth]{ASTcode.png}}{\caption{Example code.}\label{fig:astcode}}
 					\end{floatrow}
 				\end{figure}
 		
@@ -95,20 +95,12 @@
 			\end{figure}
 			
 			\begin{figure}[h!]
-				\includegraphics[width=0.7\textwidth]{step1.png}
-				\caption{Step 1}
-				\label{fig:step1}
+				\includegraphics[width=0.7\textwidth]{process.pdf}
+				\caption{Process}
+				\label{fig:process}
 			\end{figure}
 			
 			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters.
-			
-			\subsubsection{Checking for and storing the results}
-			
-			\begin{figure}[h!]
-				\includegraphics[width=0.7\textwidth]{step2.png}
-				\caption{Step 2}
-				\label{fig:step2}
-			\end{figure}
 			
 	\section{Results}
 	\section{Issues}
@@ -119,6 +111,7 @@
 			\item Moss does not look in subdirectories. Also Moss will refuse to upload code if it cannot find a matching file in a directory. For example if Moss is told
 			to upload all the go files in student1/lab1/, student2/lab1/, and student3/lab1/ and there are no go files in student1/lab1/, the request will fail. Therefore
 			the application must walk through the directories to find directories and subdirectories that contain files matching the extension.
+			\item The Moss script needed to be modified to correctly use the wildcard symbol, $*$, when called from go.
 		\end{itemize}
 	\section{Analysis}
 	\section{Conclusion}
