@@ -48,10 +48,10 @@ func (m Moss) SaveResults(org string, labs []common.LabInfo, path string, baseDi
 // saveLabResults saves the data from the specified Moss URL. It returns
 // whether or not the function was successful. SaveResults takes as input
 // fileNameAndPath, where Moss saved the results of this lab,
-// baseDir, where to save the data, orgName, the name of the organization (class)
+// baseDir, where to save the data, org, the name of the organization (class)
 // and labName, the name of this lab.
-func saveLabResults(fileNameAndPath string, baseDir string, orgName string, labName string) bool {
-	resultsDir := filepath.Join(baseDir, orgName, labName, "moss")
+func saveLabResults(fileNameAndPath string, baseDir string, org string, labName string) bool {
+	resultsDir := filepath.Join(baseDir, org, labName, "moss")
 
 	// Remove old results.
 	err := os.RemoveAll(resultsDir)
@@ -150,6 +150,7 @@ func saveLabResults(fileNameAndPath string, baseDir string, orgName string, labN
 	}
 
 	makeResultsMainPage(resultsDir, labName, comparisons)
+	collectPercentages(org, filepath.Join(resultsDir, "index.html"))
 
 	return true
 }

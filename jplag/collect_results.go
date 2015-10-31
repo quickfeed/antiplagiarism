@@ -32,10 +32,10 @@ func (j Jplag) SaveResults(org string, labs []common.LabInfo, path string, baseD
 // saveLabResults moves the JPlag results to the output directory. It returns
 // whether or not the function was successful. SaveResults takes as input
 // fullPathDir, where JPlag saved the results of this lab,
-// baseDir, where to save the data, orgName, the name of the organization (class)
+// baseDir, where to save the data, org, the name of the organization (class)
 // and labName, the name of this lab.
-func saveLabResults(fullPathDir string, baseDir string, orgName string, labName string) bool {
-	resultsDir := filepath.Join(baseDir, orgName, labName, "jplag")
+func saveLabResults(fullPathDir string, baseDir string, org string, labName string) bool {
+	resultsDir := filepath.Join(baseDir, org, labName, "jplag")
 
 	// Remove old results.
 	err := os.RemoveAll(resultsDir)
@@ -71,6 +71,8 @@ func saveLabResults(fullPathDir string, baseDir string, orgName string, labName 
 
 	// Delete the old folder
 	os.RemoveAll(fullPathDir)
+
+	collectPercentages(org, filepath.Join(resultsDir, "index.html"))
 
 	return true
 }
