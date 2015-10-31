@@ -217,7 +217,7 @@ func makeResultsMainPage(resultsDir string, labName string, comparisons []matche
 	buf.WriteString("<HTML>\n<HEAD>\n<TITLE>")
 	buf.WriteString(labName + " Results")
 	buf.WriteString("</TITLE>\n</HEAD>\n<BODY>\n")
-	buf.WriteString(labName + " Results<br>")
+	buf.WriteString(labName + " Results<br><br>")
 	for _, match := range comparisons {
 		pos := strings.LastIndex(match.url, "/")
 		base := match.url[pos+1:]
@@ -230,5 +230,5 @@ func makeResultsMainPage(resultsDir string, labName string, comparisons []matche
 	}
 	buf.WriteString("\n</BODY>\n</HTML>\n")
 
-	ioutil.WriteFile(filepath.Join(resultsDir, "results.html"), []byte(buf.String()), 0644)
+	ioutil.WriteFile(filepath.Join(resultsDir, "index.html"), []byte(buf.String()), 0644)
 }

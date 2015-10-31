@@ -36,7 +36,7 @@ func (m Dupl) SaveResults(org string, labs []common.LabInfo, path string, baseDi
 // and labName, the name of this lab.
 func saveLabResults(fileNameAndPath string, baseDir string, org string, labName string) bool {
 	resultsDir := filepath.Join(baseDir, org, labName, "dupl")
-	newFileNameAndPath := filepath.Join(resultsDir, "results.html")
+	newFileNameAndPath := filepath.Join(resultsDir, "index.html")
 
 	// Remove old results.
 	err := os.RemoveAll(resultsDir)
