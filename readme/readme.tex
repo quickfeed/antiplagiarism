@@ -8,7 +8,7 @@
 \usepackage{url}
 
 \title{Anti-plagiarism readme}
-\date{2015-10-21}
+\date{2015-10-31}
 \author{Eric Scott Freeman}
 
 \begin{document}
@@ -45,7 +45,11 @@
 				registeruser
 				mail <email address>
 			\end{verbatim}
-			\noindent Moss will then send a Moss upload script with a unique user ID, which should be placed in directory \verb|<x>|.
+			\noindent Moss will then send a Moss upload script with a unique user ID. Please note the user ID from the file. 
+			\begin{lstlisting}[language=perl]
+			$userid=1234567890;
+			\end{lstlisting}
+			The original script will not work with this application, because it does not expand the wildcard $*$. A new upload script is located in the base directory of this project. Please add your user ID to the new upload script.
 			
 		\subsection{dupl}
 			To download and install dupl, run the following command:
@@ -85,23 +89,36 @@ java -jar ./jplag/jplag.jar -l java17 -t 15 -r ./results/lab1 -s lab1 ./students
 			\end{lstlisting}
 			\noindent The first three arguments say to run a Java jar file in that location called jplag.jar. $-l$ says which language to use, which in this case is Java 1.7. $-t$ is the minimum number of tokens to match (threshold) argument. The next argument, $-r$ specifies where to save the results. $-s$ says to check all the files in subdirectories with that label. So here any Java files in subdirectories labeled lab1 will be checked. The last argument is the base directory where the code resides.
 			
+	\section{Other software}
+		\subsection{goquery}
+			goquery is needed for the application to parse html files. Please download it with the following command.
+			\begin{lstlisting}[language=bash]
+go get github.com/PuerkitoBio/goquery
+			\end{lstlisting}	
+			 
+			
 	\section{Configuration file}
-		There is a configuration file located in the base directory of the anti-plagiarism project called $config.txt$. LAB\_FILES\_BASE\_DIRECTORY tells the application where to store the code pulled from GitHub. MOSS\_FULLY\_QUALIFIED\_NAME contains the fully-qualified name of the Moss script. JPLAG\_FULLY\_QUALIFIED\_NAME contains the fully-qualified name of the JPlag jar file. RESULTS\_DIRECTORY tells the application where to store the results. MOSS\_THRESHOLD is the Moss threshold described in the Tool commands subsection. DUPL\_THRESHOLD and JPLAG\_THRESHOLD contain similar values.
+		There is a script located in the base directory of the anti-plagiarism project called $env.sh$. Please run the script.
+		\begin{lstlisting}[language=bash]
+source env.sh
+		\end{lstlisting}
+		
+		LAB\_FILES\_BASE\_DIRECTORY tells the application where to store the code pulled from GitHub. MOSS\_USER\_ID is the user ID found the Moss upload script. MOSS\_FULLY\_QUALIFIED\_NAME contains the fully-qualified name of the Moss script. JPLAG\_FULLY\_QUALIFIED\_NAME contains the fully-qualified name of the JPlag jar file. RESULTS\_DIRECTORY tells the application where to store the results. MOSS\_THRESHOLD is the Moss threshold described in the Tool commands subsection. DUPL\_THRESHOLD and JPLAG\_THRESHOLD contain similar values.
 			
 		Here is an example:
 		\begin{lstlisting}
-LAB_FILES_BASE_DIRECTORY=/home/autograde/repos
-MOSS_FULLY_QUALIFIED_NAME=/home/autograde/moss/moss
-JPLAG_FULLY_QUALIFIED_NAME=/home/autograde/go/src/
+export LAB_FILES_BASE_DIRECTORY=/home/autograde/repos
+export MOSS_USER_ID=123456789
+export MOSS_FULLY_QUALIFIED_NAME=/home/autograde/moss/moss
+export JPLAG_FULLY_QUALIFIED_NAME=/home/autograde/go/src/
 	github.com/jplag/jplag/jplag/target/jplag.jar
-RESULTS_DIRECTORY=/home/autograde/results
-MOSS_THRESHOLD=4
-DUPL_THRESHOLD=15
-JPLAG_THRESHOLD=15
+export RESULTS_DIRECTORY=/home/autograde/results
+export MOSS_THRESHOLD=4
+export DUPL_THRESHOLD=15
+export JPLAG_THRESHOLD=15
 		\end{lstlisting}		
 
 	\section{Process}
-		The anti-plagiarism application will have two main functions. The first is to call the various anti-plagiarism detection tools, and the second is to check and store the results. It can take an indefinite amount of time for the tools to complete their analysis of the students' code, so it is best for the application to run the commands for the tools as a background process by using the $\&$ symbol at the end of each command.
 		
 		\subsection{Sending the commands and code}
 			
