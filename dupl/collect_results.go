@@ -59,5 +59,6 @@ func saveLabResults(fileNameAndPath string, baseDir string, org string, labName 
 		return false
 	}
 
+	collectPercentages(org, newFileNameAndPath)
 	return true
 }
