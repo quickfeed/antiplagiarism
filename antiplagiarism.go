@@ -21,6 +21,9 @@ type commandLineArgs struct {
 
 	// The admin token for GitHub authorization
 	githubToken string
+
+	// The TCP endpoint to listen on.
+	endpoint string
 }
 
 // envVariables is a struct containing the environment variables
@@ -57,5 +60,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	buildAndRunCommands(&args, &env)
+	if args.endpoint == "" {
+		buildAndRunCommands(&args, &env)
+		os.Exit(0)
+	}
+
+	startServer(&args, &env)
 }

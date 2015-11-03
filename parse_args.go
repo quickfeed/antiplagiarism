@@ -38,12 +38,18 @@ var (
 		"",
 		"The list of languages of the labs, delimited by commas. 0 = Java, 1 = Go, 2 = C++",
 	)
+	endpoint = flag.String(
+		"endpoint",
+		"",
+		"The endpoint to listen on.",
+	)
 )
 
 func usage() {
 	flag.PrintDefaults()
 	fmt.Printf("Example: ./antiplagiarism -token=0123456789ABCDEF -mainrepo=DAT320 ")
 	fmt.Printf("-repos=Student1,Student2,Student3 -labs=LabA,LabB,LabC -languages=0,1,0\n")
+	fmt.Printf("Example: ./antiplagiarism -endpoint=localhost:11111\n")
 }
 
 // parseArgs() parses the command line arguments.
@@ -54,6 +60,12 @@ func parseArgs(args *commandLineArgs) bool {
 	if *help {
 		flag.Usage()
 		return false
+	}
+
+	if *endpoint != "" {
+		args.endpoint = *endpoint
+		// The other values are not needed, so just return.
+		return true
 	}
 
 	if *org == "" {
