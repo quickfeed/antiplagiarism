@@ -59,9 +59,9 @@ func main() {
 	client := pb.NewApClient(conn)
 
 	// Create request
-	request := pb.ApRequest{GithubOrg: "ag2-test",
+	request := pb.ApRequest{GithubOrg: "test-repo",
 		GithubToken:  "12345",
-		StudentRepos: []string{"ericnorway-labs", "ericnorwaytest-labs"},
+		StudentRepos: []string{"student1-labs", "student2-labs"},
 		LabNames:     []string{"lab1", "lab2"},
 		LabLanguages: []int32{C, Golang}}
 
