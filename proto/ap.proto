@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package proto;
+
+service Ap {
+	rpc CheckPlagiarism(ApRequest) returns (ApResponse) {}
+}
+
+message ApRequest {
+	string githubOrg = 1;
+	string githubToken = 2;
+	repeated string studentRepos = 3;
+	repeated string labNames = 4;
+	repeated int32 labLanguages = 5;
+}
+
+message ApResponse {
+	bool success = 1;
+	string err = 2;
+}
