@@ -48,6 +48,7 @@ func startServer(args *commandLineArgs, env *envVariables) {
 
 	server := new(apServer)
 	server.env = *env
+	// TODO: Add transport security
 	grpcServer := grpc.NewServer()
 	pb.RegisterApServer(grpcServer, server)
 	fmt.Printf("Preparing to serve incoming requests.\n")
