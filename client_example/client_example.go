@@ -45,9 +45,13 @@ func main() {
 		flag.Usage()
 		return
 	}
+	
+	var opts []grpc.DialOption
+	// Note that this is not secure.
+	opts = append(opts, grpc.WithInsecure())
 
 	// Create connection
-	conn, err := grpc.Dial(*endpoint)
+	conn, err := grpc.Dial(*endpoint, opts...)
 	if err != nil {
 		fmt.Printf("Error while connecting to server: %v\n", err)
 		return
