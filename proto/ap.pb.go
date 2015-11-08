@@ -15,6 +15,8 @@ It has these top-level messages:
 package proto
 
 import proto1 "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 import (
 	context "golang.org/x/net/context"
@@ -22,11 +24,9 @@ import (
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
-
-// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto1.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 type ApRequest struct {
 	GithubOrg    string   `protobuf:"bytes,1,opt,name=githubOrg" json:"githubOrg,omitempty"`
@@ -48,6 +48,15 @@ type ApResponse struct {
 func (m *ApResponse) Reset()         { *m = ApResponse{} }
 func (m *ApResponse) String() string { return proto1.CompactTextString(m) }
 func (*ApResponse) ProtoMessage()    {}
+
+func init() {
+	proto1.RegisterType((*ApRequest)(nil), "proto.ApRequest")
+	proto1.RegisterType((*ApResponse)(nil), "proto.ApResponse")
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
 
 // Client API for Ap service
 
@@ -82,9 +91,9 @@ func RegisterApServer(s *grpc.Server, srv ApServer) {
 	s.RegisterService(&_Ap_serviceDesc, srv)
 }
 
-func _Ap_CheckPlagiarism_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _Ap_CheckPlagiarism_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(ApRequest)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(ApServer).CheckPlagiarism(ctx, in)
