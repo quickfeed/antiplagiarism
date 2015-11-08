@@ -134,7 +134,7 @@ export JPLAG_THRESHOLD=15
 proto/ap.pb.go:112: cannot use _Ap_CheckPlagiarism_Handler (type func(interface {}, context.Context, func(interface {}) error) (interface {}, error)) as type grpc.methodHandler in field value
 		\end{lstlisting}
 		
-		Check which version of Linux you are using. If you are using Ubuntu, try renaming $ap.pb.go.ubuntu$ to $ap.pb.go$. If you are using Redhat try renaming $ap.pb.go.redhat$ to $ap.pb.go$. If this does not work, you probably need to recompile the $ap.proto$ file. To recompile:
+		It probably means that the $ap.proto$ file needs to be recompiled to work with a newer $gRPC$ version. To recompile:
 		
 		\begin{itemize}
 		\item[1.] Make sure the following packages are installed: $autoconf$, $automake$, $libtool$, $gcc$, $g++$, $unzip$
