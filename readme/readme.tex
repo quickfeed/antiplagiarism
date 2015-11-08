@@ -94,7 +94,15 @@ java -jar ./jplag/jplag.jar -l java17 -t 15 -r ./results/lab1 -s lab1 ./students
 			goquery is needed for the application to parse html files. Please download it with the following command.
 			\begin{lstlisting}[language=bash]
 go get github.com/PuerkitoBio/goquery
-			\end{lstlisting}	
+			\end{lstlisting}
+			
+			Protobuf and gRPC are also required.
+
+			\begin{lstlisting}[language=bash]
+go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+			
+go get google.golang.org/grpc
+			\end{lstlisting}
 			 
 			
 	\section{Configuration file}
