@@ -8,13 +8,15 @@ import (
 	"path/filepath"
 )
 
-// pullRepos pulls the requested repositories from github.com. It returns true if
+// pullRepos pulls the requested repositories from github.com. 
+// It returns a count of the repositories downloaded and true if
 // all the repositories were successfully downloaded, otherwise it returns false.
 // It takes as input labDir, the directory where github should place the files,
 // githubToken, a token authorizing this application to pull from github,
 // githubOrg, the organization name containing the student repositories, and
 // studentRepos, the names of the student repositories.
-func pullRepos(labDir string, githubToken string, githubOrg string, studentRepos []string) bool {
+func pullRepos(labDir string, githubToken string, githubOrg string, studentRepos []string) (int, bool) {
+	downloadCnt := 0
 	allDownloaded := true
 
 	for _, repo := range studentRepos {
@@ -50,7 +52,8 @@ func pullRepos(labDir string, githubToken string, githubOrg string, studentRepos
 			continue
 		}
 		fmt.Printf("Finished pulling %s\n", source)
+		downloadCnt = downloadCnt + 1
 	}
 
-	return allDownloaded
+	return downloadCnt, allDownloaded
 }

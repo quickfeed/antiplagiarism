@@ -19,8 +19,13 @@ import (
 func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 
 	// Pull repositories from github using oath token
-	if !pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos) {
-		fmt.Printf("Failed to download all the requested repositories.\n")
+	downloadCnt, allDownloaded := pullRepos(env.labDir, args.githubToken, args.githubOrg, args.studentRepos)
+
+	if downloadCnt == 0 {
+		fmt.Printf("Failed to download any of the requested repositories. Terminating request.\n")
+		return false
+	} else if !allDownloaded {
+		fmt.Printf("Failed to download all the requested repositories. Proceeding with the rest.\n")
 	}
 
 	labInfo := buildLabInfo(args)
