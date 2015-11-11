@@ -1,7 +1,6 @@
 package jplag
 
 import (
-	"../common"
 	"bufio"
 	"fmt"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/autograde/antiplagiarism/common"
 )
 
 // collectPercentages searches the output file for the highest

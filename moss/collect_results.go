@@ -1,7 +1,6 @@
 package moss
 
 import (
-	"../common"
 	"bufio"
 	"bytes"
 	"fmt"
@@ -12,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/autograde/antiplagiarism/common"
 )
 
 type matches struct {

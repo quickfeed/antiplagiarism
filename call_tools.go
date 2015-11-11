@@ -1,12 +1,12 @@
 package main
 
 import (
-	"./common"
-	"./dupl"
-	"./jplag"
-	"./moss"
 	"bytes"
 	"fmt"
+	"github.com/autograde/antiplagiarism/common"
+	"github.com/autograde/antiplagiarism/dupl"
+	"github.com/autograde/antiplagiarism/jplag"
+	"github.com/autograde/antiplagiarism/moss"
 	"os"
 	"os/exec"
 	"strings"

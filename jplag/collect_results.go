@@ -1,11 +1,12 @@
 package jplag
 
 import (
-	"../common"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/autograde/antiplagiarism/common"
 )
 
 // SaveResults saves the data from the specified file. It returns

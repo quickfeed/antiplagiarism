@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"../common"
+	"github.com/autograde/antiplagiarism/common"
 )
 
 // CreateCommands will create JPlag commands to upload the lab files.

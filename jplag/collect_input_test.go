@@ -1,12 +1,13 @@
 package jplag
 
 import (
-	"../common"
 	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"testing"
+
+	"github.com/autograde/antiplagiarism/common"
 )
 
 type jplagInputTest struct {

@@ -1,11 +1,12 @@
 package dupl
 
 import (
-	"../common"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/autograde/antiplagiarism/common"
 )
 
 // SaveResults looks for dupl results and saves them. It returns

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"../common"
+	"github.com/autograde/antiplagiarism/common"
 )
 
 // CreateCommands will create dupl commands to upload the lab files.

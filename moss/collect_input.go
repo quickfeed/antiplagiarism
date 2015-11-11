@@ -1,13 +1,14 @@
 package moss
 
 import (
-	"../common"
 	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/autograde/antiplagiarism/common"
 )
 
 // Can't pass these variables to the walk function, so place them here

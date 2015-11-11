@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-// pullRepos pulls the requested repositories from github.com. 
+// pullRepos pulls the requested repositories from github.com.
 // It returns a count of the repositories downloaded and true if
 // all the repositories were successfully downloaded, otherwise it returns false.
 // It takes as input labDir, the directory where github should place the files,
