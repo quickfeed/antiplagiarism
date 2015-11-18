@@ -38,7 +38,7 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 		repo := value[pos1+len(org)+1:]
 		pos2 := strings.Index(repo, "/")
 		repo = repo[:pos2]
-		pct := -1.0
+		pct := 1.0
 		url := fileNameAndPath
 
 		results[repo] = common.PctInfo{Repo: repo, Percent: pct, Link: url}

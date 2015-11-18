@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -45,7 +46,7 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 
 			for i := range data {
 				temp, _ := getInfoFromString(org, data[i])
-				temp.Link = url
+				temp.Link = filepath.Join(resultsDir, url)
 				idx := temp.Repo
 
 				// Save the percentage and link if the percentage if greater than the previous value.

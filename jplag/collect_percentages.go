@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -53,6 +54,8 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 
 			// If there is a link to the match
 			if url != "" {
+				url = filepath.Join(resultsDir, url)
+
 				tmpValue := strings.TrimSuffix(value, "%)")
 				parts := strings.Split(tmpValue, "(")
 
