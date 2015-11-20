@@ -52,7 +52,7 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 				url, _ = a.Attr("href")
 			})
 
-			// If there is a link to the match
+			// If there is a url to the match
 			if url != "" {
 				url = filepath.Join(resultsDir, url)
 
@@ -68,12 +68,12 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 					fmt.Printf("Error parsing %s: %s\n", parts[1], err)
 				}
 
-				// Save the percentage and link if the percentage if greater than the previous value.
+				// Save the percentage and url if the percentage if greater than the previous value.
 				if pct > results[repo1].Percent {
-					results[repo1] = common.ResultEntry{Repo: repo1, Percent: pct, Link: url}
+					results[repo1] = common.ResultEntry{Repo: repo1, Percent: pct, URL: url}
 				}
 				if pct > results[repo2].Percent {
-					results[repo2] = common.ResultEntry{Repo: repo2, Percent: pct, Link: url}
+					results[repo2] = common.ResultEntry{Repo: repo2, Percent: pct, URL: url}
 				}
 
 			} else if value != "->" {

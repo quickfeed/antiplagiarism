@@ -39,17 +39,17 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 	doc.Find("a").Each(func(k int, a *goquery.Selection) {
 		url, _ := a.Attr("href")
 
-		// If there is a link to the match
+		// If there is a url to the match
 		if url != "" {
 			value := a.Text()
 			data := strings.Split(value, ", ")
 
 			for i := range data {
 				temp, _ := getInfoFromString(org, data[i])
-				temp.Link = filepath.Join(resultsDir, url)
+				temp.URL = filepath.Join(resultsDir, url)
 				idx := temp.Repo
 
-				// Save the percentage and link if the percentage if greater than the previous value.
+				// Save the percentage and url if the percentage if greater than the previous value.
 				if temp.Percent > results[idx].Percent {
 					results[idx] = temp
 				}
@@ -65,7 +65,7 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 }
 
 // getInfoFromString gets the repo name and percentage from a string.
-// It returns a ResultEntry containing the information (without the link) and
+// It returns a ResultEntry containing the information (without the url) and
 // whether or not the function was successful. It takes as input org,
 // the name of the GitHub organization and rawData, the string.
 func getInfoFromString(org string, rawData string) (common.ResultEntry, bool) {
@@ -89,5 +89,5 @@ func getInfoFromString(org string, rawData string) (common.ResultEntry, bool) {
 	pos2 := strings.Index(repo, "/")
 	repo = repo[:pos2]
 
-	return common.ResultEntry{Repo: repo, Percent: pct, Link: ""}, true
+	return common.ResultEntry{Repo: repo, Percent: pct, URL: ""}, true
 }

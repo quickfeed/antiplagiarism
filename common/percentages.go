@@ -15,7 +15,7 @@ type ResultEntries []ResultEntry
 type ResultEntry struct {
 	Repo    string
 	Percent float64
-	Link    string
+	URL     string
 }
 
 // Len is the number of elements in the collection.

@@ -41,7 +41,7 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 		pct := 1.0
 		url := fileNameAndPath
 
-		results[repo] = common.ResultEntry{Repo: repo, Percent: pct, Link: url}
+		results[repo] = common.ResultEntry{Repo: repo, Percent: pct, URL: url}
 	})
 
 	var orderedResults common.ResultEntries
