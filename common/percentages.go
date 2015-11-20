@@ -1,11 +1,11 @@
 package common
 
 import (
-	"bytes"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"sort"
-	"strconv"
 )
 
 // ResultEntries is a slice of ResultEntry
@@ -34,44 +34,19 @@ func (r ResultEntries) Swap(i, j int) {
 	r[i], r[j] = r[j], r[i]
 }
 
-// MakePercentagePage saves the highest percentage results for each student
-// and a link to code in an html file called percentage.html.
-// It takes as input resultsDir, the location to save the file,
-// and results, a pointer to the slice of percentage information
-func MakePercentagePage(resultsDir string, results *ResultEntries) {
-	var buf bytes.Buffer
-	buf.WriteString("<HTML>\n<HEAD>\n<TITLE>")
-	buf.WriteString("Percentages")
-	buf.WriteString("</TITLE>\n</HEAD>\n<BODY>\n")
-	buf.WriteString("Percentages<br><br>")
-	for _, result := range *results {
-		buf.WriteString("\n<A HREF=\"")
-		buf.WriteString(result.Link)
-		buf.WriteString("\">")
-		buf.WriteString(result.Repo + " " + strconv.FormatFloat(result.Percent, 'f', 1, 64))
-		buf.WriteString("</A><br>")
-	}
-	buf.WriteString("\n</BODY>\n</HTML>\n")
-
-	ioutil.WriteFile(filepath.Join(resultsDir, "percentage.html"), []byte(buf.String()), 0644)
-}
-
-// MakePercentageFile saves the highest percentage results for each student
+// MakeResultsFile saves the highest percentage results for each student
 // and a link to code in a text file called percentage.txt
 // It takes as input resultsDir, the location to save the file,
-// and results, a pointer to the slice of percentage information
-func MakePercentageFile(resultsDir string, results *ResultEntries) {
-	var buf bytes.Buffer
-	for _, result := range *results {
-		buf.WriteString(result.Repo)
-		buf.WriteString("|")
-		buf.WriteString(strconv.FormatFloat(result.Percent, 'f', 1, 64))
-		buf.WriteString("|")
-		buf.WriteString(result.Link)
-		buf.WriteString("\n")
+// and results, a pointer to the slice of results
+func MakeResultsFile(resultsDir string, results *ResultEntries) {
+	// Encode Message into JSON format
+	buf, err := json.Marshal(results)
+	if err != nil {
+		fmt.Printf("Error marshalling results in JSON format. %s\n", err)
+		return
 	}
 
-	ioutil.WriteFile(filepath.Join(resultsDir, "percentage.txt"), []byte(buf.String()), 0644)
+	ioutil.WriteFile(filepath.Join(resultsDir, "results.json"), buf, 0644)
 }
 
 // OrderResults converts a map of ResultEntry into a sorted slice of ResultEntry.

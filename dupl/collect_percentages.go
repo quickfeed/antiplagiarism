@@ -46,9 +46,7 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 
 	var orderedResults common.ResultEntries
 	common.OrderResults(&results, &orderedResults)
-
-	common.MakePercentagePage(resultsDir, &orderedResults)
-	common.MakePercentageFile(resultsDir, &orderedResults)
+	common.MakeResultsFile(resultsDir, &orderedResults)
 
 	return true
 }
