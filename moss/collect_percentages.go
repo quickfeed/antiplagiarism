@@ -15,7 +15,7 @@ import (
 // collectPercentages searches the output file for the highest
 // plagiarism percentages for each student.
 func collectPercentages(org string, fileNameAndPath string) bool {
-	results := make(map[string]common.PctInfo)
+	results := make(map[string]common.ResultEntry)
 	pos := strings.LastIndex(fileNameAndPath, "/")
 	resultsDir := fileNameAndPath[:pos]
 
@@ -57,8 +57,8 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 		}
 	})
 
-	var orderedResults common.PctInfoSlice
-	common.OrderPctInfo(&results, &orderedResults)
+	var orderedResults common.ResultEntries
+	common.OrderResults(&results, &orderedResults)
 
 	common.MakePercentagePage(resultsDir, &orderedResults)
 	common.MakePercentageFile(resultsDir, &orderedResults)
@@ -67,10 +67,10 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 }
 
 // getInfoFromString gets the repo name and percentage from a string.
-// It returns a PctInfo containing the information (without the link) and
+// It returns a ResultEntry containing the information (without the link) and
 // whether or not the function was successful. It takes as input org,
 // the name of the GitHub organization and rawData, the string.
-func getInfoFromString(org string, rawData string) (common.PctInfo, bool) {
+func getInfoFromString(org string, rawData string) (common.ResultEntry, bool) {
 
 	// Split the data into location and percentage
 	dataParts := strings.Split(rawData, " (")
@@ -83,7 +83,7 @@ func getInfoFromString(org string, rawData string) (common.PctInfo, bool) {
 	pct, err := strconv.ParseFloat(dataParts[1], 64)
 	if err != nil {
 		fmt.Printf("Error parsing %s: %s\n", dataParts[1], err)
-		return common.PctInfo{}, false
+		return common.ResultEntry{}, false
 	}
 
 	pos1 := strings.Index(dataParts[0], org+"/")
@@ -91,5 +91,5 @@ func getInfoFromString(org string, rawData string) (common.PctInfo, bool) {
 	pos2 := strings.Index(repo, "/")
 	repo = repo[:pos2]
 
-	return common.PctInfo{Repo: repo, Percent: pct, Link: ""}, true
+	return common.ResultEntry{Repo: repo, Percent: pct, Link: ""}, true
 }

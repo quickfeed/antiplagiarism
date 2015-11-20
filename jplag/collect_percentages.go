@@ -15,7 +15,7 @@ import (
 // collectPercentages searches the output file for the highest
 // plagiarism percentages for each student.
 func collectPercentages(org string, fileNameAndPath string) bool {
-	results := make(map[string]common.PctInfo)
+	results := make(map[string]common.ResultEntry)
 	pos := strings.LastIndex(fileNameAndPath, "/")
 	resultsDir := fileNameAndPath[:pos]
 
@@ -70,10 +70,10 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 
 				// Save the percentage and link if the percentage if greater than the previous value.
 				if pct > results[repo1].Percent {
-					results[repo1] = common.PctInfo{Repo: repo1, Percent: pct, Link: url}
+					results[repo1] = common.ResultEntry{Repo: repo1, Percent: pct, Link: url}
 				}
 				if pct > results[repo2].Percent {
-					results[repo2] = common.PctInfo{Repo: repo2, Percent: pct, Link: url}
+					results[repo2] = common.ResultEntry{Repo: repo2, Percent: pct, Link: url}
 				}
 
 			} else if value != "->" {
@@ -83,8 +83,8 @@ func collectPercentages(org string, fileNameAndPath string) bool {
 		})
 	})
 
-	var orderedResults common.PctInfoSlice
-	common.OrderPctInfo(&results, &orderedResults)
+	var orderedResults common.ResultEntries
+	common.OrderResults(&results, &orderedResults)
 
 	common.MakePercentagePage(resultsDir, &orderedResults)
 	common.MakePercentageFile(resultsDir, &orderedResults)

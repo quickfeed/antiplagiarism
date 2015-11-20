@@ -8,37 +8,37 @@ import (
 	"strconv"
 )
 
-// PctInfoSlice is a slice of PctInfo
-type PctInfoSlice []PctInfo
+// ResultEntries is a slice of ResultEntry
+type ResultEntries []ResultEntry
 
-// PctInfo contains plagiarism information about a repository
-type PctInfo struct {
+// ResultEntry contains plagiarism information about a repository
+type ResultEntry struct {
 	Repo    string
 	Percent float64
 	Link    string
 }
 
 // Len is the number of elements in the collection.
-func (p PctInfoSlice) Len() int {
-	return len(p)
+func (r ResultEntries) Len() int {
+	return len(r)
 }
 
 // Less reports whether the element with
 // index i should sort before the element with index j.
-func (p PctInfoSlice) Less(i, j int) bool {
-	return p[i].Repo < p[j].Repo
+func (r ResultEntries) Less(i, j int) bool {
+	return r[i].Repo < r[j].Repo
 }
 
 // Swap swaps the elements with indexes i and j.
-func (p PctInfoSlice) Swap(i, j int) {
-	p[i], p[j] = p[j], p[i]
+func (r ResultEntries) Swap(i, j int) {
+	r[i], r[j] = r[j], r[i]
 }
 
 // MakePercentagePage saves the highest percentage results for each student
 // and a link to code in an html file called percentage.html.
 // It takes as input resultsDir, the location to save the file,
 // and results, a pointer to the slice of percentage information
-func MakePercentagePage(resultsDir string, results *PctInfoSlice) {
+func MakePercentagePage(resultsDir string, results *ResultEntries) {
 	var buf bytes.Buffer
 	buf.WriteString("<HTML>\n<HEAD>\n<TITLE>")
 	buf.WriteString("Percentages")
@@ -60,7 +60,7 @@ func MakePercentagePage(resultsDir string, results *PctInfoSlice) {
 // and a link to code in a text file called percentage.txt
 // It takes as input resultsDir, the location to save the file,
 // and results, a pointer to the slice of percentage information
-func MakePercentageFile(resultsDir string, results *PctInfoSlice) {
+func MakePercentageFile(resultsDir string, results *ResultEntries) {
 	var buf bytes.Buffer
 	for _, result := range *results {
 		buf.WriteString(result.Repo)
@@ -74,9 +74,9 @@ func MakePercentageFile(resultsDir string, results *PctInfoSlice) {
 	ioutil.WriteFile(filepath.Join(resultsDir, "percentage.txt"), []byte(buf.String()), 0644)
 }
 
-// OrderPctInfo converts a map of PctInfo into a sorted slice of PctInfo.
-// It takes as input input, a map of PctInfo, and output, a slice of PctInfo.
-func OrderPctInfo(input *map[string]PctInfo, output *PctInfoSlice) {
+// OrderResults converts a map of ResultEntry into a sorted slice of ResultEntry.
+// It takes as input input, a map of ResultEntry, and output, a slice of ResultEntry.
+func OrderResults(input *map[string]ResultEntry, output *ResultEntries) {
 	*output = nil
 	for _, result := range *input {
 		*output = append(*output, result)
