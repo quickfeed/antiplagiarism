@@ -8,6 +8,9 @@ import (
 	"sort"
 )
 
+// ResultsFileName is the name of the results file
+var ResultsFileName = "results.json"
+
 // ResultEntries is a slice of ResultEntry
 type ResultEntries []ResultEntry
 
@@ -46,7 +49,7 @@ func MakeResultsFile(resultsDir string, results *ResultEntries) {
 		return
 	}
 
-	ioutil.WriteFile(filepath.Join(resultsDir, "results.json"), buf, 0644)
+	ioutil.WriteFile(filepath.Join(resultsDir, ResultsFileName), buf, 0644)
 }
 
 // OrderResults converts a map of ResultEntry into a sorted slice of ResultEntry.
