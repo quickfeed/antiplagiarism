@@ -125,7 +125,7 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 	\section{Design}
 
 		\subsection{Process}
-		Since Autograder was written in Go, this project was also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program calls each of the anti-plagiarism tools and stores the results. A separate Go package was written for each anti-plagiarism tool. The packages implement a common interface which creates the commands to send to the tools and formats the results.
+		Since Autograder was written in Go, this project was also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program calls each of the anti-plagiarism tools and stores the results. A separate Go package was written for each anti-plagiarism tool. The packages implement a common interface which creates the commands to send to the tools and formats the results. The interface will allow other anti-plagiarism tools to be easily added later.
 		
 		The anti-plagiarism application typically runs as a service and accepts gRPC, a remote procedure call framework, requests. Requests can also be sent from the command line. A request consists of the GitHub organization, the GitHub authorization token, a list of student repository names, a list of lab assignment names, and a list of programming languages.
 		
@@ -135,7 +135,7 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 			Before calling the anti-plagiarism tools, first the students' code is pulled from GitHub to the Autograder server. The directory structure consists of a base directory containing subdirectories for each class. Each class is a GitHub organization. Inside each class, there are directories for each student, which have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in GitHub, so pulling the code for the anti-plagiarism project is simplified.
 	
 			\begin{figure}[h!]
-				\includegraphics[width=0.5\textwidth]{Directories.png}
+				\includegraphics[width=0.4\textwidth]{Directories.png}
 				\caption{Directory structure.}
 				\label{fig:directories}
 			\end{figure}
@@ -195,7 +195,7 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 	TODO
 	
 	\section{Future work}
-	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine.
+	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. Additional anti-plagiarism tools can be added later.
 	
 	\section{Conclusion}
 	TODO
