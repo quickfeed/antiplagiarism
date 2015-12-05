@@ -123,14 +123,16 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 			\end{center}
 		\end{table}
 	\section{Design}
-		\subsection{Understanding Autograder}
-		To be able to add functionality to Autograder, it was necessary to understand how it works. This meant looking through the code to see what happens when certain events occurred. For example, when the Rebuild button on the teacherresultpage.html is pressed, this calls the \verb|$("#rebuild").click()| function in the teacher.result.page.js file. The click function then posts to the /event/manualbuild URL. webserver.go handles the post by calling ManualCITriggerHandler() function in ci.go. ManualCITriggerHandler() then starts the daemon, which creates a Docker container and a set of commands to run on the docker container. The docker container pulls the students code and the test code from GitHub and proceeds to run the tests on it.	
-	
+
 		\subsection{Process}
-		Since Autograder was written in Go, this project is also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program will call each of the anti-plagiarism tools and store the results. The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code. A separate Go package will be written for each anti-plagiarism tool. The packages will implement a common interface which will create the commands to send to the tools and will format the results.
+		Since Autograder was written in Go, this project was also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program calls each of the anti-plagiarism tools and stores the results. A separate Go package was written for each anti-plagiarism tool. The packages implement a common interface which creates the commands to send to the tools and formats the results.
+		
+		The anti-plagiarism application typically runs as a service and accepts gRPC, a remote procedure call framework, requests. Requests can also be sent from the command line. A request consists of the GitHub organization, the GitHub authorization token, a list of student repository names, a list of lab assignment names, and a list of programming languages.
+		
+		The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code.
 	
 			\subsubsection{Calling the anti-plagiarism tools}
-			Before calling the anti-plagiarism tools, first the students' code will be pulled from GitHub to the Autograder server. The directory structure will consist of a base directory containing subdirectories for each class. Each class is a GitHub organization. Inside each class, there will be directories for each student, which will have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in GitHub, so pulling the code for the anti-plagiarism project will be simplified. Each student's work for an assignment to be compared against the other students' work for that assignment in that class. This will keep the number of files being compared from growing too large. 
+			Before calling the anti-plagiarism tools, first the students' code is pulled from GitHub to the Autograder server. The directory structure consists of a base directory containing subdirectories for each class. Each class is a GitHub organization. Inside each class, there are directories for each student, which have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in GitHub, so pulling the code for the anti-plagiarism project is simplified.
 	
 			\begin{figure}[h!]
 				\includegraphics[width=0.5\textwidth]{Directories.png}
@@ -144,7 +146,18 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 				\label{fig:process}
 			\end{figure}
 	
-			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters.
+			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters. The commands are then sent to their respective tools. Each student's work for an assignment is compared against the other students' work for that particular assignment in that class instead of all the assignments for that class or all the assignments for all classes. This keeps the number of files being compared from growing too large.
+			
+			The anti-plagiarism application waits for the results to come back from each of the tools. When they have all finished, the program will collect and store the resulting html files in the location specified. Finally the program sends a gRPC response back to the calling application.
+			
+		\subsection{Integrating with Autograder}
+		A few new fields needed to be added to the Autograder's Bolt database. Bolt stores entries as a key/value pair. Each lab assignment entry in each class needed to store the language the assignment is written in. Also each lab assignment entry for each student/group needed to the results from each of the anti-plagiarism tools.
+		
+		The user interface was also updated to allow teachers to assign a programming language to each lab, to allow teachers to initiate the anti-plagiarism process, and to show the results of the process. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results.
+		
+		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder.
+		
+		While adding the new functionality to Autograder, care was taken not to break any existing functionality. Unit tests were rerun to check that nothing was broken.
 	
 	\section{Results}
 	TODO
@@ -164,7 +177,7 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 	TODO
 	
 	\section{Future work}
-	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder.
+	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine.
 	
 	\section{Conclusion}
 	TODO
