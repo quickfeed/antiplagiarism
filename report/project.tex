@@ -153,9 +153,27 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 		\subsection{Integrating with Autograder}
 		A few new fields needed to be added to the Autograder's Bolt database. Bolt stores entries as a key/value pair. Each lab assignment entry in each class needed to store the language the assignment is written in. Also each lab assignment entry for each student/group needed to the results from each of the anti-plagiarism tools.
 		
-		The user interface was also updated to allow teachers to assign a programming language to each lab, to allow teachers to initiate the anti-plagiarism process, and to show the results of the process. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results.
+		The user interface was also updated to allow teachers to assign a programming language to each lab (figure \ref{fig:selectLang}), to allow teachers to initiate the anti-plagiarism process (figure \ref{fig:startTest}), and to show the results of the process. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results.
 		
-		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder.
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{SelectingLanguage.png}
+			\caption{Selecting language.}
+			\label{fig:selectLang}
+		\end{figure}
+				
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{StartTest.png}
+			\caption{Start anti-plagiarism test.}
+			\label{fig:startTest}
+		\end{figure}
+		
+		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder. The teacher panel shows a table of all the students in the class and their assignments. If any of the anti-plagiarism tools find evidence of plagiarism, the corresponding cell in the table will be colored a shade of red. The more tools finding plagiarism, the deeper the color. From the teacher panel, teachers go to a results page to look at more details about each lab. This page shows the results of each anti-plagiarism tool and buttons to show the plagiarized code. See figure \ref{fig:indResults}.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{IndividualResults.png}
+			\caption{Individual results.}
+			\label{fig:indResults}
+		\end{figure}
 		
 		While adding the new functionality to Autograder, care was taken not to break any existing functionality. Unit tests were rerun to check that nothing was broken.
 	
