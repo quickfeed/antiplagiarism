@@ -15,6 +15,11 @@ type apServer struct {
 }
 
 func (s *apServer) CheckPlagiarism(ctx context.Context, req *apProto.ApRequest) (*apProto.ApResponse, error) {
+	// If request is coming from the client example, just return.
+	if req.GithubOrg == "testtoken" {
+		return &apProto.ApResponse{Success: true, Err: ""}, nil
+	}
+
 	var names []string
 	var languages []int
 	for i := range req.Labs {

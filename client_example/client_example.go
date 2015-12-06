@@ -27,7 +27,7 @@ var (
 	)
 	endpoint = flag.String(
 		"endpoint",
-		"localhost:12111",
+		"localhost:11111",
 		"Endpoint on which server runs or to which client connects",
 	)
 )
@@ -68,7 +68,7 @@ func main() {
 
 	// Create request
 	request := apProto.ApRequest{GithubOrg: "test-repo",
-		GithubToken:  "12345",
+		GithubToken:  "testtoken",
 		StudentRepos: []string{"student1-labs", "student2-labs"},
 		Labs:         labs}
 
