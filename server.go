@@ -7,14 +7,14 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
-	pb "github.com/autograde/antiplagiarism/proto"
+	apProto "github.com/autograde/antiplagiarism/proto"
 )
 
 type apServer struct {
 	env envVariables
 }
 
-func (s *apServer) CheckPlagiarism(ctx context.Context, req *pb.ApRequest) (*pb.ApResponse, error) {
+func (s *apServer) CheckPlagiarism(ctx context.Context, req *apProto.ApRequest) (*apProto.ApResponse, error) {
 	var names []string
 	var languages []int
 	for i := range req.Labs {
@@ -34,10 +34,10 @@ func (s *apServer) CheckPlagiarism(ctx context.Context, req *pb.ApRequest) (*pb.
 	success := buildAndRunCommands(&args, &s.env)
 
 	if !success {
-		return &pb.ApResponse{Success: false, Err: "Check the server command prompt for the error."}, nil
+		return &apProto.ApResponse{Success: false, Err: "Check the server command prompt for the error."}, nil
 	}
 
-	return &pb.ApResponse{Success: true, Err: ""}, nil
+	return &apProto.ApResponse{Success: true, Err: ""}, nil
 }
 
 func startServer(args *commandLineArgs, env *envVariables) {
@@ -52,7 +52,7 @@ func startServer(args *commandLineArgs, env *envVariables) {
 	server.env = *env
 	// TODO: Add transport security
 	grpcServer := grpc.NewServer()
-	pb.RegisterApServer(grpcServer, server)
+	apProto.RegisterApServer(grpcServer, server)
 	fmt.Printf("Preparing to serve incoming requests.\n")
 	err = grpcServer.Serve(listener)
 	if err != nil {
