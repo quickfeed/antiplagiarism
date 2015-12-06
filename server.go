@@ -15,14 +15,16 @@ type apServer struct {
 }
 
 func (s *apServer) CheckPlagiarism(ctx context.Context, req *pb.ApRequest) (*pb.ApResponse, error) {
+	var names []string
 	var languages []int
-	for i := range req.LabLanguages {
-		languages = append(languages, int(req.LabLanguages[i]))
+	for i := range req.Labs {
+		names = append(names, req.Labs[i].Name)
+		languages = append(languages, int(req.Labs[i].Language))
 	}
 
 	args := commandLineArgs{
 		studentRepos: req.StudentRepos,
-		labNames:     req.LabNames,
+		labNames:     names,
 		labLanguages: languages,
 		githubOrg:    req.GithubOrg,
 		githubToken:  req.GithubToken,

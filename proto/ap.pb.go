@@ -29,16 +29,31 @@ var _ = fmt.Errorf
 var _ = math.Inf
 
 type ApRequest struct {
-	GithubOrg    string   `protobuf:"bytes,1,opt,name=githubOrg" json:"githubOrg,omitempty"`
-	GithubToken  string   `protobuf:"bytes,2,opt,name=githubToken" json:"githubToken,omitempty"`
-	StudentRepos []string `protobuf:"bytes,3,rep,name=studentRepos" json:"studentRepos,omitempty"`
-	LabNames     []string `protobuf:"bytes,4,rep,name=labNames" json:"labNames,omitempty"`
-	LabLanguages []int32  `protobuf:"varint,5,rep,name=labLanguages" json:"labLanguages,omitempty"`
+	GithubOrg    string          `protobuf:"bytes,1,opt,name=githubOrg" json:"githubOrg,omitempty"`
+	GithubToken  string          `protobuf:"bytes,2,opt,name=githubToken" json:"githubToken,omitempty"`
+	StudentRepos []string        `protobuf:"bytes,3,rep,name=studentRepos" json:"studentRepos,omitempty"`
+	Labs         []*ApRequestLab `protobuf:"bytes,4,rep,name=labs" json:"labs,omitempty"`
 }
 
 func (m *ApRequest) Reset()         { *m = ApRequest{} }
 func (m *ApRequest) String() string { return proto1.CompactTextString(m) }
 func (*ApRequest) ProtoMessage()    {}
+
+func (m *ApRequest) GetLabs() []*ApRequestLab {
+	if m != nil {
+		return m.Labs
+	}
+	return nil
+}
+
+type ApRequestLab struct {
+	Name     string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Language int32  `protobuf:"varint,2,opt,name=language" json:"language,omitempty"`
+}
+
+func (m *ApRequestLab) Reset()         { *m = ApRequestLab{} }
+func (m *ApRequestLab) String() string { return proto1.CompactTextString(m) }
+func (*ApRequestLab) ProtoMessage()    {}
 
 type ApResponse struct {
 	Success bool   `protobuf:"varint,1,opt,name=success" json:"success,omitempty"`
@@ -51,6 +66,7 @@ func (*ApResponse) ProtoMessage()    {}
 
 func init() {
 	proto1.RegisterType((*ApRequest)(nil), "proto.ApRequest")
+	proto1.RegisterType((*ApRequestLab)(nil), "proto.ApRequest.lab")
 	proto1.RegisterType((*ApResponse)(nil), "proto.ApResponse")
 }
 

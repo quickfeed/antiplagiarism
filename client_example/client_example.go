@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
-	pb "github.com/autograde/antiplagiarism/proto"
+	apProto "github.com/autograde/antiplagiarism/proto"
 )
 
 // The language the lab was written in
@@ -60,14 +60,17 @@ func main() {
 	fmt.Printf("Connected to server on %v\n", *endpoint)
 
 	// Create client
-	client := pb.NewApClient(conn)
+	client := apProto.NewApClient(conn)
+
+	labs := []*apProto.ApRequestLab{
+		&apProto.ApRequestLab{Name: "lab1", Language: int32(C)},
+		&apProto.ApRequestLab{Name: "lab2", Language: int32(Golang)}}
 
 	// Create request
-	request := pb.ApRequest{GithubOrg: "test-repo",
+	request := apProto.ApRequest{GithubOrg: "test-repo",
 		GithubToken:  "12345",
 		StudentRepos: []string{"student1-labs", "student2-labs"},
-		LabNames:     []string{"lab1", "lab2"},
-		LabLanguages: []int32{C, Golang}}
+		Labs:         labs}
 
 	// Send request and get response
 	response, err := client.CheckPlagiarism(context.Background(), &request)

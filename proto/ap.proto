@@ -10,8 +10,13 @@ message ApRequest {
 	string githubOrg = 1;
 	string githubToken = 2;
 	repeated string studentRepos = 3;
-	repeated string labNames = 4;
-	repeated int32 labLanguages = 5;
+
+	message lab {
+		string name = 1;
+		int32 language = 2;
+	}
+
+	repeated lab labs = 4;
 }
 
 message ApResponse {
