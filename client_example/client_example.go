@@ -81,6 +81,6 @@ func main() {
 	} else if response.Success == false {
 		fmt.Printf("Anti-plagiarism error: %s\n", response.Err)
 	} else {
-		fmt.Printf("Anti-plagiarism application ran successfully.\n")
+		fmt.Printf("Anti-plagiarism application received request.\n")
 	}
 }
