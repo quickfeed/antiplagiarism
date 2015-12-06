@@ -1,4 +1,19 @@
-\documentclass[12pt]{article}
+%% project.tex
+%% 2015/12/05
+%% by Eric Scott Freeman
+%% This document uses the bare_adv.tex template provided by Michael Shell.
+
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+
+
+\ifCLASSOPTIONcompsoc
+  % The IEEE Computer Society needs nocompress option
+  % requires cite.sty v4.0 or later (November 2003)
+  \usepackage[nocompress]{cite}
+\else
+  % normal IEEE
+  \usepackage{cite}
+\fi
 
 \usepackage{amssymb}
 \usepackage{booktabs}
@@ -7,114 +22,191 @@
 \usepackage{listings}
 \usepackage{url}
 
-\title{Anti-plagiarism Project}
-\date{2015-10-31}
-\author{Eric Scott Freeman}
+\newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
+pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
+colorlinks=true,linkcolor={black},citecolor={black},urlcolor={black},
+pdftitle={Anti-plagiarism Project},
+pdfsubject={Anti-plagiarism},
+pdfauthor={Eric Scott Freeman},
+pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
+             Moss, JPlag, dupl, Autograder}}
+
+% correct bad hyphenation here
+\hyphenation{}
+
 
 \begin{document}
-	\pagenumbering{gobble}
-	\maketitle
-	\newpage
-	\tableofcontents
-	\newpage
-	\pagenumbering{arabic}
-	\section{Introduction}
-		The University of Stavanger uses an application called Autograder, written by Heine Furubotten, to automatically grade students' programming assignments. Autograder works with Github. Whenever a student pushes their code to Github, Autograder will pull a copy of the code and run a series of tests on it. Autograder does not currently have support for plagiarism detection. The goal of this project is to integrate a few anti-plagiarism tools into Autograder, thereby helping the professors save time.
-		
-	\section{Related Work}
-		Unfortunately software plagiarism is a problem both in the classroom and in the workplace. A number of applications have been created to help detect this problem. While these tools can detect similarities in programs, the flagged files must still be manually examined to determine whether or not code was plagiarized.
-		
-		There are several different general techniques that are used to look for plagiarism. The tools analyzed in this project used either fingerprinting or stylometry.
+
+	\title{Anti-plagiarism Project}
+	\author{Eric~Scott~Freeman}
 	
+	\IEEEtitleabstractindextext{%
+	\begin{abstract}
+		TODO
+	\end{abstract}
+	
+	\begin{IEEEkeywords}
+		anti-plagiarism, plagiarism, fingerprinting, stylometry, Moss, JPlag, dupl, Autograder.
+	\end{IEEEkeywords}}
+	
+	\maketitle
+	
+	\IEEEdisplaynontitleabstractindextext
+	\IEEEpeerreviewmaketitle
+
+	\ifCLASSOPTIONcompsoc
+		\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
+	\else
+		\section{Introduction}
+		\label{sec:introduction}
+	\fi
+	
+	\IEEEPARstart{T}{he} University of Stavanger uses an application called Autograder, written by Heine Furubotten, to automatically grade students' programming assignments. Autograder works with GitHub. Whenever a student pushes their code to GitHub, Autograder will pull a copy of the code and run a series of tests on it. Autograder does not currently have support for plagiarism detection. The goal of this project is to integrate a few anti-plagiarism tools into Autograder, thereby helping the professors save time.
+
+	\section{Related Work}
+	Unfortunately software plagiarism is a problem both in the classroom and in the workplace. A number of applications have been created to help detect this problem. While these tools can detect similarities in programs, the flagged files must still be manually examined to determine whether or not code was plagiarized.
+		
+	There are several different general techniques that are used to look for plagiarism. The tools analyzed in this project used either fingerprinting or stylometry.
+		
 		\subsection{Fingerprinting}
-			Several tools use a technique called fingerprinting to detect plagiarism. In fingerprinting algorithms, hashes of $n$-grams, substrings that are $n$ characters, are saved and compared to help find plagiarism. Not all hashes are stored due to the large number that would be produced. 
+		Several tools use a technique called fingerprinting to detect plagiarism. In fingerprinting algorithms, hashes of $n$-grams, substrings that are $n$ characters, are saved and compared to help find plagiarism. Not all hashes are stored due to the large number that would be produced. 
 		
 			\subsubsection{Winnowing}
-				Moss uses a technique called winnowing to select which hashes to save \cite{schleimer+wilkerson+aiken}. In the winnowing algorithm, a window, selection of contiguous hashes, is used to help select which hashes to save. The smallest hash from a window is saved, and then the window moves one hash over. The smallest hash from the next window is often the smallest hash from the previous window. If so it is not saved again. Figure \ref{fig:winnowing1} shows an example of how winnowing works. The orange box represents the shifting window. The green box shows whenever a new hash is saved.
-				
-				\begin{figure}[h!]
-					\includegraphics[width=0.6\textwidth]{Winnowing.png}
-					\caption{Winnowing.}
-					\label{fig:winnowing1}
-				\end{figure}
-			
+			Moss uses a technique called winnowing to select which hashes to save \cite{schleimer+wilkerson+aiken}. In the winnowing algorithm, a window, selection of contiguous hashes, is used to help select which hashes to save. The smallest hash from a window is saved, and then the window moves one hash over. The smallest hash from the next window is often the smallest hash from the previous window. If so it is not saved again. Figure \ref{fig:winnowing1} shows an example of how winnowing works. The orange box represents the shifting window. The green box shows whenever a new hash is saved.
+		
+			\begin{figure}[h!]
+				\includegraphics[width=0.8\textwidth]{Winnowing.png}
+				\caption{Winnowing.}
+				\label{fig:winnowing1}
+			\end{figure}
+		
 			\subsubsection{Running-Karp-Rabin Greedy-String-Tiling}
-				JPlag uses Running-Karp-Rabin Greedy-String-Tiling (RKS-GST) to compare hashes of code in plagiarism detection \cite{prechelt+malpohl+philippsen}. RKS-GST was originally used in YAP3, another plagiarism detection tool. In RKS-GST, the Greedy String half of the algorithm forms pairs of substrings, each from a different string. Then the Karp-Rabin half of the algorithm hashes each substring in the pair \cite{wise}. This is done to help detect code reordering.
+			JPlag uses Running-Karp-Rabin Greedy-String-Tiling (RKS-GST) to compare hashes of code in plagiarism detection \cite{prechelt+malpohl+philippsen}. RKS-GST was originally used in YAP3, another plagiarism detection tool. In RKS-GST, the Greedy String half of the algorithm forms pairs of substrings, each from a different string. Then the Karp-Rabin half of the algorithm hashes each substring in the pair \cite{wise}. This is done to help detect code reordering.
 		
 		\subsection{Stylometry}
-			Another approach is to use code stylometry, which analyzes the style of writing or coding.
-			
+		Another approach is to use code stylometry, which analyzes the style of writing or coding.
+		
 			\subsubsection{Abstract Syntax Trees}
-				Caliskan-Islam, et al. use abstract syntax trees (ASTs) to compare the styles of authors \cite{caliskan-islam+harang+liu}. Things that are easily changed in code, such as variable names, become leaves in the AST, while the structure of the tree is harder to change \cite{caliskan-islam+harang+liu}. Figure \ref{fig:ast} shows an abstract syntax tree of the code in Figure \ref{fig:astcode}. Note how the leaves, or circular nodes, in Figure \ref{fig:ast} are variable names, constants, and a function name.
-				
-				Michal Bohuslávek's dupl application uses ASTs to find similarities in code \cite{bohuslave}. It looks for any copies of code, not just plagiarism. So if a piece of code is duplicated even in the same file, it will test positive.
-			
-				\begin{figure}
-					\begin{floatrow}
-						\ffigbox{\includegraphics[width=0.5\textwidth]{AST.pdf}}{\caption{Abstract syntax tree.}\label{fig:ast}}	\ffigbox{\includegraphics[width=0.3\textwidth]{ASTcode.png}}{\caption{Example code.}\label{fig:astcode}}
-					\end{floatrow}
-				\end{figure}
+			Caliskan-Islam, et al. use abstract syntax trees (ASTs) to compare the styles of authors \cite{caliskan-islam+harang+liu}. Things that are easily changed in code, such as variable names, become leaves in the AST, while the structure of the tree is harder to change \cite{caliskan-islam+harang+liu}. Figure \ref{fig:ast} shows an abstract syntax tree of the code in Figure \ref{fig:astcode}. Note how the leaves, or circular nodes, in Figure \ref{fig:ast} are variable names, constants, and a function name.
+		
+			Michal Bohuslávek's dupl application uses ASTs to find similarities in code \cite{bohuslave}. It looks for any copies of code, not just plagiarism. So if a piece of code is duplicated even in the same file, it will test positive.
+		
+			\begin{figure}
+				\includegraphics[width=0.8\textwidth]{AST.pdf}
+				\caption{Abstract syntax tree.}
+				\label{fig:ast}
+			\end{figure}
+			\begin{figure}
+				\includegraphics[width=0.5\textwidth]{ASTcode.png}
+				\caption{Example code.}
+				\label{fig:astcode}
+			\end{figure}
 		
 		\subsection{Supported Languages}
-			Fingerprinting and string comparison techniques can be used to analyze source code written in languages other than their officially supported languages. Moss can analyze Go code, even though it is not technically supported. Since ASTs need to parse the code, applications which use them are stricter on which languages they can analyze. For example dupl only supports code written in Go. Table \ref{tab:languageSupport} shows the languages officially supported by several anti-plagiarism tools.
+		Fingerprinting and string comparison techniques can be used to analyze source code written in languages other than their officially supported languages. Moss can analyze Go code, even though it is not technically supported. Since ASTs need to parse the code, applications which use them are stricter on which languages they can analyze. For example dupl only supports code written in Go. Table \ref{tab:languageSupport} shows the languages officially supported by several anti-plagiarism tools.
 		
-			\begin{table}[h!]
-				\begin{center}
-					\caption{Officially supported languages by various tools}
-					\label{tab:languageSupport}
-					\begin{tabular}{ccccccccccccccc}
-						\toprule
-						Tool & Java & Go & C & C\verb!++! & C\verb!#! & Python & Perl & others\\
-						\midrule
-						Moss & \checkmark & & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
-						JPlag & \checkmark & & \checkmark & \checkmark & \checkmark & & & \checkmark\\
-						Plaggie & \checkmark & & & & & & & \\
-						SIM & \checkmark & & \checkmark & & & & & \checkmark\\
-						dupl & & \checkmark & & & & & & \\
-						\bottomrule
-					\end{tabular}
-				\end{center}
-			\end{table}
-		
+		\begin{table}[h!]
+			\begin{center}
+				\caption{Officially supported languages by various tools}
+				\label{tab:languageSupport}
+				\begin{tabular}{ccccccccccccccc}
+					\toprule
+					Tool & Java & Go & C & C\verb!++! & C\verb!#! & Python & others\\
+					\midrule
+					Moss & \checkmark & & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+					JPlag & \checkmark & & \checkmark & \checkmark & \checkmark & & \checkmark\\
+					Plaggie & \checkmark & & & & & & \\
+					SIM & \checkmark & & \checkmark & & & & \checkmark\\
+					dupl & & \checkmark & & & & & \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+		\end{table}
 	\section{Design}
-		\subsection{Understanding Autograder}
-			To be able to add functionality to Autograder, it was necessary to understand how it works. This meant looking through the code to see what happens when certain events occurred. For example, when the Rebuild button on the teacherresultpage.html is pressed, this calls the \verb|$("#rebuild").click()| function in the teacher.result.page.js file. The click function then posts to the /event/manualbuild URL. webserver.go handles the post by calling ManualCITriggerHandler() function in ci.go. ManualCITriggerHandler() then starts the daemon, which creates a Docker container and a set of commands to run on the docker container. The docker container pulls the students code and the test code from GitHub and proceeds to run the tests on it.	
-			
+
 		\subsection{Process}
-			Since Autograder was written in Go, this project is also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program will call each of the anti-plagiarism tools and store the results. The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code. A separate Go package will be written for each anti-plagiarism tool. The packages will implement a common interface which will create the commands to send to the tools and will format the results.
-			
+		Since Autograder was written in Go, this project was also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program calls each of the anti-plagiarism tools and stores the results. A separate Go package was written for each anti-plagiarism tool. The packages implement a common interface which creates the commands to send to the tools and formats the results. The interface will allow other anti-plagiarism tools to be easily added later.
+		
+		The anti-plagiarism application typically runs as a service and accepts gRPC, a remote procedure call framework, requests. Requests can also be sent from the command line. A request consists of the GitHub organization, the GitHub authorization token, a list of student repository names, a list of lab assignment names, and a list of programming languages.
+		
+		The \verb|golint| application was run against the code for suggestions on making the code follow Go coding conventions. The \verb|go fmt| command was run to clean up the whitespace in the code.
+	
 			\subsubsection{Calling the anti-plagiarism tools}
-			Before calling the anti-plagiarism tools, first the students' code will be pulled from Github to the Autograder server. The directory structure will consist of a base directory containing subdirectories for each class. Inside each class, there will be directories for each student, which will have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in Github, so pulling the code for the anti-plagiarism project will be simplified. Each student's work for an assignment to be compared against the other students' work for that assignment in that class. This will keep the number of files being compared from growing too large. 
-			
+			Before calling the anti-plagiarism tools, first the students' code is pulled from GitHub to the Autograder server. The directory structure consists of a base directory containing subdirectories for each class. Each class is a GitHub organization. Inside each class, there are directories for each student, which have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in GitHub, so pulling the code for the anti-plagiarism project is simplified.
+	
 			\begin{figure}[h!]
-				\includegraphics[width=0.2\textwidth]{Directories.png}
+				\includegraphics[width=0.4\textwidth]{Directories.png}
 				\caption{Directory structure.}
 				\label{fig:directories}
 			\end{figure}
 			
 			\begin{figure}[h!]
-				\includegraphics[width=1.0\textwidth]{process.pdf}
+				\includegraphics[width=1.0\textwidth]{process2.pdf}
 				\caption{Process}
 				\label{fig:process}
 			\end{figure}
+	
+			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters. The commands are then sent to their respective tools. Each student's work for an assignment is compared against the other students' work for that particular assignment in that class instead of all the assignments for that class or all the assignments for all classes. This keeps the number of files being compared from growing too large.
 			
-			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters.
+			The anti-plagiarism application waits for the results to come back from each of the tools. When they have all finished, the program will collect and store the resulting html files in the location specified. Finally the program sends a gRPC response back to the calling application.
 			
+		\subsection{Integrating with Autograder}
+		A few new fields needed to be added to the Autograder's Bolt database. Bolt stores entries as a key/value pair. Each lab assignment entry in each class needed to store the language the assignment is written in. Also each lab assignment entry for each student/group needed to the results from each of the anti-plagiarism tools.
+		
+		The user interface was also updated to allow teachers to assign a programming language to each lab (figure \ref{fig:selectLang}), to allow teachers to initiate the anti-plagiarism process (figure \ref{fig:startTest}), and to show the results of the process. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{SelectingLanguage.png}
+			\caption{Selecting language.}
+			\label{fig:selectLang}
+		\end{figure}
+				
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{StartTest.png}
+			\caption{Start anti-plagiarism test.}
+			\label{fig:startTest}
+		\end{figure}
+		
+		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder. The teacher panel shows a table of all the students in the class and their assignments. If any of the anti-plagiarism tools find evidence of plagiarism, the corresponding cell in the table will be colored a shade of red. The more tools finding plagiarism, the deeper the color. From the teacher panel, teachers go to a results page to look at more details about each lab. This page shows the results of each anti-plagiarism tool and buttons to show the plagiarized code. See figure \ref{fig:indResults}.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{IndividualResults.png}
+			\caption{Individual results.}
+			\label{fig:indResults}
+		\end{figure}
+		
+		While adding the new functionality to Autograder, care was taken not to break any existing functionality. Unit tests were rerun to check that nothing was broken.
+	
 	\section{Results}
+	TODO
+	
 	\section{Issues}
-		A few issues were encountered during the project.
-		\begin{itemize}
-			\item JPlag will only work with the languages it supports. Therefore JPlag will not accept Go files. 
-			\item dupl will not compare files it cannot parse. So files that are submitted with syntax errors could have plagiarized code, but they will remain unnoticed.
-			\item Moss does not look in subdirectories. Also Moss will refuse to upload code if it cannot find a matching file in a directory. For example if Moss is told
-			to upload all the go files in student1/lab1/, student2/lab1/, and student3/lab1/ and there are no go files in student1/lab1/, the request will fail. Therefore
-			the application must walk through the directories to find directories and subdirectories that contain files matching the extension.
-			\item The Moss script needed to be modified to correctly use the wildcard symbol, $*$, when called from go.
-		\end{itemize}
+	A few issues were encountered during the project.
+	\begin{itemize}
+		\item JPlag will only work with the languages it supports. Therefore JPlag will not accept Go files. 
+		\item dupl will not compare files it cannot parse. So files that are submitted with syntax errors could have plagiarized code, but they will remain unnoticed.
+		\item Moss does not look in subdirectories. Also Moss will refuse to upload code if it cannot find a matching file in a directory. For example if Moss is told
+		to upload all the go files in student1/lab1/, student2/lab1/, and student3/lab1/ and there are no go files in student1/lab1/, the request will fail. Therefore
+		the application must walk through the directories to find directories and subdirectories that contain files matching the extension.
+		\item The Moss script needed to be modified to correctly use the wildcard symbol, $*$, when called from go.
+	\end{itemize}
+	
 	\section{Analysis}
+	TODO
+	
 	\section{Future work}
-		Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder.
+	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. Additional anti-plagiarism tools can be added later.
+	
 	\section{Conclusion}
+	TODO
+	
 	\bibliography{sources}
 	\bibliographystyle{ieeetr}
+
+\begin{IEEEbiographynophoto}{Eric Scott Freeman}
+Biography text here.
+\end{IEEEbiographynophoto}
+
 \end{document}
+
+
