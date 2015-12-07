@@ -199,6 +199,17 @@
 	\section{Conclusion}
 	TODO
 	
+	% use section* for acknowledgment
+	\ifCLASSOPTIONcompsoc
+		% The Computer Society usually uses the plural form
+		\section*{Acknowledgments}
+	\else
+		% regular IEEE prefers the singular form
+		\section*{Acknowledgment}
+	\fi
+	
+	The author would like to thank Hein Meling for his advice and guidance during this project.
+	
 	\bibliography{sources}
 	\bibliographystyle{ieeetr}
 
