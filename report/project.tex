@@ -1,65 +1,43 @@
 %% project.tex
 %% 2015/12/05
 %% by Eric Scott Freeman
-%% This document uses the bare_adv.tex template provided by Michael Shell.
+%% This document uses bare_jrnl_comsoc.tex template provided by Michael Shell.
 
-\documentclass[10pt,journal,compsoc]{IEEEtran}
+\documentclass[journal,comsoc]{IEEEtran}
 
-
-\ifCLASSOPTIONcompsoc
-  % The IEEE Computer Society needs nocompress option
-  % requires cite.sty v4.0 or later (November 2003)
-  \usepackage[nocompress]{cite}
-\else
-  % normal IEEE
-  \usepackage{cite}
-\fi
-
-\usepackage{amssymb}
-\usepackage{booktabs}
-\usepackage{floatrow}
-\usepackage{graphicx}
+\usepackage{amsmath}                % From template
+\interdisplaylinepenalty=2500       % From template
+\usepackage[cmintegrals]{newtxmath} % From template
+\usepackage[T1]{fontenc}            % From template
+\usepackage{amssymb}                % For the checkmarks in the table
+\usepackage{booktabs}               % For the table
+\usepackage{floatrow}               % To make the images fit
+\usepackage{graphicx}               % To show images
 \usepackage{listings}
-\usepackage{url}
-
-\newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
-pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
-colorlinks=true,linkcolor={black},citecolor={black},urlcolor={black},
-pdftitle={Anti-plagiarism Project},
-pdfsubject={Anti-plagiarism},
-pdfauthor={Eric Scott Freeman},
-pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
-             Moss, JPlag, dupl, Autograder}}
+\usepackage{url}                    % For adding URLs
+\usepackage[utf8]{inputenc}         % For displaying accented characters
 
 % correct bad hyphenation here
 \hyphenation{}
-
 
 \begin{document}
 
 	\title{Anti-plagiarism Project}
 	\author{Eric~Scott~Freeman}
 	
-	\IEEEtitleabstractindextext{%
+	\maketitle
+	
 	\begin{abstract}
 		TODO
 	\end{abstract}
-	
+		
 	\begin{IEEEkeywords}
 		anti-plagiarism, plagiarism, fingerprinting, stylometry, Moss, JPlag, dupl, Autograder.
-	\end{IEEEkeywords}}
+	\end{IEEEkeywords}
 	
-	\maketitle
-	
-	\IEEEdisplaynontitleabstractindextext
 	\IEEEpeerreviewmaketitle
 
-	\ifCLASSOPTIONcompsoc
-		\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
-	\else
-		\section{Introduction}
-		\label{sec:introduction}
-	\fi
+	\section{Introduction}
 	
 	\IEEEPARstart{T}{he} University of Stavanger uses an application called Autograder, written by Heine Furubotten, to automatically grade students' programming assignments. Autograder works with GitHub. Whenever a student pushes their code to GitHub, Autograder will pull a copy of the code and run a series of tests on it. Autograder does not currently have support for plagiarism detection. The goal of this project is to integrate a few anti-plagiarism tools into Autograder, thereby helping the professors save time.
 
@@ -211,7 +189,7 @@ pdfkeywords={anti-plagiarism, plagiarism, fingerprinting, stylometry,
 	\bibliographystyle{ieeetr}
 
 \begin{IEEEbiographynophoto}{Eric Scott Freeman}
-Biography text here.
+is currently a master's student at the University of Stavanger. He received his Bachelor of Science degree in Computer Science from Midwestern State University in 2004. He has also worked as a software developer for several companies including RadioShack, Cisco Systems, and TelStrat.
 \end{IEEEbiographynophoto}
 
 \end{document}
