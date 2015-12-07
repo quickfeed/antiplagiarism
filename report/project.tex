@@ -1,7 +1,7 @@
 %% project.tex
 %% 2015/12/05
 %% by Eric Scott Freeman
-%% This document uses bare_adv.tex template provided by Michael Shell.
+%% This document uses bare_jrnl_compsoc.tex template provided by Michael Shell.
 
 \documentclass[10pt,journal,compsoc]{IEEEtran}
 
@@ -51,12 +51,7 @@
 	\IEEEdisplaynontitleabstractindextext
 	\IEEEpeerreviewmaketitle
 
-	\ifCLASSOPTIONcompsoc
-		\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
-	\else
-		\section{Introduction}
-		\label{sec:introduction}
-	\fi
+	\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
 	
 	\IEEEPARstart{T}{he} University of Stavanger uses an application called Autograder, written by Heine Furubotten, to automatically grade students' programming assignments. Autograder works with GitHub. Whenever a student pushes their code to GitHub, Autograder will pull a copy of the code and run a series of tests on it. Autograder does not currently have support for plagiarism detection. The goal of this project is to integrate a few anti-plagiarism tools into Autograder, thereby helping the professors save time.
 
