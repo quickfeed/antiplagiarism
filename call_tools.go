@@ -62,10 +62,14 @@ func buildAndRunCommands(args *commandLineArgs, env *envVariables) bool {
 	// Wait for the tools to finish
 	wg.Wait()
 
+	fmt.Printf("Finished all commands. Collecting results.\n")
+
 	// Collect results
 	for i := range tools {
 		tools[i].SaveResults(args.githubOrg, labInfo, ".", env.resultsDir)
 	}
+
+	fmt.Printf("Finished collecting results.\n")
 
 	return true
 }

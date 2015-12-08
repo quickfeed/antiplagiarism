@@ -15,8 +15,10 @@ type apServer struct {
 }
 
 func (s *apServer) CheckPlagiarism(ctx context.Context, req *apProto.ApRequest) (*apProto.ApResponse, error) {
+	fmt.Printf("Received request.\n")
 	// If request is coming from the client example, just return.
 	if req.GithubToken == "testtoken" {
+		fmt.Printf("Sending response.\n")
 		return &apProto.ApResponse{Success: true, Err: ""}, nil
 	}
 
@@ -37,6 +39,7 @@ func (s *apServer) CheckPlagiarism(ctx context.Context, req *apProto.ApRequest) 
 	}
 
 	success := buildAndRunCommands(&args, &s.env)
+	fmt.Printf("Sending response.\n")
 
 	if !success {
 		return &apProto.ApResponse{Success: false, Err: "Check the server command prompt for the error."}, nil
