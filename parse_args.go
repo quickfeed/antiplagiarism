@@ -36,7 +36,7 @@ var (
 	languages = flag.String(
 		"languages",
 		"",
-		"The list of languages of the labs, delimited by commas. 0 = Java, 1 = Go, 2 = C++",
+		"The list of languages of the labs, delimited by commas. 0 = Java, 1 = Go, 2 = C++, 3 = C",
 	)
 	endpoint = flag.String(
 		"endpoint",
