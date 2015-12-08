@@ -47,7 +47,7 @@ var (
 
 func usage() {
 	flag.PrintDefaults()
-	fmt.Printf("Example: ./antiplagiarism -token=0123456789ABCDEF -mainrepo=DAT320 ")
+	fmt.Printf("Example: ./antiplagiarism -token=0123456789ABCDEF -org=DAT320 ")
 	fmt.Printf("-repos=Student1,Student2,Student3 -labs=LabA,LabB,LabC -languages=0,1,0\n")
 	fmt.Printf("Example: ./antiplagiarism -endpoint=localhost:11111\n")
 }
