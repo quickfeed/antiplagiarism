@@ -118,6 +118,9 @@ func createMossCommands(org string, mossFqn string, studentsLabDirs [][]string, 
 func walkFunction(path string, info os.FileInfo, err error) error {
 	if !info.IsDir() {
 		extIndex := strings.LastIndex(path, ".")
+		if extIndex == -1 {
+			return nil
+		}
 		dirIndex := strings.LastIndex(path, "/")
 		ext := path[extIndex:]
 		dir := path[:dirIndex]
