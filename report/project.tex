@@ -161,23 +161,75 @@
 			\label{fig:startTest}
 		\end{figure}
 		
-		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder. The teacher panel shows a table of all the students in the class and their assignments. If any of the anti-plagiarism tools find evidence of plagiarism, the corresponding cell in the table will be colored a shade of red. The more tools finding plagiarism, the deeper the color. From the teacher panel, teachers go to a results page to look at more details about each lab. This page shows the results of each anti-plagiarism tool and buttons to show the plagiarized code. See figure \ref{fig:indResults}.
+		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder. The teacher panel shows a table of all the students in the class and their assignments. If any of the anti-plagiarism tools find evidence of plagiarism, the corresponding cell in the table will be colored a shade of red. The more tools finding plagiarism, the deeper the color. From the teacher panel, teachers go to a results page to look at more details about each lab. This page shows the results of each anti-plagiarism tool and buttons to show the plagiarized code. See figure \ref{fig:labresults}.
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.7\textwidth]{IndividualResults.png}
-			\caption{Individual results.}
-			\label{fig:indResults}
+			\includegraphics[width=0.7\textwidth]{LabResults.png}
+			\caption{Results for one lab.}
+			\label{fig:labresults}
 		\end{figure}
 		
 		While adding the new functionality to Autograder, care was taken not to break any existing functionality. Unit tests were rerun to check that nothing was broken.
-	
+		
 	\section{Results}
-	TODO
+	
+		\subsection{Choosing threshold values}
+		Choosing threshold values took some consideration plus trial and error. Since the threshold value for Moss is the number of files duplicate code can appear in and still be considered plagiarism, it was straightforward to find a value for Moss. The test class consisted of seventeen students and six groups. Therefore the Moss threshold would need to be less than six, because all of the groups would have code provided by the instructor. So the value chosen was five.
+		
+		For JPlag and dupl, the threshold represents the number of tokens to compare. It was not known how much data a token represents in JPlag, but luckily the output included the number of tokens in each match. In figure \ref{fig:jplag20} it is shown that 20 tokens can match short functions that only print a value. In figure \ref{fig:jplag30} it is shown that 30 tokens can match a long list of variable assignments. Figure \ref{fig:jplag40} shows that 40 tokens will match pieces of code that are more substantial. Therefore a JPlag threshold of 35 was chosen to get better matches.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.6\textwidth]{jplag20.png}
+			\caption{JPlag match with 20 tokens.}
+			\label{fig:jplag20}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.4\textwidth]{jplag30.png}
+			\caption{JPlag match with 30 tokens.}
+			\label{fig:jplag30}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.8\textwidth]{jplag40.png}
+			\caption{JPlag match with 40 tokens.}
+			\label{fig:jplag40}
+		\end{figure}
+		
+		Unfortunately dupl does not provide the number of tokens in a match. So the threshold value needed to be adjusted several times before some of the less detailed results were removed. Figure \ref{fig:dupl50} and figure \ref{fig:dupl75} show examples of matches when the threshold was set to 50 and 75 (up from the default value of 15). 75 was chosen for the final dupl threshold.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{dupl50.png}
+			\caption{dupl match when threshold was 50 tokens.}
+			\label{fig:dupl50}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\includegraphics[width=1.0\textwidth]{dupl75.png}
+			\caption{dupl match when threshold was 75 tokens.}
+			\label{fig:dupl75}
+		\end{figure}
+		
+		\subsection{Results in Autograder}
+		
+		Figures \ref{fig:indlabresults} and \ref{fig:grouplabresults} show the individual lab results and group lab results respectively for the test class.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{indlabresults.png}
+			\caption{Individual lab results. Instructors have accounts too.}
+			\label{fig:indlabresults}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.3\textwidth]{grouplabresults.png}
+			\caption{Group lab results.}
+			\label{fig:grouplabresults}
+		\end{figure}
 	
 	\section{Analysis}
 	TODO
 	
-	Getting three separate tools to behave similarly using a common interface was a bit difficult. Moss was the original anti-plagiarism tool included in the project before it was decided to add other tools. Therefore the results from Moss should be considered more reliable. Moss's threshold says to ignore code that is similar in a certain number of files. So if the threshold is ten and a piece of code appears at least ten times, it is not considered plagiarism. This is very helpful when an instructor gives students a partially completed file or a framework to follow. The other tools produce false positives.
+	Getting three separate tools to behave similarly using a common interface was a bit difficult. Moss was the original anti-plagiarism tool included in the project before it was decided to add other tools. Therefore the results from Moss should be considered more reliable. Moss's threshold says to ignore code that is similar in a certain number of files. So if the threshold is ten and a piece of code appears at least ten times, it is not considered plagiarism. This is very helpful when an instructor gives students a partially completed file or a framework to follow. Unfortunately if a student's lab directory has subdirectories, Moss will say that similar code in different subdirectories is plagiarism.
 	
 	JPlag can produce false positives in two ways in this project. First, JPlag remembers the results from previous executions. So if a student uses a piece of code in one lab and then reuses the same piece of code in another lab, JPlag can detect this as plagiarism. The second way is JPlag is not ignoring code provided by the instructor. While it is possible to tell JPlag to ignore certain files, this would break the common interface shared among the tools. Also it would require the instructors to format the assignments in such a ways that all of the instructor provided code is separate from all of the student code.
 	
@@ -191,13 +243,13 @@
 	
 	Since dupl is only looking for duplicate code and not plagiarism, it does not provide a number indicating the percentage of code it thinks is plagiarized. It also places all the results in a single HTML file rather than splitting them up into separate files.
 	
-	The results from Moss should be considered first, and the results from the other two tools should be considered as supplemental.
-	
 	\section{Future work}
 	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. Additional anti-plagiarism tools can be added later.
 	
+	Focusing on the use of one tool would also be beneficial. When using a common interface to access the different tools, some of the fine tuning is lost.
+	
 	\section{Conclusion}
-	TODO
+	Due to the high number of false positives found during testing, it is probably best to consider the results from this application as supplemental. The tools used are very good at finding similar pieces of code, but there are legitimate reasons for having duplicate code, such as code distributed by the instructor or students reusing their own code. Use of this application is useful if an instructor suspects plagiarism and uses this to verify their suspicions.
 	
 	% use section* for acknowledgment
 	\ifCLASSOPTIONcompsoc
