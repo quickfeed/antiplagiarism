@@ -233,7 +233,7 @@
 	
 	JPlag can produce false positives in two ways in this project. First, JPlag remembers the results from previous executions. So if a student uses a piece of code in one lab and then reuses the same piece of code in another lab, JPlag can detect this as plagiarism. The second way is JPlag is not ignoring code provided by the instructor. While it is possible to tell JPlag to ignore certain files, this would break the common interface shared among the tools. Also it would require the instructors to format the assignments in such a ways that all of the instructor provided code is separate from all of the student code.
 	
-	dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates.
+	Dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates.
 	
 	\begin{figure}[h!]
 		\includegraphics[width=0.7\textwidth]{duplSameFile2.png}
@@ -243,12 +243,14 @@
 	
 	Since dupl is only looking for duplicate code and not plagiarism, it does not provide a number indicating the percentage of code it thinks is plagiarized. It also places all the results in a single HTML file rather than splitting them up into separate files.
 	
-	Adjustments were made to the thresholds, but it did not significantly reduce the number of false positives.
+	Adjustments were made to the thresholds in attempt to clean up the results shown in figures \ref{fig:indlabresults} and \ref{fig:grouplabresults}. Labs one and five improved some, but there was too much provided code in the other labs for cleaner results.
 	
 	\section{Future work}
-	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. Additional anti-plagiarism tools can be added later.
+	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in the gRPC calls. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. 
 	
-	Focusing on the use of one tool would also be beneficial. When using a common interface to access the different tools, some of the fine tuning is lost.
+	Additional anti-plagiarism tools could be added later, but focusing on the use of one tool could be a better option. When using a common interface to access the different tools, some of the fine tuning is lost.
+	
+	Autograder does not do anything with the percentages other than display them. It could have its own threshold and only display results above a certain percentage.
 	
 	\section{Conclusion}
 	Due to the high number of false positives found during testing, it is probably better to consider the results from this application as supplemental to any suspicions an instructor may have already. It would be tedious to examine all of the results. The tools used are very good at finding similar pieces of code, but there are legitimate reasons for having duplicate code, such as code distributed by the instructor or students reusing their own code. Use of this application is useful if an instructor suspects plagiarism and uses this to verify their suspicions.
