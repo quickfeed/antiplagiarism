@@ -246,7 +246,7 @@
 	Adjustments were made to the thresholds in attempt to clean up the results shown in figures \ref{fig:indlabresults} and \ref{fig:grouplabresults}. Labs one and five improved some, but there was too much provided code in the other labs for cleaner results.
 	
 	\section{Future work}
-	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in the gRPC calls. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. 
+	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in the gRPC calls. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. There are also some hard-coded values in Autograder that should be environment variables or in a configuration file, such as the address and port of the anti-plagiarism application.
 	
 	Additional anti-plagiarism tools could be added later, but focusing on the use of one tool could be a better option. When using a common interface to access the different tools, some of the fine tuning is lost.
 	
