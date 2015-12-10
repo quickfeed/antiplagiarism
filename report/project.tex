@@ -64,7 +64,7 @@
 		Several tools use a technique called fingerprinting to detect plagiarism. In fingerprinting algorithms, hashes of $n$-grams, substrings that are $n$ characters, are saved and compared to help find plagiarism. Not all hashes are stored due to the large number that would be produced. 
 		
 			\subsubsection{Winnowing}
-			Moss uses a technique called winnowing to select which hashes to save \cite{schleimer+wilkerson+aiken}. In the winnowing algorithm, a window, selection of contiguous hashes, is used to help select which hashes to save. The smallest hash from a window is saved, and then the window moves one hash over. The smallest hash from the next window is often the smallest hash from the previous window. If so it is not saved again. Figure \ref{fig:winnowing1} shows an example of how winnowing works. The orange box represents the shifting window. The green box shows whenever a new hash is saved.
+			Moss uses a technique called winnowing to select which hashes to save \cite{schleimer+wilkerson+aiken}. In the winnowing algorithm, a window, a selection of contiguous hashes, is used to help select which hashes to save. The smallest hash from a window is saved, and then the window moves one hash over. The smallest hash from the next window is often the smallest hash from the previous window. If so it is not saved again. Figure \ref{fig:winnowing1} shows an example of how winnowing works. The orange box represents the shifting window. The green box shows whenever a new hash is saved.
 		
 			\begin{figure}[h!]
 				\includegraphics[width=0.8\textwidth]{Winnowing.png}
@@ -161,7 +161,7 @@
 			\label{fig:startTest}
 		\end{figure}
 		
-		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder. The teacher panel shows a table of all the students in the class and their assignments. If any of the anti-plagiarism tools find evidence of plagiarism, the corresponding cell in the table will be colored a shade of red. The more tools finding plagiarism, the deeper the color. From the teacher panel, teachers go to a results page to look at more details about each lab. This page shows the results of each anti-plagiarism tool and buttons to show the plagiarized code. See figure \ref{fig:labresults}.
+		The results are stored in the database and also displayed to the teachers through the teacher panel in Autograder. The teacher panel shows a table of all the students in the class and their assignments. If any of the anti-plagiarism tools find evidence of plagiarism, the corresponding cell in the table will be colored a shade of red. The more tools finding plagiarism, the deeper the color. From the teacher panel, teachers can go to a results page to look at more details about each lab. This page shows the results of each anti-plagiarism tool and buttons which link to the plagiarized code. See figure \ref{fig:labresults}.
 		
 		\begin{figure}[h!]
 			\includegraphics[width=0.7\textwidth]{LabResults.png}
@@ -196,7 +196,7 @@
 			\label{fig:jplag40}
 		\end{figure}
 		
-		Unfortunately dupl does not provide the number of tokens in a match. So the threshold value needed to be adjusted several times before some of the less detailed results were removed. Figure \ref{fig:dupl50} and figure \ref{fig:dupl75} show examples of matches when the threshold was set to 50 and 75 (up from the default value of 15). 75 was chosen for the final dupl threshold.
+		Unfortunately dupl does not provide the number of tokens in a match. So the threshold value needed to be adjusted several times before some of the less detailed results were removed. Figure \ref{fig:dupl50} and figure \ref{fig:dupl75} show examples of matches when the threshold was set to 50 and 75 respectively (up from the default value of 15). 75 was chosen for the final dupl threshold.
 		
 		\begin{figure}[h!]
 			\includegraphics[width=0.5\textwidth]{dupl50.png}
@@ -233,10 +233,10 @@
 	
 	JPlag can produce false positives in two ways in this project. First, JPlag remembers the results from previous executions. So if a student uses a piece of code in one lab and then reuses the same piece of code in another lab, JPlag can detect this as plagiarism. The second way is JPlag is not ignoring code provided by the instructor. While it is possible to tell JPlag to ignore certain files, this would break the common interface shared among the tools. Also it would require the instructors to format the assignments in such a ways that all of the instructor provided code is separate from all of the student code.
 	
-	Dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates.
+	Dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates. Increasing the threshold helps with scenario though.
 	
 	\begin{figure}[h!]
-		\includegraphics[width=0.7\textwidth]{duplSameFile2.png}
+		\includegraphics[width=0.5\textwidth]{duplSameFile2.png}
 		\caption{Sample dupl results from same file.}
 		\label{fig:duplSameFile}
 	\end{figure}
