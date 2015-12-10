@@ -40,11 +40,11 @@
 
 	\IEEEtitleabstractindextext{
 	\begin{abstract}
-		TODO
+	This project integrates several anti-plagiarism tools into Autograder, software used by the University of Stavanger to automatically grade students' programming assignments. The three tools used were good at finding duplicate pieces of code, but it is still up to the instructor to determine whether or not it could be considered plagiarism.
 	\end{abstract}
 		
 	\begin{IEEEkeywords}
-		anti-plagiarism, plagiarism, fingerprinting, stylometry, Moss, JPlag, dupl, Autograder.
+	anti-plagiarism, plagiarism, fingerprinting, stylometry, Moss, JPlag, dupl, Autograder.
 	\end{IEEEkeywords}}
 
 	\maketitle
@@ -53,7 +53,7 @@
 
 	\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
 	
-	\IEEEPARstart{T}{he} University of Stavanger uses an application called Autograder, written by Heine Furubotten, to automatically grade students' programming assignments. Autograder works with GitHub. Whenever a student pushes their code to GitHub, Autograder will pull a copy of the code and run a series of tests on it. Autograder does not currently have support for plagiarism detection. The goal of this project is to integrate a few anti-plagiarism tools into Autograder, thereby helping the professors save time.
+	\IEEEPARstart{T}{he} University of Stavanger uses an application called Autograder, written by Heine Furubotten, to automatically grade students' programming assignments. Autograder works with GitHub. Whenever a student pushes their code to GitHub, Autograder will pull a copy of the code and run a series of tests on it. Autograder does not currently have support for plagiarism detection. The goal of this project is to integrate a few anti-plagiarism tools into Autograder, thereby helping professors save time.
 
 	\section{Related Work}
 	Unfortunately software plagiarism is a problem both in the classroom and in the workplace. A number of applications have been created to help detect this problem. While these tools can detect similarities in programs, the flagged files must still be manually examined to determine whether or not code was plagiarized.
@@ -212,11 +212,11 @@
 		
 		\subsection{Results in Autograder}
 		
-		Figures \ref{fig:indlabresults} and \ref{fig:grouplabresults} show the individual lab results and group lab results respectively for the test class.
+		Figures \ref{fig:indlabresults} and \ref{fig:grouplabresults} show the individual lab results and group lab results respectively for the test class. In labs one, five, and six, the students programmed in C. They programmed in Go for the remaining labs. All of the test code for the labs was written in Go.  Light pink indicates that one tool found duplicate pieces of code, and darker pink indicates two tools found duplicates. Three tools finding results will not occur because there is no overlap in the languages that JPlag and dupl can test.
 		
 		\begin{figure}[h!]
 			\includegraphics[width=0.5\textwidth]{indlabresults.png}
-			\caption{Individual lab results. Instructors have accounts too.}
+			\caption{Individual lab results. Instructors and TAs have accounts too.}
 			\label{fig:indlabresults}
 		\end{figure}
 		
@@ -227,13 +227,13 @@
 		\end{figure}
 	
 	\section{Analysis}
-	TODO
+	At first glance, it appeared as if all the students that submitted work plagiarized code, but that would be a very unlikely scenario. Most of the duplicates appear to come from code provided to the students. In labs one and five, little or no code was provided to the students. Therefore there were much fewer detections in these two assignments.
 	
-	Getting three separate tools to behave similarly using a common interface was a bit difficult. Moss was the original anti-plagiarism tool included in the project before it was decided to add other tools. Therefore the results from Moss should be considered more reliable. Moss's threshold says to ignore code that is similar in a certain number of files. So if the threshold is ten and a piece of code appears at least ten times, it is not considered plagiarism. This is very helpful when an instructor gives students a partially completed file or a framework to follow. Unfortunately if a student's lab directory has subdirectories, Moss will say that similar code in different subdirectories is plagiarism.
+	Getting three separate tools to behave similarly using a common interface was a bit difficult. Moss was the original anti-plagiarism tool included in the project before it was decided to add other tools. Moss's threshold says to ignore code that is similar in a certain number of files. So if the threshold is ten and a piece of code appears at least ten times, it is not considered plagiarism. This is very helpful when an instructor gives students a partially completed file or a framework to follow. Since the threshold does not specify the length of code to consider for plagiarism, sometimes relatively short sections of code show up in the results. Unfortunately if a student's lab directory has subdirectories, Moss will say that similar code in different subdirectories is plagiarism.
 	
 	JPlag can produce false positives in two ways in this project. First, JPlag remembers the results from previous executions. So if a student uses a piece of code in one lab and then reuses the same piece of code in another lab, JPlag can detect this as plagiarism. The second way is JPlag is not ignoring code provided by the instructor. While it is possible to tell JPlag to ignore certain files, this would break the common interface shared among the tools. Also it would require the instructors to format the assignments in such a ways that all of the instructor provided code is separate from all of the student code.
 	
-	dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file as plagiarism. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates. Increasing the threshold can help lessen this problem.
+	dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates.
 	
 	\begin{figure}[h!]
 		\includegraphics[width=0.7\textwidth]{duplSameFile2.png}
@@ -243,13 +243,17 @@
 	
 	Since dupl is only looking for duplicate code and not plagiarism, it does not provide a number indicating the percentage of code it thinks is plagiarized. It also places all the results in a single HTML file rather than splitting them up into separate files.
 	
+	Adjustments were made to the thresholds, but it did not significantly reduce the number of false positives.
+	
 	\section{Future work}
 	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in gRPC. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. Additional anti-plagiarism tools can be added later.
 	
 	Focusing on the use of one tool would also be beneficial. When using a common interface to access the different tools, some of the fine tuning is lost.
 	
 	\section{Conclusion}
-	Due to the high number of false positives found during testing, it is probably best to consider the results from this application as supplemental. The tools used are very good at finding similar pieces of code, but there are legitimate reasons for having duplicate code, such as code distributed by the instructor or students reusing their own code. Use of this application is useful if an instructor suspects plagiarism and uses this to verify their suspicions.
+	Due to the high number of false positives found during testing, it is probably better to consider the results from this application as supplemental to any suspicions an instructor may have already. It would be tedious to examine all of the results. The tools used are very good at finding similar pieces of code, but there are legitimate reasons for having duplicate code, such as code distributed by the instructor or students reusing their own code. Use of this application is useful if an instructor suspects plagiarism and uses this to verify their suspicions.
+	
+	Results could be improved in future classes if all instructor provided code resided in separate repositories. This would greatly reduce the number of false positives. Then the work in the students' repositories would hopefully be their own work and not code copied from someone else.
 	
 	% use section* for acknowledgment
 	\ifCLASSOPTIONcompsoc
