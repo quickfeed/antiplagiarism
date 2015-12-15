@@ -179,19 +179,19 @@
 		For JPlag and dupl, the threshold represents the number of tokens to compare. It was not known how much data a token represents in JPlag, but luckily the output included the number of tokens in each match. In figure \ref{fig:jplag20} it is shown that 20 tokens can match short functions that only print a value. In figure \ref{fig:jplag30} it is shown that 30 tokens can match a long list of variable assignments. Figure \ref{fig:jplag40} shows that 40 tokens will match pieces of code that are more substantial. Therefore a JPlag threshold of 35 was chosen to get better matches.
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.6\textwidth]{jplag20.png}
+			\includegraphics[width=1.0\textwidth]{jplag20.png}
 			\caption{JPlag match with 20 tokens.}
 			\label{fig:jplag20}
 		\end{figure}
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.4\textwidth]{jplag30.png}
+			\includegraphics[width=1.0\textwidth]{jplag30.png}
 			\caption{JPlag match with 30 tokens.}
 			\label{fig:jplag30}
 		\end{figure}
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.8\textwidth]{jplag40.png}
+			\includegraphics[width=1.0\textwidth]{jplag40.png}
 			\caption{JPlag match with 40 tokens.}
 			\label{fig:jplag40}
 		\end{figure}
@@ -199,7 +199,7 @@
 		Unfortunately dupl does not provide the number of tokens in a match. So the threshold value needed to be adjusted several times before some of the less detailed results were removed. Figure \ref{fig:dupl50} and figure \ref{fig:dupl75} show examples of matches when the threshold was set to 50 and 75 respectively (up from the default value of 15). 75 was chosen for the final dupl threshold.
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.5\textwidth]{dupl50.png}
+			\includegraphics[width=1.0\textwidth]{dupl50.png}
 			\caption{dupl match when threshold was 50 tokens.}
 			\label{fig:dupl50}
 		\end{figure}
@@ -215,13 +215,13 @@
 		Figures \ref{fig:indlabresults} and \ref{fig:grouplabresults} show the individual lab results and group lab results respectively for the test class. In labs one, five, and six, the students programmed in C. They programmed in Go for the remaining labs. All of the test code for the labs was written in Go.  Light pink indicates that one tool found duplicate pieces of code, and darker pink indicates two tools found duplicates. Three tools finding results will not occur because there is no overlap in the languages that JPlag and dupl can test.
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.5\textwidth]{indlabresults.png}
+			\includegraphics[width=0.6\textwidth]{indlabresults.png}
 			\caption{Individual lab results. Instructors and TAs have accounts too.}
 			\label{fig:indlabresults}
 		\end{figure}
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.3\textwidth]{grouplabresults.png}
+			\includegraphics[width=0.5\textwidth]{grouplabresults.png}
 			\caption{Group lab results.}
 			\label{fig:grouplabresults}
 		\end{figure}
