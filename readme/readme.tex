@@ -60,7 +60,16 @@ go get -u github.com/mibk/dupl
 			\noindent dupl requires Go version 1.4 or higher.
 			
 		\subsection{JPlag}
-			To download and install JPlag, get the code from \\\verb|https://github.com/jplag/jplag|. Maven is also required. Download and install it if necessary. Go to the \verb|jplag/jplag/jplag| directory inside the download and run the following command:
+			To download and install JPlag, get the code from \\\verb|https://github.com/jplag/jplag|. Maven is also required. Download and install it if necessary. Before compiling the jar file, a small change needs to be made in order of JPlag to handle occurrences where a student's directory does not contain a lab. Inside the \verb|jplag/jplag/jplag/src/main/java/jplag/Program.java| file, make the following changes at line 441. This is near the end of the \verb|createSubmissions()| function. 
+			Comment out
+\begin{lstlisting}[language=java]
+throw new ExitException("Cannot find directory: " + file_dir.toString());
+\end{lstlisting}
+			Add
+\begin{lstlisting}[language=java]
+continue;
+\end{lstlisting}
+			After making the changes, go to the \verb|jplag/jplag/jplag| directory inside the download and run the following command:
 			\begin{lstlisting}[language=bash]
 mvn clean generate-sources assembly:assembly
 			\end{lstlisting}
