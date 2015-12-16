@@ -241,13 +241,50 @@
 			\caption{Group lab results.}
 			\label{fig:grouplabresults}
 		\end{figure}
+		
+		An attempt was made to improve the results by manually deleting whole files that were common among the students. Partial files common among the students were not altered due to time constraints. The new results are listed in Table \ref{tab:newResults}.
+		
+		\begin{table}[h!]
+			\begin{center}
+				\caption{Individual results after manually removing common whole files. M=Moss, J=JPlag, D=dupl}
+				\label{tab:newResults}
+				\begin{tabular}{ccccccccccccccc}
+					\toprule
+					Student & Lab 1 & Lab 2 & Lab 3 & Lab 4 & Lab 5\\
+					\midrule
+					1 & M & D & MD & D & \\
+					2 &  &  & D & D & \\
+					3 & M &  & D & D & \\
+					4 &  &  & D & D & \\
+					5 &  &  & MD & D & \\
+					6 &  &  &  &  & \\
+					7 &  &  & MD & D & \\
+					8 & M &  & D & D & \\
+					9 & M &  & D & D & \\
+					10 &  & D & MD & MD & \\
+					11 &  &  &  &  & \\
+					12 & M &  & D &  & \\
+					13 & M & D & D & D & \\
+					14 &  & D & D & D & \\
+					15 & M &  & D &  & \\
+					16 & M &  & D & D & \\
+					17 &  &  & MD & D & \\
+					18 &  &  & MD & D & M\\
+					19 &  &  & D & D & \\
+					20 & M & D & D & D & \\
+					21 &  & D & MD & D & \\
+					22 &  &  & D & D & \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+		\end{table}
 	
 	\section{Analysis}
 	At first glance, it appeared as if all the students that submitted work plagiarized code, but that would be a very unlikely scenario. Most of the duplicates appear to come from code provided to the students. In labs one and five, little or no code was provided to the students. Therefore there were much fewer detections in these two assignments.
 	
 	Getting three separate tools to behave similarly using a common interface was a bit difficult. Moss was the original anti-plagiarism tool included in the project before it was decided to add other tools. Moss's threshold says to ignore code that is similar in a certain number of files. So if the threshold is ten and a piece of code appears at least ten times, it is not considered plagiarism. This is very helpful when an instructor gives students a partially completed file or a framework to follow. Since the threshold does not specify the length of code to consider for plagiarism, sometimes relatively short sections of code show up in the results. Unfortunately if a student's lab directory has subdirectories, Moss will say that similar code in different subdirectories is plagiarism.
 	
-	JPlag can produce false positives in two ways in this project. First, JPlag remembers the results from previous executions. So if a student uses a piece of code in one lab and then reuses the same piece of code in another lab, JPlag can detect this as plagiarism. The second way is JPlag is not ignoring code provided by the instructor. While it is possible to tell JPlag to ignore certain files, this would break the common interface shared among the tools. Also it would require the instructors to format the assignments in such a ways that all of the instructor provided code is separate from all of the student code.
+	JPlag can produce false positives by not ignoring code provided by the instructor. While it is possible to tell JPlag to ignore certain files, this would break the common interface shared among the tools. Also it would require the instructors to format the assignments in such a ways that all of the instructor provided code is separate from all of the student code.
 	
 	Dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates. Increasing the threshold helps with scenario though.
 	
