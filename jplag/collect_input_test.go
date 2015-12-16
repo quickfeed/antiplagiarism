@@ -36,7 +36,7 @@ func TestJplagInput(t *testing.T) {
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab1", 0}},
-			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg")},
+			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -S lab1 -s " + filepath.Join(dir, "testOrg")},
 			true},
 		// One lab, has go code
 		{"testOrg",
@@ -48,13 +48,13 @@ func TestJplagInput(t *testing.T) {
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab3", 2}},
-			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab3 -s lab3 " + filepath.Join(dir, "testOrg")},
+			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab3 -S lab3 -s " + filepath.Join(dir, "testOrg")},
 			true},
 		// One lab, has c code
 		{"testOrg",
 			[]common.LabInfo{
 				common.LabInfo{"lab4", 3}},
-			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab4 -s lab4 " + filepath.Join(dir, "testOrg")},
+			[]string{"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab4 -S lab4 -s " + filepath.Join(dir, "testOrg")},
 			true},
 		// Four labs, java, go, c++, c code
 		{"testOrg",
@@ -64,10 +64,10 @@ func TestJplagInput(t *testing.T) {
 				common.LabInfo{"lab3", 2},
 				common.LabInfo{"lab4", 3}},
 			[]string{
-				"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -s lab1 " + filepath.Join(dir, "testOrg"),
+				"java -jar " + toolLoc + " -t " + threshStr + " -l java17 -r JPLAG.testOrg.lab1 -S lab1 -s " + filepath.Join(dir, "testOrg"),
 				"",
-				"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab3 -s lab3 " + filepath.Join(dir, "testOrg"),
-				"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab4 -s lab4 " + filepath.Join(dir, "testOrg")},
+				"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab3 -S lab3 -s " + filepath.Join(dir, "testOrg"),
+				"java -jar " + toolLoc + " -t " + threshStr + " -l c/c++ -r JPLAG.testOrg.lab4 -S lab4 -s " + filepath.Join(dir, "testOrg")},
 			true},
 		// Directory doesn't exist
 		{"DAT500",
