@@ -64,7 +64,7 @@ func createJPlagCommands(org string, labsBaseDir string, jplagFqn string, labs [
 		rOption := " -r " + resultDir
 
 		// Select the subdirectories to compare. In this case, the name of the lab
-		sOption := " -s " + labs[i].Name
+		sOption := " -S " + labs[i].Name + " -s"
 
 		// Start creating the JPlag command
 		var buf bytes.Buffer
