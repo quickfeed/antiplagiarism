@@ -77,7 +77,7 @@
 			\end{figure}
 		
 			\subsubsection{Running-Karp-Rabin Greedy-String-Tiling}
-			JPlag uses Running-Karp-Rabin Greedy-String-Tiling (RKS-GST) to compare hashes of code in plagiarism detection \cite{prechelt+malpohl+philippsen}. RKS-GST was originally used in YAP3, another plagiarism detection tool. In RKS-GST, the Greedy String half of the algorithm forms pairs of substrings, each from a different string, and then the Karp-Rabin half of the algorithm hashes each substring in the pair \cite{wise}. This is done to help detect code reordering.
+			JPlag uses Running-Karp-Rabin Greedy-String-Tiling (RKS-GST) to compare hashes of code in plagiarism detection \cite{prechelt+malpohl+philippsen}. RKS-GST was originally used in YAP3, another plagiarism detection tool. In RKS-GST, the Karp-Rabin half of the algorithm finds matching strings by comparing hashes in near linear time, and the Greedy-String-Tiling algorithm half makes sure that strings in the match are not part of another match \cite{wise}.
 		
 		\subsection{Stylometry}
 		Another approach is to use code stylometry, which analyzes the style of writing or coding.
