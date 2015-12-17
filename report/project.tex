@@ -65,10 +65,10 @@
 	This section provides an overview of some of the techniques used in checking for plagiarism. It also describes Autograder. Unfortunately software plagiarism is a problem both in the classroom and in the workplace. A number of applications have been created to help detect this problem. While these tools can find similarities in programs, the flagged files must still be manually examined to determine whether or not code was plagiarized. There are several different general techniques that are used to look for plagiarism. The tools analyzed in this project used either fingerprinting or stylometry.
 		
 		\subsection{Fingerprinting}
-		Several tools use a technique called fingerprinting to detect plagiarism. In fingerprinting algorithms, hashes of $n$-grams, substrings that are $n$ characters, are saved and compared to help find plagiarism. Not all hashes are stored due to the large number that would be produced. 
+		Several tools use a technique called fingerprinting to detect plagiarism. In fingerprinting algorithms, variable names are changed and extra whitespace is removed, which helps eliminate superficial changes to code. Then multiple hashes of $n$-grams, substrings that are $n$ characters, are saved and can compared to help find plagiarism. Matching hashes are then flagged as potential plagiarism. Not all hashes are stored due to the large number that would be produced.
 		
 			\subsubsection{Winnowing}
-			Moss uses a technique called winnowing to select which hashes to save \cite{schleimer+wilkerson+aiken}. In the winnowing algorithm, a window, a selection of contiguous hashes, is used to help select which hashes to save. The smallest hash from a window is saved, and then the window moves one hash over. The smallest hash from the next window is often the smallest hash from the previous window. If so it is not saved again. Figure \ref{fig:winnowing1} shows an example of how winnowing works. The orange box represents the shifting window. The green box shows whenever a new hash is saved.
+			Moss uses a technique called winnowing to select which hashes to save \cite{schleimer+wilkerson+aiken}. In the winnowing algorithm, a window, a selection of contiguous hashes, is used to help select which hashes to save. The smallest hash from a window is saved, and then the window moves one hash over. The smallest hash from the next window is often the smallest hash from the previous window. If so it is not saved again. This limits the number of hashes saved to the fingerprint, and the use of a window keeps the distance between hashes from becoming too large. A large distance increases the chance plagiarism being undetected. Figure \ref{fig:winnowing1} shows an example of how winnowing works. The orange box represents the shifting window. The green box shows whenever a new hash is saved.
 		
 			\begin{figure}[h!]
 				\includegraphics[width=0.8\textwidth]{Winnowing.png}
@@ -77,13 +77,13 @@
 			\end{figure}
 		
 			\subsubsection{Running-Karp-Rabin Greedy-String-Tiling}
-			JPlag uses Running-Karp-Rabin Greedy-String-Tiling (RKS-GST) to compare hashes of code in plagiarism detection \cite{prechelt+malpohl+philippsen}. RKS-GST was originally used in YAP3, another plagiarism detection tool. In RKS-GST, the Greedy String half of the algorithm forms pairs of substrings, each from a different string. Then the Karp-Rabin half of the algorithm hashes each substring in the pair \cite{wise}. This is done to help detect code reordering.
+			JPlag uses Running-Karp-Rabin Greedy-String-Tiling (RKS-GST) to compare hashes of code in plagiarism detection \cite{prechelt+malpohl+philippsen}. RKS-GST was originally used in YAP3, another plagiarism detection tool. In RKS-GST, the Greedy String half of the algorithm forms pairs of substrings, each from a different string, and then the Karp-Rabin half of the algorithm hashes each substring in the pair \cite{wise}. This is done to help detect code reordering.
 		
 		\subsection{Stylometry}
 		Another approach is to use code stylometry, which analyzes the style of writing or coding.
 		
 			\subsubsection{Abstract Syntax Trees}
-			Caliskan-Islam, et al. use abstract syntax trees (ASTs) to compare the styles of authors \cite{caliskan-islam+harang+liu}. Things that are easily changed in code, such as variable names, become leaves in the AST, while the structure of the tree is harder to change \cite{caliskan-islam+harang+liu}. Figure \ref{fig:ast} shows an abstract syntax tree of the code in Figure \ref{fig:astcode}. Note how the leaves, or circular nodes, in Figure \ref{fig:ast} are variable names, constants, and a function name.
+			Caliskan-Islam, et al. use abstract syntax trees (ASTs) to compare the styles of authors \cite{caliskan-islam+harang+liu}. Things that are easily changed in code, such as variable names, become leaves in the AST, while the structure of the tree is harder to change \cite{caliskan-islam+harang+liu}. For example, if one student copied a function from another student and only changed the variable names, the structure of the tree would look exactly the same. This could then be flagged as potential plagiarism. Figure \ref{fig:ast} shows an abstract syntax tree of the code in Figure \ref{fig:astcode}. Note how the leaves, or circular nodes, in Figure \ref{fig:ast} are variable names, constants, and a function name.
 		
 			\begin{figure}
 				\includegraphics[width=0.8\textwidth]{AST.pdf}
@@ -128,16 +128,16 @@
 			Moss is an anti-plagiarism tool which uses winnowing to find similar pieces of code. It was the first choice in anti-plagiarism tools, because it supports a large number of languages and is a mature piece of software. While Moss does not officially support Go, it can still check Go files. A very nice feature is its ability to ignore similar pieces of code if the it appears it a certain number of files. So code that is common to everyone, such as code provided by instructor, can be ignored. It is free to use the Moss service, but it requires registration. To run Moss locally, a fee must be paid.
 		
 			\subsubsection{JPlag}
-			JPlag is an anti-plagiarism tool which uses RKS-GST to find similar code. Like Moss, JPlag supports many languages. It is free, open-source, and can be run locally. JPlag will only check files written in the languages it officially supports. While JPlag can ignore files, it must be told which files to ignore. Also it cannot ignore portions of a file.
+			JPlag is an anti-plagiarism tool which uses RKS-GST to find similar code. Like Moss, JPlag supports many languages. It is free, open-source, and can be run locally. JPlag will only check files written in the languages it officially supports. While JPlag can ignore files, it must be told which files to ignore.
 		
 			\subsubsection{dupl}
-			Michal Bohuslávek's dupl application uses ASTs to find similarities in code for big projects \cite{bohuslave}. Dupl was chosen for its use of ASTs and its support for the Go programming language. Dupl is free, open-source, and can be run locally. It will only work with Go files. Dupl looks for any copies of code, not just plagiarism. So if a piece of code is duplicated even in the same file, it will test positive. Since dupl was not designed to test for plagiarism, there is no way to tell it to ignore code. It also does not provide a percentage saying what percentage of code is likely to be plagiarized. The checked code must be able to compile since dupl needs to parse the code to make the ASTs correctly.
+			Michal Bohuslávek's dupl application uses ASTs to find similarities in code for big projects \cite{bohuslave}. Dupl was chosen for its use of ASTs, which means it uses stylometry instead of fingerprinting, and its support for the Go programming language. Dupl is free, open-source, and can be run locally. It will only work with Go files. Dupl looks for any copies of code, not just plagiarism. So if a piece of code is duplicated even in the same file, it will test positive. Since dupl was not designed to test for plagiarism, there is no way to tell it to ignore code. It also does not provide a percentage saying what percentage of code is likely to be plagiarized. The checked code must be able to compile since dupl needs to parse the code to make the ASTs correctly.
 		
 			\subsubsection{Tools not chosen}
 			There are several tools which were not chosen. For example, Plaggie supports only Java, while the data from the test course was written in C and Go. So Plaggie would not have been a good choice.
 		
 		\subsection{Integrating with Autograder}
-		A few new fields needed to be added to the Autograder's Bolt database. Each lab assignment entry in each class needed to store the language the assignment is written in. Also each lab assignment entry for each student/group needed to store the results from each of the anti-plagiarism tools.
+		Some changes needed to be made to Autograder before it would work with this project. A few new fields needed to be added to the Autograder's Bolt database. Each lab assignment entry in each class needed to store the language the assignment is written in. Also each lab assignment entry for each student/group needed to store the results from each of the anti-plagiarism tools.
 		
 		The user interface was also updated to allow teachers to assign a programming language to each lab (figure \ref{fig:selectLang}), to allow teachers to initiate the anti-plagiarism process (figure \ref{fig:startTest}), and to show the results of the process. 
 		
@@ -187,7 +187,7 @@
 	
 		When the anti-plagiarism software receives the gRPC request, the students' code is pulled from GitHub to the Autograder server. Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters. The commands are then sent to their respective tools. Each student's work for an assignment is compared against the other students' work for that particular assignment in that class instead of all the assignments for that class or all the assignments for all classes. This keeps the number of files being compared from growing too large.
 			
-		The anti-plagiarism application waits for the results to come back from each of the tools. When they have all finished, the program will collect and store the resulting HTML files in the location specified. It also examines the HTML files for the highest incidents of plagiarism for each student. The highest values are written to a JSON file. Finally the program sends a gRPC response back to the calling application indicating if it was successful or not.
+		The anti-plagiarism application waits for the results to come back from each of the tools. When they have all finished, the program will collect and store the resulting HTML files in the location specified. It also examines the HTML files for the highest incidents of plagiarism for each student. The highest values are written to a JSON file, which will be processed by Autograder. Finally the program sends a gRPC response back to the calling application indicating if it was successful or not.
 		
 	\section{Results}
 	This sections presents the results of testing the anti-plagiarism software on real students' projects. It also describes the modification of parameters to improve the results.
@@ -234,7 +234,7 @@
 		Figures \ref{fig:indlabresults} and \ref{fig:grouplabresults} show the individual lab results and group lab results respectively for the test class. In labs one, five, and six, the students programmed in C. They programmed in Go for the remaining labs. All of the test code for the labs was written in Go.  Light pink indicates that one tool found duplicate pieces of code, and darker pink indicates two tools found duplicates. Three tools finding results will not occur because there is no overlap in the languages that JPlag and dupl can test. Please note that the percentages shown here indicate the percentage of the assignment that the student has passed and not an amount of plagiarism.
 		
 		\begin{figure}[h!]
-			\includegraphics[width=0.6\textwidth]{indlabresults.png}
+			\includegraphics[width=0.65\textwidth]{indlabresults.png}
 			\caption{Individual lab results. Instructors and TAs have accounts too.}
 			\label{fig:indlabresults}
 		\end{figure}
