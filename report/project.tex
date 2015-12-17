@@ -62,9 +62,7 @@
 	This paper will first discuss various methods for detecting plagiarism and existing tools in Section 2. Section 3 will explain the design of the project and how it is integrated with Autograder. Section 4 will present the results of running the anti-plagiarism project against real assignments submitted by students, and Section 5 will analyze the results. In Section 6, future work will be described.
 
 	\section{Related Work}
-	Unfortunately software plagiarism is a problem both in the classroom and in the workplace. A number of applications have been created to help detect this problem. While these tools can detect similarities in programs, the flagged files must still be manually examined to determine whether or not code was plagiarized.
-		
-	There are several different general techniques that are used to look for plagiarism. The tools analyzed in this project used either fingerprinting or stylometry.
+	This section provides an overview of some of the techniques used in checking for plagiarism. It also describes Autograder. Unfortunately software plagiarism is a problem both in the classroom and in the workplace. A number of applications have been created to help detect this problem. While these tools can find similarities in programs, the flagged files must still be manually examined to determine whether or not code was plagiarized. There are several different general techniques that are used to look for plagiarism. The tools analyzed in this project used either fingerprinting or stylometry.
 		
 		\subsection{Fingerprinting}
 		Several tools use a technique called fingerprinting to detect plagiarism. In fingerprinting algorithms, hashes of $n$-grams, substrings that are $n$ characters, are saved and compared to help find plagiarism. Not all hashes are stored due to the large number that would be produced. 
@@ -104,6 +102,8 @@
 		Autograder also provides a web service which gives students feedback on their assignments. They are able to see how many of the tests had passed and why any tests had failed. Once a certain number of tests are passed, students can ask the instructors to approve the assignment. Instructors do this through the web interface provided to them. This also gives them an overview of how the whole class is doing on the assignments.
 		
 	\section{Design}
+	This section describes some of the design decisions made during the development process and how a request to check the students' code for plagiarism works.
+	
 		\subsection{Selection of tools}
 		Three tools were chosen for the project to use three different techniques for finding plagiarism: winnowing, RKS-GST, and ASTs. Table \ref{tab:languageSupport} shows the languages officially supported by several anti-plagiarism tools.
 		
@@ -124,53 +124,29 @@
 			\end{center}
 		\end{table}
 		
-		\subsubsection{Moss}
-		Moss is an anti-plagiarism tool which uses winnowing to find similar pieces of code. It was the first choice in anti-plagiarism tools, because it supports a large number of languages and is a mature piece of software. While Moss does not officially support Go, it can still check Go files. A very nice feature is its ability to ignore similar pieces of code if the it appears it a certain number of files. So code that is common to everyone, such as code provided by instructor, can be ignored. It is free to use the Moss service, but it requires registration. To run Moss locally, a fee must be paid.
+			\subsubsection{Moss}
+			Moss is an anti-plagiarism tool which uses winnowing to find similar pieces of code. It was the first choice in anti-plagiarism tools, because it supports a large number of languages and is a mature piece of software. While Moss does not officially support Go, it can still check Go files. A very nice feature is its ability to ignore similar pieces of code if the it appears it a certain number of files. So code that is common to everyone, such as code provided by instructor, can be ignored. It is free to use the Moss service, but it requires registration. To run Moss locally, a fee must be paid.
 		
-		\subsubsection{JPlag}
-		JPlag is an anti-plagiarism tool which uses RKS-GST to find similar code. Like Moss, JPlag supports many languages. It is free, open-source, and can be run locally. JPlag will only check files written in the languages it officially supports. While JPlag can ignore files, it must be told which files to ignore. Also it cannot ignore portions of a file.
+			\subsubsection{JPlag}
+			JPlag is an anti-plagiarism tool which uses RKS-GST to find similar code. Like Moss, JPlag supports many languages. It is free, open-source, and can be run locally. JPlag will only check files written in the languages it officially supports. While JPlag can ignore files, it must be told which files to ignore. Also it cannot ignore portions of a file.
 		
-		\subsubsection{dupl}
-		Michal Bohuslávek's dupl application uses ASTs to find similarities in code for big projects \cite{bohuslave}. Dupl was chosen for its use of ASTs and its support for the Go programming language. Dupl is free, open-source, and can be run locally. It will only work with Go files. Dupl looks for any copies of code, not just plagiarism. So if a piece of code is duplicated even in the same file, it will test positive. Since dupl was not designed to test for plagiarism, there is no way to tell it to ignore code. It also does not provide a percentage saying what percentage of code is likely to be plagiarized. The checked code must be able to compile since dupl needs to parse the code to make the ASTs correctly.
+			\subsubsection{dupl}
+			Michal Bohuslávek's dupl application uses ASTs to find similarities in code for big projects \cite{bohuslave}. Dupl was chosen for its use of ASTs and its support for the Go programming language. Dupl is free, open-source, and can be run locally. It will only work with Go files. Dupl looks for any copies of code, not just plagiarism. So if a piece of code is duplicated even in the same file, it will test positive. Since dupl was not designed to test for plagiarism, there is no way to tell it to ignore code. It also does not provide a percentage saying what percentage of code is likely to be plagiarized. The checked code must be able to compile since dupl needs to parse the code to make the ASTs correctly.
 		
-		\subsubsection{Tools not chosen}
-		There are several tools which were not chosen. For example, Plaggie supports only Java, while the data from the test course was written in C and Go. So Plaggie would not have been a good choice.
-
-		\subsection{Process}
-		Since Autograder was written in Go, this project was also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program calls each of the anti-plagiarism tools and stores the results. A separate Go package was written for each anti-plagiarism tool. The packages implement a common interface which creates the commands to send to the tools and formats the results. The interface will allow other anti-plagiarism tools to be easily added later.
+			\subsubsection{Tools not chosen}
+			There are several tools which were not chosen. For example, Plaggie supports only Java, while the data from the test course was written in C and Go. So Plaggie would not have been a good choice.
 		
-		The anti-plagiarism application typically runs as a service and accepts gRPC, a remote procedure call framework, requests. A request consists of the GitHub organization, the GitHub authorization token, an array of student repository names, and an array of lab assignment names and programming languages. Requests can also be sent from the command line.
-	
-			\subsubsection{Calling the anti-plagiarism tools}
-			Before calling the anti-plagiarism tools, first the students' code is pulled from GitHub to the Autograder server. The directory structure consists of a base directory containing subdirectories for each class. Each class is a GitHub organization. Inside each class, there are directories for each student, which have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in GitHub, so pulling the code for the anti-plagiarism project is simplified.
-	
-			\begin{figure}[h!]
-				\includegraphics[width=0.4\textwidth]{Directories.png}
-				\caption{Directory structure.}
-				\label{fig:directories}
-			\end{figure}
-			
-			\begin{figure}[h!]
-				\includegraphics[width=1.0\textwidth]{process2.pdf}
-				\caption{Process}
-				\label{fig:process}
-			\end{figure}
-	
-			Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters. The commands are then sent to their respective tools. Each student's work for an assignment is compared against the other students' work for that particular assignment in that class instead of all the assignments for that class or all the assignments for all classes. This keeps the number of files being compared from growing too large.
-			
-			The anti-plagiarism application waits for the results to come back from each of the tools. When they have all finished, the program will collect and store the resulting HTML files in the location specified. It also examines the HTML files for the highest incidents of plagiarism for each student. The highest values are written to a JSON file. Finally the program sends a gRPC response back to the calling application indicating if it was successful or not.
-			
 		\subsection{Integrating with Autograder}
 		A few new fields needed to be added to the Autograder's Bolt database. Each lab assignment entry in each class needed to store the language the assignment is written in. Also each lab assignment entry for each student/group needed to store the results from each of the anti-plagiarism tools.
 		
-		The user interface was also updated to allow teachers to assign a programming language to each lab (figure \ref{fig:selectLang}), to allow teachers to initiate the anti-plagiarism process (figure \ref{fig:startTest}), and to show the results of the process. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results. The gRPC call is synchronous, but it is not blocking Autograder from processing since it is in another thread.
+		The user interface was also updated to allow teachers to assign a programming language to each lab (figure \ref{fig:selectLang}), to allow teachers to initiate the anti-plagiarism process (figure \ref{fig:startTest}), and to show the results of the process. 
 		
 		\begin{figure}[h!]
 			\includegraphics[width=0.6\textwidth]{SelectingLanguage.png}
 			\caption{Selecting language.}
 			\label{fig:selectLang}
 		\end{figure}
-				
+		
 		\begin{figure}[h!]
 			\includegraphics[width=0.6\textwidth]{StartTest.png}
 			\caption{Start anti-plagiarism test.}
@@ -187,7 +163,34 @@
 		
 		While adding the new functionality to Autograder, care was taken not to break any existing functionality. Unit tests were rerun to check that nothing was broken.
 		
+		\subsection{Directory structure}
+		The directory structure of the students' code consists of a base directory containing subdirectories for each class. Each class is a GitHub organization. Inside each class, there are directories for each student, which have directories for each assignment. See figure \ref{fig:directories}. This is similar to how Autograder stores the files in GitHub, so pulling the code for the anti-plagiarism project is simplified. This was a convenient way for organizing the code for processing by the different tools as well.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=0.4\textwidth]{Directories.png}
+			\caption{Directory structure.}
+			\label{fig:directories}
+		\end{figure}
+
+		\subsection{Process}
+		Since Autograder was written in Go, this project was also written in Go. Later it was decided to make this project a standalone application that Autograder will call, since another university has expressed interest in using it. The program calls each of the anti-plagiarism tools and stores the results. A separate Go package was written for each anti-plagiarism tool. The packages implement a common interface which creates the commands to send to the tools and formats the results. The interface will allow other anti-plagiarism tools to be easily added later.
+		
+		The anti-plagiarism application typically runs as a service and accepts gRPC, a remote procedure call framework, requests. A request to check the students' code for plagiarism consists of the GitHub organization, the GitHub authorization token, an array of student repository names, and an array of lab assignment names and programming languages. Requests can also be sent from the command line.
+		
+		\begin{figure}[h!]
+			\includegraphics[width=1.0\textwidth]{process2.pdf}
+			\caption{Process}
+			\label{fig:process}
+		\end{figure}
+		
+		Figure \ref{fig:process} shows how a request to the anti-plagiarism software is processed. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results. The gRPC call is synchronous, but it is not blocking Autograder from processing since it is in another thread.
+	
+		When the anti-plagiarism software receives the gRPC request, the students' code is pulled from GitHub to the Autograder server. Next the commands are created for each anti-plagiarism tools based on the location of the code, the language in which the code was written, the threshold of the tool, and various other parameters. The commands are then sent to their respective tools. Each student's work for an assignment is compared against the other students' work for that particular assignment in that class instead of all the assignments for that class or all the assignments for all classes. This keeps the number of files being compared from growing too large.
+			
+		The anti-plagiarism application waits for the results to come back from each of the tools. When they have all finished, the program will collect and store the resulting HTML files in the location specified. It also examines the HTML files for the highest incidents of plagiarism for each student. The highest values are written to a JSON file. Finally the program sends a gRPC response back to the calling application indicating if it was successful or not.
+		
 	\section{Results}
+	This sections presents the results of testing the anti-plagiarism software on real students' projects. It also describes the modification of parameters to improve the results.
 	
 		\subsection{Choosing threshold values}
 		Choosing threshold values took some consideration plus trial and error. Since the threshold value for Moss is the number of files duplicate code can appear in and still be considered plagiarism, it was straightforward to find a value for Moss. The test class consisted of seventeen students and six groups. Therefore the Moss threshold would need to be less than six, because all of the groups would have code provided by the instructor. So the value chosen was five.
@@ -299,7 +302,7 @@
 		\end{table}
 	
 	\section{Analysis}
-	At first glance, it appeared as if all the students that submitted work plagiarized code, but that would be a very unlikely scenario. Most of the duplicates appear to come from code provided to the students. In labs one and five, little or no code was provided to the students. Therefore there were much fewer detections in these two assignments.
+	This section analyzes the results of running the anti-plagiarism software against the real projects from Section 4. At first glance, it appeared as if all the students that submitted work plagiarized code, but that would be a very unlikely scenario. Most of the duplicates appear to come from code provided to the students. In labs one and five, little or no code was provided to the students. Therefore there were much fewer detections in these two assignments.
 	
 	Getting three separate tools to behave similarly using a common interface was a bit difficult. Moss was the original anti-plagiarism tool included in the project before it was decided to add other tools. Moss's threshold says to ignore code that is similar in a certain number of files. So if the threshold is ten and a piece of code appears at least ten times, it is not considered plagiarism. This is very helpful when an instructor gives students a partially completed file or a framework to follow. Since the threshold does not specify the length of code to consider for plagiarism, sometimes relatively short sections of code show up in the results. Unfortunately if a student's lab directory has subdirectories, Moss will say that similar code in different subdirectories is plagiarism.
 	
@@ -320,7 +323,7 @@
 	By deleting common whole files shared by all the students, the results improved even more as seen in tables \ref{tab:newResults} and \ref{tab:newResults2}. The results could be improved further by handling the partial files shared by the students. All the labs except lab five had partially completed files. The partial files in labs one and two just had bare skeleton code, while the others had completed functions. Since the skeleton code is much smaller than the completed functions, it has less detections.
 	
 	\section{Future work}
-	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in the gRPC calls. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. There are also some hard-coded values in Autograder that should be environment variables or in a configuration file, such as the address and port of the anti-plagiarism application.
+	This section lists possible improvements to the anti-plagiarism software. Currently the application is only intended to be called locally, so there is no encryption enabled in the gRPC calls. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. There are also some hard-coded values in Autograder that should be environment variables or in a configuration file, such as the address and port of the anti-plagiarism application.
 	
 	To improve the results from JPlag, a list of common files to ignore can be added. This will require changes to the Autograder GUI so that instructors can add the list to ignore. Also the gRPC request will need to be changed to include the list of files.
 	
