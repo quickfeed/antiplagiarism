@@ -163,7 +163,7 @@
 		\subsection{Integrating with Autograder}
 		A few new fields needed to be added to the Autograder's Bolt database. Each lab assignment entry in each class needed to store the language the assignment is written in. Also each lab assignment entry for each student/group needed to store the results from each of the anti-plagiarism tools.
 		
-		The user interface was also updated to allow teachers to assign a programming language to each lab (figure \ref{fig:selectLang}), to allow teachers to initiate the anti-plagiarism process (figure \ref{fig:startTest}), and to show the results of the process. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results.
+		The user interface was also updated to allow teachers to assign a programming language to each lab (figure \ref{fig:selectLang}), to allow teachers to initiate the anti-plagiarism process (figure \ref{fig:startTest}), and to show the results of the process. When the Autograder web service receives a request to start the anti-plagiarism process, it creates the gRPC command. If it was successful it sends the request and informs the user that the request was sent. Since it can take at least several minutes to process the data, it is best to inform the user immediately that things might take a while. Otherwise they could think that it is not working. Then Autograder starts a Go routine (separate thread) to call the anti-plagiarism software and process the results. The gRPC call is synchronous, but it is not blocking Autograder from processing since it is in another thread.
 		
 		\begin{figure}[h!]
 			\includegraphics[width=0.6\textwidth]{SelectingLanguage.png}
@@ -242,7 +242,7 @@
 			\label{fig:grouplabresults}
 		\end{figure}
 		
-		An attempt was made to improve the results by manually deleting whole files that were common among the students. Partial files common among the students were not altered due to time constraints. The new results are listed in Table \ref{tab:newResults} and \ref{tab:newResults2}.
+		An attempt was made to improve the results by manually deleting whole files that were common among the students. Partial files common among the students were not altered due to time constraints. The new results are listed in tables \ref{tab:newResults} and \ref{tab:newResults2}.
 		
 		\begin{table}[h!]
 			\begin{center}
@@ -303,7 +303,7 @@
 	
 	Getting three separate tools to behave similarly using a common interface was a bit difficult. Moss was the original anti-plagiarism tool included in the project before it was decided to add other tools. Moss's threshold says to ignore code that is similar in a certain number of files. So if the threshold is ten and a piece of code appears at least ten times, it is not considered plagiarism. This is very helpful when an instructor gives students a partially completed file or a framework to follow. Since the threshold does not specify the length of code to consider for plagiarism, sometimes relatively short sections of code show up in the results. Unfortunately if a student's lab directory has subdirectories, Moss will say that similar code in different subdirectories is plagiarism.
 	
-	JPlag can produce false positives by not ignoring code provided by the instructor. While it is possible to tell JPlag to ignore certain files, this would break the common interface shared among the tools. Also it would require the instructors to format the assignments in such a ways that all of the instructor provided code is separate from all of the student code.
+	JPlag produces false positives because it does not currently ignore code provided by the instructor. It is possible to tell JPlag to ignore certain files. This is discussed further in Section 6.
 	
 	Dupl was not designed to detect plagiarism, only duplicate pieces of code. So it will detect all the instructor provided code as plagiarism. It can even detect two pieces of code in the same file. For example the two functions in figure \ref{fig:duplSameFile} are from the same file and are shown to be duplicates. Increasing the threshold helps with scenario though.
 	
@@ -317,17 +317,21 @@
 	
 	Adjustments were made to the thresholds in attempt to clean up the results shown in figures \ref{fig:indlabresults} and \ref{fig:grouplabresults}. Labs one and five improved some, but there was too much provided code in the other labs for cleaner results.
 	
+	By deleting common whole files shared by all the students, the results improved even more as seen in tables \ref{tab:newResults} and \ref{tab:newResults2}. The results could be improved further by handling the partial files shared by the students. All the labs except lab five had partially completed files. The partial files in labs one and two just had bare skeleton code, while the others had completed functions. Since the skeleton code is much smaller than the completed functions, it has less detections.
+	
 	\section{Future work}
 	Currently the anti-plagiarism application is only intended to be called locally, so there is no encryption enabled in the gRPC calls. If it is to be called remotely, then transport security needs to be added in the anti-plagiarism application and in Autograder. If the application was called remotely, the result files would need to be sent to the other machine. There are also some hard-coded values in Autograder that should be environment variables or in a configuration file, such as the address and port of the anti-plagiarism application.
 	
-	Additional anti-plagiarism tools could be added later, but focusing on the use of one tool could be a better option. When using a common interface to access the different tools, some of the fine tuning is lost.
+	To improve the results from JPlag, a list of common files to ignore can be added. This will require changes to the Autograder GUI so that instructors can add the list to ignore. Also the gRPC request will need to be changed to include the list of files.
 	
-	Autograder does not do anything with the percentages other than display them. It could have its own threshold and only display results above a certain percentage.
+	The partial common files should also be handled in some way. Having the anti-plagiarism application remove the common pieces of code could be problematic because some tools require the code to be able to compile. Moss has the option to include base files. This could improve results from Moss, but Moss already seems to handle the situation well on its own. JPlag has an option for a base code directory, which may be worth looking into.
 	
 	\section{Conclusion}
 	Due to the high number of false positives found during testing, it is probably better to consider the results from this application as supplemental to any suspicions an instructor may have already. It would be tedious to examine all of the results. The tools used are very good at finding similar pieces of code, but there are legitimate reasons for having duplicate code, such as code distributed by the instructor or students reusing their own code. Use of this application is useful if an instructor suspects plagiarism and uses this to verify their suspicions.
 	
-	Results could be improved in future classes if all instructor provided code resided in separate repositories. This would greatly reduce the number of false positives. Then the work in the students' repositories would hopefully be their own work and not code copied from someone else.
+	Moss currently appears to be the best choice out of the three tools used in this project. Its ability to automatically ignore common code makes it easy to use. All of the tools were capable of finding duplicate pieces of code.
+	
+	Results could be improved in a several ways, such as adding a list of common files to ignore. With improved results, it would be much easier for instructors to look through the detections and find evidence of plagiarism.
 	
 	% use section* for acknowledgment
 	\ifCLASSOPTIONcompsoc
