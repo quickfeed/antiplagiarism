@@ -28,6 +28,12 @@ var _ = proto1.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto1.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type ApRequest struct {
 	GithubOrg    string          `protobuf:"bytes,1,opt,name=githubOrg" json:"githubOrg,omitempty"`
 	GithubToken  string          `protobuf:"bytes,2,opt,name=githubToken" json:"githubToken,omitempty"`
@@ -35,9 +41,10 @@ type ApRequest struct {
 	Labs         []*ApRequestLab `protobuf:"bytes,4,rep,name=labs" json:"labs,omitempty"`
 }
 
-func (m *ApRequest) Reset()         { *m = ApRequest{} }
-func (m *ApRequest) String() string { return proto1.CompactTextString(m) }
-func (*ApRequest) ProtoMessage()    {}
+func (m *ApRequest) Reset()                    { *m = ApRequest{} }
+func (m *ApRequest) String() string            { return proto1.CompactTextString(m) }
+func (*ApRequest) ProtoMessage()               {}
+func (*ApRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
 func (m *ApRequest) GetLabs() []*ApRequestLab {
 	if m != nil {
@@ -51,18 +58,20 @@ type ApRequestLab struct {
 	Language int32  `protobuf:"varint,2,opt,name=language" json:"language,omitempty"`
 }
 
-func (m *ApRequestLab) Reset()         { *m = ApRequestLab{} }
-func (m *ApRequestLab) String() string { return proto1.CompactTextString(m) }
-func (*ApRequestLab) ProtoMessage()    {}
+func (m *ApRequestLab) Reset()                    { *m = ApRequestLab{} }
+func (m *ApRequestLab) String() string            { return proto1.CompactTextString(m) }
+func (*ApRequestLab) ProtoMessage()               {}
+func (*ApRequestLab) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 0} }
 
 type ApResponse struct {
 	Success bool   `protobuf:"varint,1,opt,name=success" json:"success,omitempty"`
 	Err     string `protobuf:"bytes,2,opt,name=err" json:"err,omitempty"`
 }
 
-func (m *ApResponse) Reset()         { *m = ApResponse{} }
-func (m *ApResponse) String() string { return proto1.CompactTextString(m) }
-func (*ApResponse) ProtoMessage()    {}
+func (m *ApResponse) Reset()                    { *m = ApResponse{} }
+func (m *ApResponse) String() string            { return proto1.CompactTextString(m) }
+func (*ApResponse) ProtoMessage()               {}
+func (*ApResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
 func init() {
 	proto1.RegisterType((*ApRequest)(nil), "proto.ApRequest")
@@ -73,6 +82,10 @@ func init() {
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion3
 
 // Client API for Ap service
 
@@ -107,16 +120,22 @@ func RegisterApServer(s *grpc.Server, srv ApServer) {
 	s.RegisterService(&_Ap_serviceDesc, srv)
 }
 
-func _Ap_CheckPlagiarism_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _Ap_CheckPlagiarism_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ApRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ApServer).CheckPlagiarism(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ApServer).CheckPlagiarism(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Ap/CheckPlagiarism",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApServer).CheckPlagiarism(ctx, req.(*ApRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Ap_serviceDesc = grpc.ServiceDesc{
@@ -128,5 +147,28 @@ var _Ap_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Ap_CheckPlagiarism_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: fileDescriptor0,
+}
+
+func init() { proto1.RegisterFile("ap.proto", fileDescriptor0) }
+
+var fileDescriptor0 = []byte{
+	// 250 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x5c, 0x8f, 0x41, 0x4e, 0xc3, 0x30,
+	0x10, 0x45, 0x49, 0x93, 0x42, 0x32, 0x45, 0xa2, 0x8c, 0x58, 0x44, 0x11, 0x8b, 0x28, 0xab, 0xac,
+	0xb2, 0x28, 0x42, 0xea, 0x0a, 0xa9, 0xe2, 0x00, 0x20, 0x8b, 0x0b, 0x38, 0x61, 0x94, 0x46, 0x4d,
+	0x6d, 0xe3, 0xb1, 0xef, 0xc9, 0x91, 0x50, 0x9d, 0x52, 0x4a, 0x57, 0x9e, 0xff, 0x6c, 0x7d, 0xbf,
+	0x81, 0x54, 0x9a, 0xc6, 0x58, 0xed, 0x34, 0xce, 0xc3, 0x51, 0x7d, 0x47, 0x90, 0x6d, 0x8c, 0xa0,
+	0x2f, 0x4f, 0xec, 0xf0, 0x11, 0xb2, 0x7e, 0x70, 0x5b, 0xdf, 0xbe, 0xd9, 0x3e, 0x8f, 0xca, 0xa8,
+	0xce, 0xc4, 0x1f, 0xc0, 0x12, 0x16, 0x53, 0xf8, 0xd0, 0x3b, 0x52, 0xf9, 0x2c, 0xdc, 0x9f, 0x23,
+	0xac, 0xe0, 0x96, 0x9d, 0xff, 0x24, 0xe5, 0x04, 0x19, 0xcd, 0x79, 0x5c, 0xc6, 0x75, 0x26, 0xfe,
+	0x31, 0xac, 0x21, 0x19, 0x65, 0xcb, 0x79, 0x52, 0xc6, 0xf5, 0x62, 0xf5, 0x30, 0xe9, 0x34, 0x27,
+	0x87, 0x66, 0x94, 0xad, 0x08, 0x2f, 0x8a, 0x67, 0x88, 0x47, 0xd9, 0x22, 0x42, 0xa2, 0xe4, 0x9e,
+	0x8e, 0x3e, 0x61, 0xc6, 0x02, 0xd2, 0x51, 0xaa, 0xde, 0xcb, 0x9e, 0x82, 0xc7, 0x5c, 0x9c, 0x72,
+	0xb5, 0x06, 0x38, 0xb4, 0xb1, 0xd1, 0x8a, 0x09, 0x73, 0xb8, 0x61, 0xdf, 0x75, 0xc4, 0x1c, 0x0a,
+	0x52, 0xf1, 0x1b, 0x71, 0x09, 0x31, 0x59, 0x7b, 0x5c, 0xe3, 0x30, 0xae, 0x5e, 0x60, 0xb6, 0x31,
+	0xb8, 0x86, 0xbb, 0xd7, 0x2d, 0x75, 0xbb, 0xf7, 0x51, 0xf6, 0x83, 0xb4, 0x03, 0xef, 0x71, 0x79,
+	0x69, 0x59, 0xdc, 0x9f, 0x91, 0xe9, 0xa7, 0xea, 0xaa, 0xbd, 0x0e, 0xec, 0xe9, 0x27, 0x00, 0x00,
+	0xff, 0xff, 0x87, 0x26, 0x0e, 0xfe, 0x66, 0x01, 0x00, 0x00,
 }
